@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { z } from "zod"
+import { boolean, z } from "zod"
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -17,6 +17,8 @@ type LoginState = z.infer<typeof loginSchema> & {
   setGeneralError: (error: string) => void
   validateForm: () => boolean
   resetErrors: () => void
+  rememberMe: boolean
+  setRememberMe: (value: boolean) => void;
 }
 
 export const useLoginStore = create<LoginState>((set, get) => ({
@@ -26,6 +28,8 @@ export const useLoginStore = create<LoginState>((set, get) => ({
   showPassword: false,
   errors: {},
   generalError: "",
+  rememberMe: false,
+  setRememberMe: (value) => set({ rememberMe: value }),
   setField: (field, value) =>
     set((state) => {
       const newState = { ...state, [field]: value }

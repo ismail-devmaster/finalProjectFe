@@ -1,5 +1,4 @@
 "use client";
-
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Mail, Lock, LogIn, Eye, EyeOff, AlertCircle } from "lucide-react";
@@ -10,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useLoginStore } from "./useLoginStore";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useEffect } from "react";
 import type React from "react";
 
 export default function Login() {
@@ -21,36 +21,68 @@ export default function Login() {
     showPassword,
     errors,
     generalError,
+    rememberMe,
     setField,
     toggleShowPassword,
     setIsLoading,
     setGeneralError,
+    setRememberMe,
     validateForm,
     resetErrors,
   } = useLoginStore();
 
+  // Load saved credentials if "Remember Me" was checked
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("rememberMeEmail");
+    const savedPassword = localStorage.getItem("rememberMePassword");
+    if (savedEmail && savedPassword) {
+      setField("email", savedEmail);
+      setField("password", savedPassword);
+      setRememberMe(true);
+    }
+  }, [setField, setRememberMe]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     resetErrors();
-    if (!validateForm()) {
-      return;
-    }
-    setIsLoading(true);
+    if (!validateForm()) return;
 
+    setIsLoading(true);
     try {
       const response = await auth.login(email, password);
-      toast.success("Logged in successfully");
-      router.push("/dashboard");
-    } catch (error: any) {
-      if (error.message === "Invalid credentials") {
-        setGeneralError("Incorrect email or password. Please try again.");
-      } else if (error.message === "User not found") {
-        setGeneralError("No account found with this email. Please sign up.");
+
+      // Store authentication token
+      localStorage.setItem("authToken", response.token);
+      localStorage.setItem("userId", response.user.id);
+
+      // Save credentials if "Remember Me" is checked
+      if (rememberMe) {
+        localStorage.setItem("rememberMeEmail", email);
+        localStorage.setItem("rememberMePassword", password);
       } else {
-        setGeneralError(
-          "An unexpected error occurred. Please try again later."
-        );
+        // Clear saved credentials if "Remember Me" is unchecked
+        localStorage.removeItem("rememberMeEmail");
+        localStorage.removeItem("rememberMePassword");
       }
+
+      // Redirect based on user role
+      let redirectPath = "/patient"; // Default path
+      if (response.user.role === "ADMIN") {
+        redirectPath = "/admin";
+      } else if (response.user.role === "DOCTOR") {
+        redirectPath = "/staff/doctor";
+      } else if (response.user.role === "RECEPTIONIST") {
+        redirectPath = "/staff/receptionist";
+      }
+
+      toast.success("Logged in successfully");
+      router.push(redirectPath);
+    } catch (error: any) {
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("userId");
+
+      const message = error.response?.data?.error || "Login failed";
+      setGeneralError(message);
     } finally {
       setIsLoading(false);
     }
@@ -63,14 +95,12 @@ export default function Login() {
           <h1 className="text-2xl font-bold">Welcome Back</h1>
           <p className="text-muted-foreground mt-2">Log in to your account</p>
         </div>
-
         {generalError && (
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>{generalError}</AlertDescription>
           </Alert>
         )}
-
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <div className="relative">
@@ -88,7 +118,6 @@ export default function Login() {
               <p className="text-red-500 text-sm">{errors.email}</p>
             )}
           </div>
-
           <div className="space-y-2">
             <div className="relative">
               <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
@@ -118,13 +147,14 @@ export default function Login() {
               <p className="text-red-500 text-sm">{errors.password}</p>
             )}
           </div>
-
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <input
                 id="remember-me"
                 name="remember-me"
                 type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
                 className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
               />
               <label
@@ -143,13 +173,11 @@ export default function Login() {
               </Link>
             </div>
           </div>
-
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? "Logging in..." : "Log In"}{" "}
             <LogIn className="ml-2 h-4 w-4" />
           </Button>
         </form>
-
         <div className="mt-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
@@ -161,7 +189,6 @@ export default function Login() {
               </span>
             </div>
           </div>
-
           <div className="mt-6">
             <Button
               variant="outline"
@@ -194,7 +221,6 @@ export default function Login() {
             </Button>
           </div>
         </div>
-
         <div className="text-center text-sm">
           Don't have an account?{" "}
           <Link
