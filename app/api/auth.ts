@@ -23,7 +23,9 @@ export const auth = {
         dateOfBirth,
         phone,
         sexId,
-        medicalHistory,
+        roleData: {
+          medicalHistory,
+        }
       });
       return response.data;
     } catch (error: any) {
