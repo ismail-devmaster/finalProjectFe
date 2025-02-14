@@ -9,7 +9,6 @@ import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useLoginStore } from "./useLoginStore";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useEffect } from "react";
 import type React from "react";
 
 export default function Login() {
@@ -21,27 +20,15 @@ export default function Login() {
     showPassword,
     errors,
     generalError,
-    rememberMe,
     setField,
     toggleShowPassword,
     setIsLoading,
     setGeneralError,
-    setRememberMe,
     validateForm,
     resetErrors,
   } = useLoginStore();
 
-  // Load saved credentials if "Remember Me" was checked
-  useEffect(() => {
-    const savedEmail = localStorage.getItem("rememberMeEmail");
-    const savedPassword = localStorage.getItem("rememberMePassword");
-    if (savedEmail && savedPassword) {
-      setField("email", savedEmail);
-      setField("password", savedPassword);
-      setRememberMe(true);
-    }
-  }, [setField, setRememberMe]);
-
+  // Handler for form submission (traditional login)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     resetErrors();
@@ -49,21 +36,8 @@ export default function Login() {
 
     setIsLoading(true);
     try {
+      // Call auth.login; tokens will be set in HTTP‑only cookies by the server
       const response = await auth.login(email, password);
-
-      // Store authentication token
-      localStorage.setItem("authToken", response.token);
-      localStorage.setItem("userId", response.user.id);
-
-      // Save credentials if "Remember Me" is checked
-      if (rememberMe) {
-        localStorage.setItem("rememberMeEmail", email);
-        localStorage.setItem("rememberMePassword", password);
-      } else {
-        // Clear saved credentials if "Remember Me" is unchecked
-        localStorage.removeItem("rememberMeEmail");
-        localStorage.removeItem("rememberMePassword");
-      }
 
       // Redirect based on user role
       let redirectPath = "/patient"; // Default path
@@ -78,9 +52,36 @@ export default function Login() {
       toast.success("Logged in successfully");
       router.push(redirectPath);
     } catch (error: any) {
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("userId");
+      const message = error.response?.data?.error || "Login failed";
+      setGeneralError(message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  // Handler for Google Sign-In button click
+  const handleGoogleSignIn = async () => {
+
+    // This function calls the auth.googleSignIn() method,
+    // which redirects the browser to your backend's Google OAuth endpoint.
+    setIsLoading(true);
+    try {
+      // Call auth.login; tokens will be set in HTTP‑only cookies by the server
+      const response = await auth.googleLogin();
+
+      // Redirect based on user role
+      let redirectPath = "/patient"; // Default path
+      if (response.user.role === "ADMIN") {
+        redirectPath = "/admin";
+      } else if (response.user.role === "DOCTOR") {
+        redirectPath = "/staff/doctor";
+      } else if (response.user.role === "RECEPTIONIST") {
+        redirectPath = "/staff/receptionist";
+      }
+
+      toast.success("Logged in successfully");
+      router.push(redirectPath);
+    } catch (error: any) {
       const message = error.response?.data?.error || "Login failed";
       setGeneralError(message);
     } finally {
@@ -148,22 +149,6 @@ export default function Login() {
             )}
           </div>
           <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
-              />
-              <label
-                htmlFor="remember-me"
-                className="ml-2 block text-sm text-gray-900"
-              >
-                Remember me
-              </label>
-            </div>
             <div className="text-sm">
               <Link
                 href="/auth/forgot-password"
@@ -193,6 +178,7 @@ export default function Login() {
             <Button
               variant="outline"
               className="w-full flex items-center justify-center"
+              onClick={handleGoogleSignIn}
             >
               <svg
                 className="w-5 h-5 mr-2"

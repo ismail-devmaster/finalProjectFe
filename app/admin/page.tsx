@@ -14,9 +14,9 @@ export default function AdminPage() {
     const verifyAdminAccess = async () => {
       try {
         await auth.verifyAdmin();
-        setIsLoading(false); // Allow access if verification succeeds
+        setIsLoading(false); // Admin verified successfully
       } catch (error) {
-        router.push("/auth/login"); // Redirect to login if verification fails
+        router.push("/auth/login"); // Redirect if verification fails
       }
     };
 
