@@ -2,19 +2,36 @@
 
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { Mail, Lock, ArrowRight, Eye, EyeOff } from "lucide-react"
+import { Mail, Lock, ArrowRight, Eye, EyeOff, User, Phone, Calendar } from "lucide-react"
 import { auth } from "@/app/api/auth"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
 import { useSignUpStore } from "./useSignUpStore"
-import type React from "react" // Added import for React
+import type React from "react"
 
 export default function SignUp() {
   const router = useRouter()
-  const { email, password, showPassword, isLoading, errors, setField, toggleShowPassword, setIsLoading, validateForm } =
-    useSignUpStore()
+  const {
+    email,
+    password,
+    firstName,
+    lastName,
+    dateOfBirth,
+    phone,
+    sexId,
+    medicalHistory,
+    showPassword,
+    isLoading,
+    errors,
+    setField,
+    toggleShowPassword,
+    setIsLoading,
+    validateForm,
+  } = useSignUpStore()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -25,7 +42,7 @@ export default function SignUp() {
     setIsLoading(true)
 
     try {
-      await auth.signup(email, password)
+      await auth.signup(email, password, firstName, lastName, dateOfBirth, sexId, medicalHistory, phone)
       toast.success("Please check your email for verification")
       router.push("/auth/login")
     } catch (error: any) {
@@ -89,6 +106,7 @@ export default function SignUp() {
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </button>
             </div>
+            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
             {password && (
               <div className="space-y-2 mt-2">
                 <div className="flex items-center space-x-2">
@@ -160,7 +178,90 @@ export default function SignUp() {
             )}
           </div>
 
-          <Button type="submit" className="w-full" disabled={isLoading || !!errors.email || !!errors.password}>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <div className="relative">
+                <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <Input
+                  type="text"
+                  placeholder="First Name"
+                  value={firstName}
+                  onChange={(e) => setField("firstName", e.target.value)}
+                  className={`pl-10 ${errors.firstName ? "border-red-500" : ""}`}
+                  required
+                />
+              </div>
+              {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName}</p>}
+            </div>
+            <div className="space-y-2">
+              <div className="relative">
+                <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                <Input
+                  type="text"
+                  placeholder="Last Name"
+                  value={lastName}
+                  onChange={(e) => setField("lastName", e.target.value)}
+                  className={`pl-10 ${errors.lastName ? "border-red-500" : ""}`}
+                  required
+                />
+              </div>
+              {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName}</p>}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <div className="relative">
+              <Calendar className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+              <Input
+                type="date"
+                placeholder="Date of Birth"
+                value={dateOfBirth}
+                onChange={(e) => setField("dateOfBirth", e.target.value)}
+                className={`pl-10 ${errors.dateOfBirth ? "border-red-500" : ""}`}
+                required
+              />
+            </div>
+            {errors.dateOfBirth && <p className="text-red-500 text-sm">{errors.dateOfBirth}</p>}
+          </div>
+
+          <div className="space-y-2">
+            <div className="relative">
+              <Phone className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+              <Input
+                type="tel"
+                placeholder="Phone"
+                value={phone}
+                onChange={(e) => setField("phone", e.target.value)}
+                className={`pl-10 ${errors.phone ? "border-red-500" : ""}`}
+              />
+            </div>
+            {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
+          </div>
+
+          <div className="space-y-2">
+            <Select value={sexId} onValueChange={(value: string) => setField("sexId", value)}>
+              <SelectTrigger className={errors.sexId ? "border-red-500" : ""}>
+                <SelectValue placeholder="Select Sex" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="male">Male</SelectItem>
+                <SelectItem value="female">Female</SelectItem>
+              </SelectContent>
+            </Select>
+            {errors.sexId && <p className="text-red-500 text-sm">{errors.sexId}</p>}
+          </div>
+
+          <div className="space-y-2">
+            <Textarea
+              placeholder="Medical History"
+              value={medicalHistory}
+              onChange={(e) => setField("medicalHistory", e.target.value)}
+              className={errors.medicalHistory ? "border-red-500" : ""}
+            />
+            {errors.medicalHistory && <p className="text-red-500 text-sm">{errors.medicalHistory}</p>}
+          </div>
+
+          <Button type="submit" className="w-full" disabled={isLoading || Object.keys(errors).length > 0}>
             {isLoading ? "Signing up..." : "Sign Up"}
             <ArrowRight className="ml-2 h-4 w-5" />
           </Button>

@@ -12,6 +12,14 @@ const passwordSchema = z
 export const signUpSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: passwordSchema,
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format (YYYY-MM-DD)"),
+  phone: z
+    .string()
+    .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number"),
+  sexId: z.enum(["male", "female"], { invalid_type_error: "Invalid sex" }),
+  medicalHistory: z.string(),
 })
 
 type SignUpState = z.infer<typeof signUpSchema> & {
@@ -27,6 +35,12 @@ type SignUpState = z.infer<typeof signUpSchema> & {
 export const useSignUpStore = create<SignUpState>((set, get) => ({
   email: "",
   password: "",
+  firstName: "",
+  lastName: "",
+  dateOfBirth: "",
+  phone: "",
+  sexId: "male",
+  medicalHistory: "",
   showPassword: false,
   isLoading: false,
   errors: {},
