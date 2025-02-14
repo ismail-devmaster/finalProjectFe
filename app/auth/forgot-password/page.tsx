@@ -1,31 +1,41 @@
-'use client';
+"use client"
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { Mail, ArrowLeft } from 'lucide-react';
-import { auth } from '@/app/api/auth';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import { toast } from 'sonner';
+import type React from "react"
+
+import { useState } from "react"
+import Link from "next/link"
+import { Mail, ArrowLeft } from "lucide-react"
+import { auth } from "@/app/api/auth"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card } from "@/components/ui/card"
+import { SuccessNotification } from "@/components/ui/success-notification"
+import { ErrorNotification } from "@/components/ui/error-notification"
 
 export default function ForgotPassword() {
-  const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [notification, setNotification] = useState<{ type: "success" | "error"; message: string } | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setLoading(true)
 
     try {
-      await auth.forgotPassword(email);
-      toast.success('Password reset instructions sent to your email');
+      await auth.forgotPassword(email)
+      setNotification({
+        type: "success",
+        message: "Password reset instructions sent to your email",
+      })
     } catch (error: any) {
-      toast.error(error.error || 'Failed to process request');
+      setNotification({
+        type: "error",
+        message: error.message || "Failed to process request. Please try again.",
+      })
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -51,7 +61,7 @@ export default function ForgotPassword() {
           </div>
 
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Sending...' : 'Send Reset Instructions'}
+            {loading ? "Sending..." : "Send Reset Instructions"}
           </Button>
         </form>
 
@@ -61,6 +71,15 @@ export default function ForgotPassword() {
           </Link>
         </div>
       </Card>
+
+      {notification && notification.type === "success" && (
+        <SuccessNotification message={notification.message} onDismiss={() => setNotification(null)} />
+      )}
+
+      {notification && notification.type === "error" && (
+        <ErrorNotification message={notification.message} onDismiss={() => setNotification(null)} />
+      )}
     </div>
-  );
+  )
 }
+
