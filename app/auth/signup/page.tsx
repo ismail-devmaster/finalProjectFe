@@ -1,20 +1,35 @@
-"use client"
+"use client";
 
-import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { Mail, Lock, ArrowRight, Eye, EyeOff, User, Phone, Calendar } from "lucide-react"
-import { auth } from "@/app/api/auth"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { toast } from "sonner"
-import { useSignUpStore } from "./useSignUpStore"
-import type React from "react"
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+  Mail,
+  Lock,
+  ArrowRight,
+  Eye,
+  EyeOff,
+  User,
+  Phone,
+  Calendar,
+} from "lucide-react";
+import { auth } from "@/app/api/auth";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
+import { useSignUpStore } from "./useSignUpStore";
+import type React from "react";
 
 export default function SignUp() {
-  const router = useRouter()
+  const router = useRouter();
   const {
     email,
     password,
@@ -22,7 +37,7 @@ export default function SignUp() {
     lastName,
     dateOfBirth,
     phone,
-    sexId,
+    sexId="male",
     medicalHistory,
     showPassword,
     isLoading,
@@ -31,37 +46,46 @@ export default function SignUp() {
     toggleShowPassword,
     setIsLoading,
     validateForm,
-  } = useSignUpStore()
+  } = useSignUpStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!validateForm()) {
-      toast.error("Please fix the errors in the form")
-      return
+      toast.error("Please fix the errors in the form");
+      return;
     }
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
-      await auth.signup(email, password, firstName, lastName, dateOfBirth, sexId, medicalHistory, phone)
-      toast.success("Please check your email for verification")
-      router.push("/auth/login")
+      await auth.signup(
+        email,
+        password,
+        firstName,
+        lastName,
+        dateOfBirth,
+        sexId === "male" ? "1": "2",
+        medicalHistory,
+        phone
+      );
+      toast.success("Please check your email for verification");
+      router.push("/auth/login");
     } catch (error: any) {
-      toast.error(error.error || "Failed to sign up")
+      toast.error(error.error || "Failed to sign up");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const getPasswordStrength = () => {
-    if (!password) return ""
-    const checks = [/.{8,}/, /[A-Z]/, /[a-z]/, /[0-9]/, /[^A-Za-z0-9]/]
-    const passedChecks = checks.filter((regex) => regex.test(password)).length
-    if (passedChecks <= 2) return "weak"
-    if (passedChecks <= 4) return "medium"
-    return "strong"
-  }
+    if (!password) return "";
+    const checks = [/.{8,}/, /[A-Z]/, /[a-z]/, /[0-9]/, /[^A-Za-z0-9]/];
+    const passedChecks = checks.filter((regex) => regex.test(password)).length;
+    if (passedChecks <= 2) return "weak";
+    if (passedChecks <= 4) return "medium";
+    return "strong";
+  };
 
-  const passwordStrength = getPasswordStrength()
+  const passwordStrength = getPasswordStrength();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -84,7 +108,9 @@ export default function SignUp() {
                 required
               />
             </div>
-            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -95,7 +121,9 @@ export default function SignUp() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setField("password", e.target.value)}
-                className={`pl-10 pr-10 ${errors.password ? "border-red-500" : ""}`}
+                className={`pl-10 pr-10 ${
+                  errors.password ? "border-red-500" : ""
+                }`}
                 required
               />
               <button
@@ -103,10 +131,16 @@ export default function SignUp() {
                 onClick={toggleShowPassword}
                 className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
               >
-                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
               </button>
             </div>
-            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+            {errors.password && (
+              <p className="text-red-500 text-sm">{errors.password}</p>
+            )}
             {password && (
               <div className="space-y-2 mt-2">
                 <div className="flex items-center space-x-2">
@@ -118,10 +152,10 @@ export default function SignUp() {
                           passwordStrength === "weak"
                             ? "w-1/3 bg-red-500"
                             : passwordStrength === "medium"
-                              ? "w-2/3 bg-yellow-500"
-                              : passwordStrength === "strong"
-                                ? "w-full bg-green-500"
-                                : "w-0"
+                            ? "w-2/3 bg-yellow-500"
+                            : passwordStrength === "strong"
+                            ? "w-full bg-green-500"
+                            : "w-0"
                         }`}
                       />
                     ))}
@@ -131,10 +165,10 @@ export default function SignUp() {
                       passwordStrength === "weak"
                         ? "text-red-500"
                         : passwordStrength === "medium"
-                          ? "text-yellow-500"
-                          : passwordStrength === "strong"
-                            ? "text-green-500"
-                            : "text-gray-500"
+                        ? "text-yellow-500"
+                        : passwordStrength === "strong"
+                        ? "text-green-500"
+                        : "text-gray-500"
                     }`}
                   >
                     {passwordStrength || "Enter password"}
@@ -157,7 +191,12 @@ export default function SignUp() {
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
                         >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
                         </svg>
                       ) : (
                         <svg
@@ -167,10 +206,23 @@ export default function SignUp() {
                           viewBox="0 0 24 24"
                           xmlns="http://www.w3.org/2000/svg"
                         >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
                         </svg>
                       )}
-                      <span className={regex.test(password) ? "text-green-500" : "text-red-500"}>{text}</span>
+                      <span
+                        className={
+                          regex.test(password)
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }
+                      >
+                        {text}
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -187,11 +239,15 @@ export default function SignUp() {
                   placeholder="First Name"
                   value={firstName}
                   onChange={(e) => setField("firstName", e.target.value)}
-                  className={`pl-10 ${errors.firstName ? "border-red-500" : ""}`}
+                  className={`pl-10 ${
+                    errors.firstName ? "border-red-500" : ""
+                  }`}
                   required
                 />
               </div>
-              {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName}</p>}
+              {errors.firstName && (
+                <p className="text-red-500 text-sm">{errors.firstName}</p>
+              )}
             </div>
             <div className="space-y-2">
               <div className="relative">
@@ -205,7 +261,9 @@ export default function SignUp() {
                   required
                 />
               </div>
-              {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName}</p>}
+              {errors.lastName && (
+                <p className="text-red-500 text-sm">{errors.lastName}</p>
+              )}
             </div>
           </div>
 
@@ -217,11 +275,15 @@ export default function SignUp() {
                 placeholder="Date of Birth"
                 value={dateOfBirth}
                 onChange={(e) => setField("dateOfBirth", e.target.value)}
-                className={`pl-10 ${errors.dateOfBirth ? "border-red-500" : ""}`}
+                className={`pl-10 ${
+                  errors.dateOfBirth ? "border-red-500" : ""
+                }`}
                 required
               />
             </div>
-            {errors.dateOfBirth && <p className="text-red-500 text-sm">{errors.dateOfBirth}</p>}
+            {errors.dateOfBirth && (
+              <p className="text-red-500 text-sm">{errors.dateOfBirth}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -235,7 +297,9 @@ export default function SignUp() {
                 className={`pl-10 ${errors.phone ? "border-red-500" : ""}`}
               />
             </div>
-            {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
+            {errors.phone && (
+              <p className="text-red-500 text-sm">{errors.phone}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -258,10 +322,16 @@ export default function SignUp() {
               onChange={(e) => setField("medicalHistory", e.target.value)}
               className={errors.medicalHistory ? "border-red-500" : ""}
             />
-            {errors.medicalHistory && <p className="text-red-500 text-sm">{errors.medicalHistory}</p>}
+            {errors.medicalHistory && (
+              <p className="text-red-500 text-sm">{errors.medicalHistory}</p>
+            )}
           </div>
 
-          <Button type="submit" className="w-full" disabled={isLoading || Object.keys(errors).length > 0}>
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={isLoading || Object.keys(errors).length > 0}
+          >
             {isLoading ? "Signing up..." : "Sign Up"}
             <ArrowRight className="ml-2 h-4 w-5" />
           </Button>
@@ -275,6 +345,5 @@ export default function SignUp() {
         </div>
       </Card>
     </div>
-  )
+  );
 }
-

@@ -1,28 +1,36 @@
 import axios from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL // Replace with your backend URL
+const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL; // Replace with your backend URL
 
 export const auth = {
   // Signup
-  signup: async (email: string, password: string, firstName: string, lastName: string, 
-    dateOfBirth: string, phone: string, sexId: string, roleData: any) => {
-try {
-const response = await axios.post(`${API_URL}/signup`, {
-email,
-password,
-firstName,
-lastName,
-dateOfBirth,
-phone,
-sexId,
-roleData
-});
-return response.data;
-} catch (error: any) {
-console.error("Signup error:", error.response?.data || error.message);
-throw error.response?.data?.error || { error: "Failed to sign up" };
-}
-},
+  signup: async (
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string,
+    dateOfBirth: string,
+    sexId: string,
+    medicalHistory: string,
+    phone: string
+  ) => {
+    try {
+      const response = await axios.post(`${API_URL}/signup`, {
+        email,
+        password,
+        firstName,
+        lastName,
+        dateOfBirth,
+        phone,
+        sexId,
+        medicalHistory,
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error("Signup error:", error.response?.data || error.message);
+      throw error.response?.data?.error || { error: "Failed to sign up" };
+    }
+  },
   // Login
   login: async (email: string, password: string) => {
     // Login will set an HTTP-only cookie; no need to store token manually
