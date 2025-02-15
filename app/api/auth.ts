@@ -25,7 +25,7 @@ export const auth = {
         sexId,
         roleData: {
           medicalHistory,
-        }
+        },
       });
       return response.data;
     } catch (error: any) {
@@ -130,6 +130,45 @@ export const auth = {
     } catch (error: any) {
       console.error("Logout error:", error.response?.data || error.message);
       throw error.response?.data?.error || { error: "Failed to log out" };
+    }
+  },
+
+  completeProfile: async (
+    tempToken: string,
+    phone: string,
+    sexId: number,
+    dateOfBirth: string
+  ) => {
+    try {
+      console.log(
+        "tempToken",
+        tempToken,
+        "phone",
+        phone,
+        "sexId",
+        sexId,
+        "dateOfBirth",
+        dateOfBirth
+      );
+      const response = await axios.post(
+        `${API_URL}/update-profile`,
+        {
+          tempToken,
+          phone,
+          sexId,
+          dateOfBirth,
+        },
+        { withCredentials: true }
+      );
+      return response.data;
+    } catch (error: any) {
+      console.error(
+        "Complete profile error:",
+        error.response?.data || error.message
+      );
+      throw (
+        error.response?.data?.error || { error: "Failed to complete profile" }
+      );
     }
   },
 
