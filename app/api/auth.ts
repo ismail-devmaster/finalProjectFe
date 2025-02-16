@@ -174,7 +174,5 @@ export const auth = {
 
   googleLogin: async () => {
     window.location.href = `${API_URL}/auth/google`;
-    const response = await axios.get(`${API_URL}/profile`);
-    return response.data;
   },
 };

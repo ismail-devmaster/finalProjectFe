@@ -25,7 +25,6 @@ export async function middleware(request: NextRequest) {
 
   if (protectedRoutes.some((route) => pathname.startsWith(route))) {
     const token = request.cookies.get("authToken")?.value;
-
     if (!token) {
       return NextResponse.redirect(new URL("/auth/login", request.url));
     }
