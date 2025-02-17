@@ -15,7 +15,7 @@ export const auth = {
     phone: string
   ) => {
     try {
-      const response = await axios.post(`${API_URL}/signup`, {
+      const response = await axios.post(`${API_URL}/auth/signup`, {
         email,
         password,
         firstName,
@@ -37,7 +37,7 @@ export const auth = {
   login: async (email: string, password: string) => {
     // Login will set an HTTP-only cookie; no need to store token manually
     const response = await axios.post(
-      `${API_URL}/login`,
+      `${API_URL}/auth/login`,
       { email, password },
       { withCredentials: true } // Ensure cookies are sent/received
     );
@@ -67,7 +67,7 @@ export const auth = {
   // Forgot Password
   forgotPassword: async (email: string) => {
     try {
-      const response = await axios.post(`${API_URL}/forgot-password`, {
+      const response = await axios.post(`${API_URL}/auth/forgot-password`, {
         email,
       });
       return response.data;
@@ -85,7 +85,7 @@ export const auth = {
   // Reset Password
   resetPassword: async (token: string, newPassword: string) => {
     try {
-      const response = await axios.post(`${API_URL}/reset-password/${token}`, {
+      const response = await axios.post(`${API_URL}/auth/reset-password/${token}`, {
         newPassword,
       });
       return response.data;
@@ -104,7 +104,7 @@ export const auth = {
   refreshToken: async () => {
     try {
       const response = await axios.post(
-        `${API_URL}/refresh-token`,
+        `${API_URL}/auth/refresh-token`,
         {},
         { withCredentials: true } // Ensure cookies are sent/received
       );
@@ -122,7 +122,7 @@ export const auth = {
   logout: async () => {
     try {
       const response = await axios.post(
-        `${API_URL}/logout`,
+        `${API_URL}/auth/logout`,
         {},
         { withCredentials: true } // Ensure cookies are sent/received
       );
@@ -151,7 +151,7 @@ export const auth = {
         dateOfBirth
       );
       const response = await axios.post(
-        `${API_URL}/update-profile`,
+        `${API_URL}/auth/update-profile`,
         {
           tempToken,
           phone,

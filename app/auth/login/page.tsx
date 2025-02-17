@@ -61,30 +61,14 @@ export default function Login() {
 
   // Handler for Google Sign-In button click
   const handleGoogleSignIn = async () => {
-
-    // This function calls the auth.googleSignIn() method,
-    // which redirects the browser to your backend's Google OAuth endpoint.
     setIsLoading(true);
     try {
-      // Call auth.login; tokens will be set in HTTP‑only cookies by the server
-      const response = await auth.googleLogin();
-
-      // Redirect based on user role
-      let redirectPath = "/patient"; // Default path
-      if (response.user.role === "ADMIN") {
-        redirectPath = "/admin";
-      } else if (response.user.role === "DOCTOR") {
-        redirectPath = "/staff/doctor";
-      } else if (response.user.role === "RECEPTIONIST") {
-        redirectPath = "/staff/receptionist";
-      }
-
-      toast.success("Logged in successfully");
-      router.push(redirectPath);
+      // Redirect to Google OAuth endpoint
+      await auth.googleLogin();
+      // The function should not reach this point as it should redirect
     } catch (error: any) {
-      const message = error.response?.data?.error || "Login failed";
+      const message = error.response?.data?.error || "Google Sign-In failed";
       setGeneralError(message);
-    } finally {
       setIsLoading(false);
     }
   };
