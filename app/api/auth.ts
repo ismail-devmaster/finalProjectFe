@@ -33,6 +33,7 @@ export const auth = {
       throw error.response?.data?.error || { error: "Failed to sign up" };
     }
   },
+  
   // Login
   login: async (email: string, password: string) => {
     // Login will set an HTTP-only cookie; no need to store token manually
@@ -42,26 +43,6 @@ export const auth = {
       { withCredentials: true } // Ensure cookies are sent/received
     );
     return response.data;
-  },
-
-  // Verify Admin Access
-  verifyAdmin: async () => {
-    try {
-      const response = await axios.get(`${API_URL}/api/admin/verify`, {
-        withCredentials: true, // Ensures the auth cookie is sent
-      });
-      return response.data;
-    } catch (error: any) {
-      console.error(
-        "Admin verification error:",
-        error.response?.data || error.message
-      );
-      throw (
-        error.response?.data?.error || {
-          error: "Failed to verify admin access",
-        }
-      );
-    }
   },
 
   // Forgot Password
@@ -85,9 +66,12 @@ export const auth = {
   // Reset Password
   resetPassword: async (token: string, newPassword: string) => {
     try {
-      const response = await axios.post(`${API_URL}/auth/reset-password/${token}`, {
-        newPassword,
-      });
+      const response = await axios.post(
+        `${API_URL}/auth/reset-password/${token}`,
+        {
+          newPassword,
+        }
+      );
       return response.data;
     } catch (error: any) {
       console.error(
