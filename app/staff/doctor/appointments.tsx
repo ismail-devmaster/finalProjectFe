@@ -35,10 +35,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { appointment } from "@/app/api/appointment";
+import { payment } from "@/app/api/payment";
 
 interface Appointment {
   id: number;
   patientId: number;
+  actionId: number;
   date: string;
   time: string;
   action: {
@@ -74,6 +77,10 @@ interface Payment {
   amount: number;
   date: string;
   time: string;
+  status: {
+    id: number;
+    status: string;
+  };
   description: string;
 }
 
@@ -91,7 +98,7 @@ export default function Appointments({
   appointments,
   patients,
 }: AppointmentsProps) {
-  const [selectedPatient, setSelectedPatient] =
+  const [selectedAppointment, setselectedAppointment] =
     React.useState<Appointment | null>(null);
   const [selectedStatus, setSelectedStatus] = React.useState<string>("ALL");
   const [selectedDate, setSelectedDate] = React.useState<DateFilter>("ALL");
@@ -99,6 +106,10 @@ export default function Appointments({
   const [showPayments, setShowPayments] = React.useState(false);
   const [showNewAppointment, setShowNewAppointment] = React.useState(false);
   const [showNewPayment, setShowNewPayment] = React.useState(false);
+  const [patientAppointments, setPatientAppointments] = React.useState<
+    Appointment[]
+  >([]);
+  const [patientPayments, setPatientPayments] = React.useState<Payment[]>([]);
 
   const [newAppointment, setNewAppointment] = React.useState({
     date: "",
@@ -157,16 +168,19 @@ export default function Appointments({
     });
   }, [appointments, selectedStatus, selectedDate, isInDateRange]);
 
-  const handleAppointmentsClick = (patientId: number) => {
-    setSelectedPatient(
-      appointments.find((app) => app.patientId === patientId) || null
+  const handleAppointmentsClick = async (actionId: number) => {
+    const res = await appointment.getAppointmentsByActionId(actionId);
+    setPatientAppointments(res.appointments);
+    setselectedAppointment(
+      appointments.find((app) => app.actionId === actionId) || null
     );
     setShowAppointments(true);
   };
-
-  const handlePaymentsClick = (patientId: number) => {
-    setSelectedPatient(
-      appointments.find((app) => app.patientId === patientId) || null
+  const handlePaymentsClick = async (actionId: number) => {
+    const res = await payment.getPaymentsByActionId(actionId);
+    setPatientPayments(res.payments);
+    setselectedAppointment(
+      appointments.find((app) => app.actionId === actionId) || null
     );
     setShowPayments(true);
   };
@@ -294,7 +308,7 @@ export default function Appointments({
                         size="sm"
                         className="mr-2"
                         onClick={() =>
-                          handleAppointmentsClick(appointment.patientId)
+                          handleAppointmentsClick(appointment.actionId)
                         }
                       >
                         Appointments
@@ -303,7 +317,7 @@ export default function Appointments({
                         variant="outline"
                         size="sm"
                         onClick={() =>
-                          handlePaymentsClick(appointment.patientId)
+                          handlePaymentsClick(appointment.actionId)
                         }
                       >
                         Payments
@@ -323,16 +337,52 @@ export default function Appointments({
       >
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Appointments</DialogTitle>
+            <DialogTitle></DialogTitle>
           </DialogHeader>
-          {selectedPatient && (
+          {selectedAppointment && (
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">
-                {selectedPatient.patient.user.firstName}{" "}
-                {selectedPatient.patient.user.lastName}
+                {selectedAppointment.patient.user.firstName}{" "}
+                {selectedAppointment.patient.user.lastName}
                 's Appointments
               </h3>
-              {/* Here you would map through the patient's appointments */}
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Time</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {patientAppointments.map((app) => (
+                    <TableRow key={app.id}>
+                      <TableCell>
+                        {new Date(app.date).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        {new Date(app.time).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </TableCell>
+                      <TableCell>{app.action.appointmentType.type}</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            app.status.status === "Confirmed"
+                              ? "default"
+                              : "secondary"
+                          }
+                        >
+                          {app.status.status}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
               <Button onClick={() => setShowNewAppointment(true)}>
                 New Appointment
               </Button>
@@ -344,16 +394,55 @@ export default function Appointments({
       <Dialog open={showPayments} onOpenChange={() => setShowPayments(false)}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Payments</DialogTitle>
+            <DialogTitle></DialogTitle>
           </DialogHeader>
-          {selectedPatient && (
+          {selectedAppointment && (
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">
-                {selectedPatient.patient.user.firstName}{" "}
-                {selectedPatient.patient.user.lastName}
+                {selectedAppointment.patient.user.firstName}{" "}
+                {selectedAppointment.patient.user.lastName}
                 's Payments
               </h3>
               {/* Here you would map through the patient's payments */}
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Time</TableHead>
+                    <TableHead>amount</TableHead>
+                    <TableHead>description</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {patientPayments.map((pay) => (
+                    <TableRow key={pay.id}>
+                      <TableCell>
+                        {new Date(pay.date).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        {new Date(pay.time).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </TableCell>
+                      <TableCell>{pay.amount}</TableCell>
+                      <TableCell>{pay.description || "-"}</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            pay.status.status === "Confirmed"
+                              ? "default"
+                              : "secondary"
+                          }
+                        >
+                          {pay.status.status}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
               <Button onClick={() => setShowNewPayment(true)}>
                 New Payment
               </Button>

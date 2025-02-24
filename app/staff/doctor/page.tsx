@@ -49,6 +49,7 @@ interface Patient {
 interface Appointment {
   id: number;
   patientId: number;
+  actionId: number;
   date: string;
   time: string;
   action: {
