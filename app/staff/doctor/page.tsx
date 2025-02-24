@@ -48,6 +48,7 @@ interface Patient {
 
 interface Appointment {
   id: number;
+  doctorId: number;
   patientId: number;
   actionId: number;
   date: string;

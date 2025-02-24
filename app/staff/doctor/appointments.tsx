@@ -39,6 +39,7 @@ import { appointment } from "@/app/api/appointment";
 import { payment } from "@/app/api/payment";
 
 interface Appointment {
+  doctorId: number;
   id: number;
   patientId: number;
   actionId: number;
@@ -185,18 +186,40 @@ export default function Appointments({
     setShowPayments(true);
   };
 
-  const handleNewAppointment = () => {
-    // Here you would typically send the newAppointment data to your backend
-    console.log("New appointment:", newAppointment);
-    setShowNewAppointment(false);
-    setNewAppointment({ date: "", time: "", notes: "" });
+  const handleNewAppointment = async () => {
+    try {
+      await appointment.createAppointment(newAppointment);
+      console.log("New appointment created:", newAppointment);
+      setShowNewAppointment(false);
+      setNewAppointment({ date: "", time: "", notes: "" });
+      // Optionally, refresh the appointments list here
+    } catch (error) {
+      console.error("Error creating appointment:", error);
+      // Handle error (e.g., show an error message to the user)
+    }
   };
 
-  const handleNewPayment = () => {
-    // Here you would typically send the newPayment data to your backend
-    console.log("New payment:", newPayment);
-    setShowNewPayment(false);
-    setNewPayment({ amount: "", date: "", time: "", description: "" });
+  const handleNewPayment = async () => {
+    try {
+      const payData = {
+        actionId: selectedAppointment?.actionId,
+        patientId: selectedAppointment?.patientId,
+        doctorId: selectedAppointment?.doctorId,
+        amount: Number(newPayment.amount),
+        date: newPayment.date,
+        time: newPayment.time,
+        description: newPayment.description,
+        statusId: 1,
+      };
+      console.log("New payment data:", payData);
+      await payment.createPayment(payData);
+      setShowNewPayment(false);
+      setNewPayment({ amount: "", date: "", time: "", description: "" });
+      // Optionally, refresh the payments list here
+    } catch (error) {
+      console.error("Error creating payment:", error);
+      // Handle error (e.g., show an error message to the user)
+    }
   };
 
   return (
