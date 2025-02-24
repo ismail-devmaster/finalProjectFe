@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -25,29 +25,50 @@ import {
   LogOut,
   CalendarIcon,
 } from "lucide-react";
-import * as MockData from "../data/MockData";
 import Appointments from "./appointments";
 import Patients from "./patients";
+import { patient } from "@/app/api/patient";
+// Import the real appointment API from your appointment.ts file
+import { appointment } from "@/app/api/appointment";
 
 interface Patient {
   id: number;
-  name: string;
-  dateOfBirth: string;
-  email: string;
-  phone: string;
-  medicalHistory: string;
-  ongoingTreatments: string;
-  allergies: string[];
-  procedures: string[];
-  notes: string;
-  image: string;
+  user: {
+    firstName: string;
+    lastName: string;
+    dateOfBirth: string;
+    email: string;
+    phone: string;
+    sex: {
+      gender: string;
+    };
+  };
+  medicalHistory?: string;
+}
+
+interface Appointment {
+  id: number;
+  patientId: number;
+  date: string;
+  time: string;
+  action: {
+    appointmentType: {
+      id: number;
+      type: string;
+    };
+  };
+  status: {
+    id: number;
+    status: string;
+  };
+  patient: Patient;
 }
 
 export default function Dashboard() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [activeTab, setActiveTab] = useState("appointments");
-  const [patients, setPatients] = useState(MockData.default.MockPatients);
-  const appointments = MockData.default.MockAppointments;
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const toggleDarkMode = () => {
@@ -55,13 +76,37 @@ export default function Dashboard() {
     document.documentElement.classList.toggle("dark");
   };
 
+  useEffect(() => {
+    // Fetch real patient data from the API
+    const fetchPatients = async () => {
+      try {
+        const res = await patient.getAllPatients();
+        setPatients(res.patients);
+      } catch (error) {
+        console.error("Error fetching patients:", error);
+      }
+    };
+
+    // Fetch real appointment data from the API
+    const fetchAppointments = async () => {
+      try {
+        const res = await appointment.getAllAppointments();
+        setAppointments(res.appointments);
+      } catch (error) {
+        console.error("Error fetching appointments:", error);
+      }
+    };
+
+    fetchPatients();
+    fetchAppointments();
+  }, []);
+
   return (
     <div
       className={`min-h-screen ${
         isDarkMode ? "dark" : ""
       } bg-gradient-to-br from-blue-50 to-green-50 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white`}
     >
-      {/* Header */}
       <motion.header
         initial={{ y: -100 }}
         animate={{ y: 0 }}
@@ -145,7 +190,6 @@ export default function Dashboard() {
       </motion.header>
 
       <div className="flex">
-        {/* Sidebar */}
         <AnimatePresence>
           {isSidebarOpen && (
             <motion.aside
@@ -177,7 +221,6 @@ export default function Dashboard() {
           )}
         </AnimatePresence>
 
-        {/* Main Content */}
         <main
           className={`flex-1 overflow-y-auto p-6 ${
             isSidebarOpen ? "md:ml-64" : ""
