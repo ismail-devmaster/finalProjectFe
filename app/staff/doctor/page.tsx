@@ -34,6 +34,7 @@ import { appointment } from "@/app/api/appointment";
 interface Patient {
   id: number;
   user: {
+    id: number;
     firstName: string;
     lastName: string;
     dateOfBirth: string;

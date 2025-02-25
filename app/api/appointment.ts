@@ -115,4 +115,16 @@ export const appointment = {
       throw error.response?.data?.error || { error: "Failed to fetch waiting appointments" };
     }
   },
+
+  getAppointmentsByDoctorId: async (doctorId: number): Promise<any> => {
+    try {
+      const response = await axios.get(`${API_URL}/appointments/doctor/${doctorId}`, {
+        withCredentials: true,
+      });
+      return response.data; // Expected response: { appointments: [...] } or an array
+    } catch (error: any) {
+      console.error("Error fetching appointments by doctor id:", error.response?.data || error.message);
+      throw error.response?.data?.error || { error: "Failed to fetch appointments by doctor id" };
+    }
+  },
 };

@@ -1,5 +1,7 @@
 "use client";
 
+import type React from "react";
+
 import { useState } from "react";
 import {
   Card,
@@ -25,10 +27,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
+import { ActionHistoryDialog } from "./action-history-dialog";
 
 interface Patient {
   id: number;
   user: {
+    id: number;
     firstName: string;
     lastName: string;
     dateOfBirth: string;
@@ -48,10 +53,23 @@ interface PatientsProps {
 export default function Patients({ patients }: PatientsProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const [showActionHistory, setShowActionHistory] = useState(false);
+  const [actionHistoryPatient, setActionHistoryPatient] =
+    useState<Patient | null>(null);
 
   const filteredPatients = patients.filter((patient) =>
     patient.user.firstName.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleNameClick = (patient: Patient) => {
+    setSelectedPatient(patient);
+  };
+
+  const handleActionsClick = (e: React.MouseEvent, patient: Patient) => {
+    e.stopPropagation();
+    setActionHistoryPatient(patient);
+    setShowActionHistory(true);
+  };
 
   return (
     <>
@@ -77,29 +95,42 @@ export default function Patients({ patients }: PatientsProps) {
                 <TableHead>Date of Birth</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>Phone</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredPatients.length > 0 ? (
                 filteredPatients.map((patient) => (
-                  <TableRow
-                    key={patient.id}
-                    className="cursor-pointer hover:bg-muted/50"
-                    onClick={() => setSelectedPatient(patient)}
-                  >
+                  <TableRow key={patient.id} className="hover:bg-muted/50">
                     <TableCell>
-                      {patient.user.firstName} {patient.user.lastName}
+                      <span
+                        className="cursor-pointer hover:underline"
+                        onClick={() => handleNameClick(patient)}
+                      >
+                        {patient.user.firstName} {patient.user.lastName}
+                      </span>
                     </TableCell>
                     <TableCell>
                       {format(new Date(patient.user.dateOfBirth), "dd/MM/yyyy")}
                     </TableCell>
                     <TableCell>{patient.user.email}</TableCell>
                     <TableCell>{patient.user.phone}</TableCell>
+                    <TableCell>
+                      <div className="flex space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={(e) => handleActionsClick(e, patient)}
+                        >
+                          Actions
+                        </Button>
+                      </div>
+                    </TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center">
+                  <TableCell colSpan={5} className="text-center">
                     No patients found.
                   </TableCell>
                 </TableRow>
@@ -111,7 +142,7 @@ export default function Patients({ patients }: PatientsProps) {
 
       <Dialog
         open={!!selectedPatient}
-        onOpenChange={() => setSelectedPatient(null)}
+        onOpenChange={(open) => !open && setSelectedPatient(null)}
       >
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -160,6 +191,15 @@ export default function Patients({ patients }: PatientsProps) {
           )}
         </DialogContent>
       </Dialog>
+
+      <ActionHistoryDialog
+        open={showActionHistory}
+        onOpenChange={(open) => {
+          setShowActionHistory(open);
+          if (!open) setActionHistoryPatient(null);
+        }}
+        patient={actionHistoryPatient}
+      />
     </>
   );
 }

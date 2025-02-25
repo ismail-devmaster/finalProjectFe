@@ -193,6 +193,7 @@ const ActionsDialog = ({
       const appointmentsData = await appointment.getAppointmentsByActionId(
         action.id
       );
+      console.log(appointmentsData.appointments);
       setAppointments(appointmentsData.appointments);
       setSelectedAction(action);
       setShowPayments(false);
@@ -207,6 +208,7 @@ const ActionsDialog = ({
     try {
       const paymentsData = await payment.getPaymentsByActionId(action.id);
       setPayments(paymentsData.payments);
+      console.log(paymentsData.payments);
       setSelectedAction(action);
       setShowPayments(true);
     } catch (error) {
@@ -336,7 +338,6 @@ const ReceptionistPatient = () => {
     }
     setLoadingActions(false);
   };
-
   return (
     <div className="w-full max-w-6xl mx-auto">
       <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center dark:text-white">
