@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui-landingpage/button";
+import { Button } from "@/components-landingpage/ui/button";
 import { Facebook, Instagram, Twitter } from "lucide-react";
 
-export default function Footer() {
+export function Footer() {
   return (
     <footer className="w-full border-t bg-white py-6">
       <div className="container px-4 md:px-6">

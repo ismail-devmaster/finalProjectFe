@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,8 +15,7 @@ export default function Unauthorized() {
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Unauthorized Access</AlertTitle>
           <AlertDescription>
-            You don't have permission to view this page. Please contact an
-            administrator.
+            You don't have permission to view this page. Please contact an administrator.
           </AlertDescription>
         </Alert>
         <div className="flex gap-2 justify-end">
@@ -28,4 +28,3 @@ export default function Unauthorized() {
     </div>
   );
 }
-

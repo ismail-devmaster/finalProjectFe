@@ -1,7 +1,7 @@
-import { Card, CardContent } from "@/components/ui-landingpage/card";
+import { Card, CardContent } from "@/components-landingpage/ui/card";
 import { Award, Heart, Users } from "lucide-react";
 
-export default function About() {
+export function AboutSection() {
   return (
     <section id="about" className="w-full py-12 md:py-24 lg:py-32 bg-white">
       <div className="container px-4 md:px-6">

@@ -1,7 +1,8 @@
-import { Card, CardContent } from "@/components/ui-landingpage/card";
-import { Clock, Mail, Phone } from "lucide-react";
+import { Button } from "@/components-landingpage/ui/button";
+import { Card, CardContent } from "@/components-landingpage/ui/card";
+import { Clock, Mail, MapPin, Phone } from "lucide-react";
 
-export default function Contact() {
+export function ContactSection() {
   return (
     <section id="contact" className="w-full py-12 md:py-24 lg:py-32 bg-white">
       <div className="container px-4 md:px-6">
@@ -11,7 +12,7 @@ export default function Contact() {
               Contact Us
             </h2>
             <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              "We're here to help. Get in touch with us."
+              We're here to help. Get in touch with us.
             </p>
           </div>
         </div>

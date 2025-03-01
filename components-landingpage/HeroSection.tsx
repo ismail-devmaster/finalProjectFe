@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui-landingpage/button";
+import { Button } from "@/components/ui/button";
 import { Calendar } from "lucide-react";
 
-export default function Hero() {
+export function HeroSection() {
   return (
     <section
       className="w-full min-h-screen flex items-center justify-center py-12 md:py-24 lg:py-32 xl:py-48"
