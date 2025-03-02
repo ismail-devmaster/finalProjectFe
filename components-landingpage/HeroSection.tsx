@@ -27,7 +27,7 @@ export function HeroSection() {
             </p>
           </div>
           <div className="space-x-4">
-            <Button className="bg-dental-600 hover:bg-dental-700 animate-float">
+            <Button className="bg-dental-600 hover:bg-dental-500 animate-float">
               <Calendar className="mr-2 h-4 w-4" />
               Book Appointment
             </Button>
