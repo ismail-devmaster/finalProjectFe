@@ -72,8 +72,9 @@ export function BookNew({ patientId }: BookNewProps) {
     setIsCreateActionModalOpen(true);
   };
 
-  const handleActionCreated = (newAction: Action) => {
-    // setActions([newAction, ...actions]);
+  const handleActionCreated = async (newAction: Action) => {
+    const actionsData = await action.getActionsByPatientId(patientId!);
+    setActions(actionsData.actions);
     setIsCreateActionModalOpen(false);
   };
 
