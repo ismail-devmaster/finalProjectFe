@@ -73,7 +73,7 @@ export function BookNew({ patientId }: BookNewProps) {
   };
 
   const handleActionCreated = (newAction: Action) => {
-    setActions([newAction, ...actions]);
+    // setActions([newAction, ...actions]);
     setIsCreateActionModalOpen(false);
   };
 
