@@ -1,63 +1,68 @@
-"use client";
+"use client"
 
-import React, { useState, useEffect } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { appointmentType } from "@/app/api/appointmentType";
-import { action } from "@/app/api/action";
+import type React from "react"
+import { useState, useEffect } from "react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
+import { appointmentType } from "@/app/api/appointmentType"
+import { action } from "@/app/api/action"
 
-export function CreateActionModal({
-  isOpen,
-  onClose,
-  patientId,
-  onActionCreated,
-}) {
-  const [selectedAppointmentType, setSelectedAppointmentType] =
-    useState(undefined);
-  const [description, setDescription] = useState("");
-  const [appointmentTypes, setAppointmentTypes] = useState([]);
+interface AppointmentType {
+  id: number
+  type: string
+}
+
+interface CreateActionModalProps {
+  isOpen: boolean
+  onClose: () => void
+  patientId: number | undefined
+  onActionCreated: (newAction: any) => void
+}
+
+interface ActionData {
+  patientId: number | undefined
+  appointmentTypeId: number
+  description: string
+}
+export function CreateActionModal({ isOpen, onClose, patientId, onActionCreated }: CreateActionModalProps) {
+  const [selectedAppointmentType, setSelectedAppointmentType] = useState<string | undefined>(undefined)
+  const [description, setDescription] = useState<string>("")
+  const [appointmentTypes, setAppointmentTypes] = useState<AppointmentType[]>([])
 
   useEffect(() => {
     const fetchAppointmentTypes = async () => {
       try {
-        const appointmentTypeData =
-          await appointmentType.getAllAppointmentTypes();
-        setAppointmentTypes(appointmentTypeData.appointmentTypes);
+        const appointmentTypeData = await appointmentType.getAllAppointmentTypes()
+        setAppointmentTypes(appointmentTypeData.appointmentTypes)
       } catch (error) {
-        console.error("Failed to fetch appointment types:", error);
+        console.error("Failed to fetch appointment types:", error)
       }
-    };
+    }
 
-    fetchAppointmentTypes();
-  }, []);
+    fetchAppointmentTypes()
+  }, [])
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
     try {
-      await action.createAction({
+      if (!selectedAppointmentType || patientId === undefined) return
+
+      const actionData: ActionData = {
         patientId,
         appointmentTypeId: Number(selectedAppointmentType),
         description,
-      });
-      onClose();
+      }
+
+      const newAction = await action.createAction(actionData)
+      onActionCreated(newAction)
+      onClose()
     } catch (error) {
-      console.error("Failed to create action:", error);
+      console.error("Failed to create action:", error)
     }
-  };
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -68,10 +73,7 @@ export function CreateActionModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="appointmentType">Appointment Type</Label>
-            <Select
-              onValueChange={setSelectedAppointmentType}
-              value={selectedAppointmentType}
-            >
+            <Select onValueChange={setSelectedAppointmentType} value={selectedAppointmentType}>
               <SelectTrigger>
                 <SelectValue placeholder="Select appointment type" />
               </SelectTrigger>
@@ -104,5 +106,6 @@ export function CreateActionModal({
         </form>
       </DialogContent>
     </Dialog>
-  );
+  )
 }
+

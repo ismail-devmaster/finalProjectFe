@@ -9,14 +9,18 @@ import { History } from "../components/history";
 import { CalendarPlus, Clock, CalendarClock, HistoryIcon } from "lucide-react";
 import { patient } from "@/app/api/patient";
 
+interface PatientIdResponse {
+  patientId: number;
+}
+
 export default function AppointmentsPage() {
-  const [activeTab, setActiveTab] = useState("upcoming");
-  const [patientId, setPatientId] = useState();
+  const [activeTab, setActiveTab] = useState<string>("upcoming");
+  const [patientId, setPatientId] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const patientIdData = await patient.getPatientId();
+        const patientIdData: PatientIdResponse = await patient.getPatientId();
         setPatientId(patientIdData.patientId);
       } catch (error) {
         console.error("Failed to fetch data:", error);
@@ -28,7 +32,6 @@ export default function AppointmentsPage() {
   return (
     <div className="container mx-auto py-6 space-y-6">
       <div className="flex flex-col space-y-2">
-        {/* <h1 className="text-3xl font-bold tracking-tight">Appointments</h1> */}
         <p className="text-muted-foreground text-center">
           Manage your appointments, view history, and book new appointments.
         </p>
@@ -59,7 +62,7 @@ export default function AppointmentsPage() {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="book-new">
-          <BookNew />
+          <BookNew patientId={patientId} />
         </TabsContent>
         <TabsContent value="waiting">
           <Waiting />

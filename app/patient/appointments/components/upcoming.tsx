@@ -1,88 +1,97 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Calendar, Clock, AlertCircle } from "lucide-react";
-import { formatDate, formatTime } from "@/lib/utils";
-import { RescheduleModal } from "../components/reschedule-modal";
-import { ConfirmationDialog } from "../components/confirmation-dialog";
-import { appointment } from "@/app/api/appointment";
+import { useState, useEffect } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Button } from "@/components/ui/button"
+import { Calendar, Clock, AlertCircle } from "lucide-react"
+import { formatDate, formatTime } from "@/lib/utils"
+import { RescheduleModal } from "../components/reschedule-modal"
+import { ConfirmationDialog } from "../components/confirmation-dialog"
+import { appointment } from "@/app/api/appointment"
+
+interface User {
+  firstName: string
+  lastName: string
+}
+
+interface Doctor {
+  user: User
+}
+
+interface AppointmentType {
+  type: string
+}
+
+interface Action {
+  appointmentType: AppointmentType
+}
+
+interface Appointment {
+  id: number
+  date: string
+  time: string
+  doctor: Doctor
+  action: Action
+  doctorId: number
+  additionalNotes: string
+}
 
 export function Upcoming() {
-  const [appointments, setAppointments] = useState([]);
-  const [selectedAppointment, setSelectedAppointment] = useState(null);
-  const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState(false);
-  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+  const [appointments, setAppointments] = useState<Appointment[]>([])
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
+  const [isRescheduleModalOpen, setIsRescheduleModalOpen] = useState<boolean>(false)
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState<boolean>(false)
 
   useEffect(() => {
     async function fetchAppointments() {
       try {
-        const appointmetnData =
-          await appointment.getAppointmentsWithUpcomingStatus();
-        const upcomingAppointments = appointmetnData.appointments;
-        setAppointments(upcomingAppointments);
+        const appointmetnData = await appointment.getAppointmentsWithUpcomingStatus()
+        const upcomingAppointments = appointmetnData.appointments
+        setAppointments(upcomingAppointments)
       } catch (error) {
-        console.error("Failed to fetch appointments:", error);
+        console.error("Failed to fetch appointments:", error)
       }
     }
-    fetchAppointments();
-  }, []);
+    fetchAppointments()
+  }, [])
 
-  const handleReschedule = (appointment) => {
-    setSelectedAppointment(appointment);
-    setIsRescheduleModalOpen(true);
-  };
+  const handleReschedule = (appointment: Appointment) => {
+    setSelectedAppointment(appointment)
+    setIsRescheduleModalOpen(true)
+  }
 
-  const handleCancelAppointment = (appointment) => {
-    setSelectedAppointment(appointment);
-    setIsCancelDialogOpen(true);
-  };
+  const handleCancelAppointment = (appointment: Appointment) => {
+    setSelectedAppointment(appointment)
+    setIsCancelDialogOpen(true)
+  }
 
   const confirmReschedule = () => {
-    const updatedAppointments = appointments.filter(
-      (appointment) => appointment.id !== selectedAppointment.id
-    );
-    setAppointments(updatedAppointments);
-    setIsRescheduleModalOpen(false);
-    setSelectedAppointment(null);
-  };
+    const updatedAppointments = appointments.filter((appointment) => appointment.id !== selectedAppointment?.id)
+    setAppointments(updatedAppointments)
+    setIsRescheduleModalOpen(false)
+    setSelectedAppointment(null)
+  }
 
   const confirmCancel = () => {
     try {
-      appointment.deleteAppointment(selectedAppointment?.id);
-      const updatedAppointments = appointments.filter(
-        (appointment) => appointment.id !== selectedAppointment.id
-      );
-      setAppointments(updatedAppointments);
-      setIsCancelDialogOpen(false);
-      setSelectedAppointment(null);
+      if (selectedAppointment) {
+        appointment.deleteAppointment(selectedAppointment.id)
+        const updatedAppointments = appointments.filter((appointment) => appointment.id !== selectedAppointment.id)
+        setAppointments(updatedAppointments)
+        setIsCancelDialogOpen(false)
+        setSelectedAppointment(null)
+      }
     } catch (error) {
-      console.error("Failed to cancel appointment:", error);
+      console.error("Failed to cancel appointment:", error)
     }
-  };
+  }
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Upcoming Appointments</CardTitle>
-        <CardDescription>
-          Your scheduled appointments that are coming up.
-        </CardDescription>
+        <CardDescription>Your scheduled appointments that are coming up.</CardDescription>
       </CardHeader>
       <CardContent>
         {appointments.length === 0 ? (
@@ -120,26 +129,15 @@ export function Upcoming() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    Dr. {appointment.doctor.user.firstName}{" "}
-                    {appointment.doctor.user.lastName}
+                    Dr. {appointment.doctor.user.firstName} {appointment.doctor.user.lastName}
                   </TableCell>
-                  <TableCell>
-                    {appointment.action.appointmentType.type.replace("_", " ")}
-                  </TableCell>
+                  <TableCell>{appointment.action.appointmentType.type.replace("_", " ")}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleReschedule(appointment)}
-                      >
+                      <Button variant="outline" size="sm" onClick={() => handleReschedule(appointment)}>
                         Reschedule
                       </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleCancelAppointment(appointment)}
-                      >
+                      <Button variant="destructive" size="sm" onClick={() => handleCancelAppointment(appointment)}>
                         Cancel
                       </Button>
                     </div>
@@ -168,5 +166,6 @@ export function Upcoming() {
         description="Are you sure you want to cancel this appointment? This action cannot be undone."
       />
     </Card>
-  );
+  )
 }
+

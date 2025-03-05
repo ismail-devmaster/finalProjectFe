@@ -9,13 +9,21 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 
+interface ConfirmationDialogProps {
+  isOpen: boolean
+  onClose: () => void
+  onConfirm: () => void
+  title?: string
+  description?: string
+}
+
 export function ConfirmationDialog({
   isOpen,
   onClose,
   onConfirm,
   title = "Are you sure?",
   description = "This action cannot be undone.",
-}) {
+}: ConfirmationDialogProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>

@@ -1,11 +1,12 @@
 "use client";
 
+import { CardFooter } from "@/components/ui/card";
+
 import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -18,23 +19,45 @@ import { action } from "@/app/api/action";
 import { doctor } from "@/app/api/doctor";
 import { patient } from "@/app/api/patient";
 
-export function BookNew() {
-  const [actions, setActions] = useState([]);
-  const [isCreateActionModalOpen, setIsCreateActionModalOpen] = useState(false);
+interface Doctor {
+  userId: number;
+  user: {
+    firstName: string;
+    lastName: string;
+  };
+}
+
+interface AppointmentType {
+  id: number;
+  type: string;
+}
+
+interface Action {
+  id: number;
+  appointmentType: AppointmentType;
+  description: string;
+  totalPayment: number;
+  startDate: string;
+  patientId: number;
+}
+
+interface BookNewProps {
+  patientId: number | undefined;
+}
+
+export function BookNew({ patientId }: BookNewProps) {
+  const [actions, setActions] = useState<Action[]>([]);
+  const [isCreateActionModalOpen, setIsCreateActionModalOpen] =
+    useState<boolean>(false);
   const [isBookAppointmentModalOpen, setIsBookAppointmentModalOpen] =
-    useState(false);
-  const [selectedAction, setSelectedAction] = useState(null);
-  const [doctors, setDoctors] = useState([]);
-  const [patientId, setPatientId] = useState();
+    useState<boolean>(false);
+  const [selectedAction, setSelectedAction] = useState<Action | null>(null);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const patientIdData = await patient.getPatientId();
-        setPatientId(patientIdData.patientId);
-        const actionsData = await action.getActionsByPatientId(
-          patientIdData.patientId
-        );
+        const actionsData = await action.getActionsByPatientId(patientId!);
         setActions(actionsData.actions);
         const doctorsData = await doctor.getAllDoctors();
         setDoctors(doctorsData.doctors);
@@ -49,12 +72,12 @@ export function BookNew() {
     setIsCreateActionModalOpen(true);
   };
 
-  const handleActionCreated = (newAction) => {
+  const handleActionCreated = (newAction: Action) => {
     setActions([newAction, ...actions]);
     setIsCreateActionModalOpen(false);
   };
 
-  const handleBookAppointment = (action) => {
+  const handleBookAppointment = (action: Action) => {
     setSelectedAction(action);
     setIsBookAppointmentModalOpen(true);
   };
@@ -126,14 +149,16 @@ export function BookNew() {
         onActionCreated={handleActionCreated}
       />
 
-      <BookAppointmentModal
-        isOpen={isBookAppointmentModalOpen}
-        onClose={() => setIsBookAppointmentModalOpen(false)}
-        patientId={patientId}
-        onAppointmentBooked={handleAppointmentBooked}
-        action={selectedAction}
-        doctors={doctors}
-      />
+      {selectedAction && (
+        <BookAppointmentModal
+          isOpen={isBookAppointmentModalOpen}
+          onClose={() => setIsBookAppointmentModalOpen(false)}
+          patientId={patientId}
+          onAppointmentBooked={handleAppointmentBooked}
+          action={selectedAction}
+          doctors={doctors}
+        />
+      )}
     </div>
   );
 }

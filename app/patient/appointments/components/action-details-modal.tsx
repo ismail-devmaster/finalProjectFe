@@ -1,30 +1,47 @@
-import { appointment } from "@/app/api/appointment";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { formatDate, formatTime } from "@/lib/utils";
-import { Calendar, Clock } from "lucide-react";
-export function ActionDetailsModal({ isOpen, onClose, action, appointments }) {
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { formatDate, formatTime } from "@/lib/utils"
+import { Calendar, Clock } from "lucide-react"
+
+interface AppointmentType {
+  type: string
+}
+
+interface Status {
+  status: string
+}
+
+interface Action {
+  id: number
+  appointmentType: AppointmentType
+  description: string
+  totalPayment: number
+  startDate: string
+  endDate: string
+}
+
+interface Appointment {
+  id: number
+  date: string
+  time: string
+  doctorId: number
+  status: Status
+}
+
+interface ActionDetailsModalProps {
+  isOpen: boolean
+  onClose: () => void
+  action: Action
+  appointments: Appointment[]
+}
+
+export function ActionDetailsModal({ isOpen, onClose, action, appointments }: ActionDetailsModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>
           <DialogTitle>Action Details</DialogTitle>
-          <DialogDescription>
-            Viewing details for action ID: {action.id}
-          </DialogDescription>
+          <DialogDescription>Viewing details for action ID: {action.id}</DialogDescription>
         </DialogHeader>
         <div className="mt-4">
           <h3 className="text-lg font-semibold">Action Information</h3>
@@ -71,10 +88,7 @@ export function ActionDetailsModal({ isOpen, onClose, action, appointments }) {
                         {formatTime(appointment.time)}
                       </div>
                     </TableCell>
-                    <TableCell>
-                      Dr.{" "}
-                      {appointment.doctorId === 1 ? "Alice Smith" : "Unknown"}
-                    </TableCell>
+                    <TableCell>Dr. {appointment.doctorId === 1 ? "Alice Smith" : "Unknown"}</TableCell>
                     <TableCell>{appointment.status.status}</TableCell>
                   </TableRow>
                 ))}
@@ -86,5 +100,6 @@ export function ActionDetailsModal({ isOpen, onClose, action, appointments }) {
         </div>
       </DialogContent>
     </Dialog>
-  );
+  )
 }
+
