@@ -111,8 +111,55 @@ export const appointment = {
       });
       return response.data;
     } catch (error: any) {
-      console.error("Error fetching waiting appointments:", error.response?.data || error.message);
-      throw error.response?.data?.error || { error: "Failed to fetch waiting appointments" };
+      console.error(
+        "Error fetching waiting appointments:",
+        error.response?.data || error.message
+      );
+      throw (
+        error.response?.data?.error || {
+          error: "Failed to fetch waiting appointments",
+        }
+      );
+    }
+  },
+  getAppointmentsWithUpcomingStatus: async (): Promise<any> => {
+    try {
+      const response = await axios.get(`${API_URL}/appointments/upcoming`, {
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error(
+        "Error fetching upcoming appointments:",
+        error.response?.data || error.message
+      );
+      throw (
+        error.response?.data?.error || {
+          error: "Failed to fetch upcoming appointments",
+        }
+      );
+    }
+  },
+
+  getAppointmentsByDoctorId: async (doctorId: number): Promise<any> => {
+    try {
+      const response = await axios.get(
+        `${API_URL}/appointments/doctor/${doctorId}`,
+        {
+          withCredentials: true,
+        }
+      );
+      return response.data; // Expected response: { appointments: [...] } or an array
+    } catch (error: any) {
+      console.error(
+        "Error fetching appointments by doctor id:",
+        error.response?.data || error.message
+      );
+      throw (
+        error.response?.data?.error || {
+          error: "Failed to fetch appointments by doctor id",
+        }
+      );
     }
   },
 };

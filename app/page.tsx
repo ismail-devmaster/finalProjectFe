@@ -5,7 +5,7 @@ import { AboutSection } from "@/components-landingpage/AboutSection";
 import { ServicesSection } from "@/components-landingpage/ServicesSection";
 import { ContactSection } from "@/components-landingpage/ContactSection";
 import { Footer } from "@/components-landingpage/FooterBar";
-export default function Home() {
+export default function Home(): React.ReactElement {
   return (
     <div className="flex min-h-screen flex-col">
       <Navigation />

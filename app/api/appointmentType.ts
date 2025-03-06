@@ -9,7 +9,7 @@ export const appointmentType = {
       const response = await axios.get(`${API_URL}/appointmentType`, {
         withCredentials: true,
       });
-      return response.data; 
+      return response.data;
     } catch (error: any) {
       console.error(
         "Error fetching appointment types:",

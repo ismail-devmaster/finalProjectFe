@@ -48,10 +48,10 @@ export function PatientCard({ action }: PatientCardProps) {
         )}
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Link href={`n/appointments/${action.id}`} passHref>
+        <Link href={`actions/appointments/${action.id}`} passHref>
           <Button>View Appointments</Button>
         </Link>
-        <Link href={`n/payments/${action.id}`} passHref>
+        <Link href={`actions/payments/${action.id}`} passHref>
           <Button variant="outline">View Payments</Button>
         </Link>
       </CardFooter>
