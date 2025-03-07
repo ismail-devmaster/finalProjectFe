@@ -1,19 +1,14 @@
-import { Button } from "@/components-landingpage/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components-landingpage/ui/card";
-import { Input } from "@/components-landingpage/ui/input";
-import { Label } from "@/components-landingpage/ui/label";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components-landingpage/ui/tabs";
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserCircle, Users } from "lucide-react";
 
 export function AuthSection() {
