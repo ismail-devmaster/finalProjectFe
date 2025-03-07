@@ -1,5 +1,5 @@
 import { Clock, HeartPulse, Sparkles, Stethoscope, Wrench } from "lucide-react";
-import { ServiceCard } from "./ui/card-service";
+import { ServiceCard } from "@/components/ui/card-service";
 
 const services = [
   {

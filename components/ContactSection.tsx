@@ -1,6 +1,5 @@
-import { Button } from "@/components-landingpage/ui/button";
-import { Card, CardContent } from "@/components-landingpage/ui/card";
-import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Clock, Mail, Phone } from "lucide-react";
 
 export function ContactSection() {
   return (

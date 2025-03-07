@@ -1,4 +1,4 @@
-import { Card, CardContent } from "@/components-landingpage/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Award, Heart, Users } from "lucide-react";
 
 export function AboutSection() {
