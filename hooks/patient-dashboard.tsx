@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react"
 import { PatientCard } from "@/components/patient-card"
 import { AppointmentsView } from "@/components/appointments-view"
-import { action } from "@/lib/action"
-import { doctor } from "@/lib/doctor"
+import { action } from "@/app/api"
+import { doctor } from "@/app/api"
 
 export function PatientDashboard() {
   const [selectedActionId, setSelectedActionId] = useState<number | null>(null)

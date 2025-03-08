@@ -10,10 +10,10 @@ import {
 } from "@/components/ui/card";
 import { AppointmentTable } from "./components/appointment-table";
 import { AppointmentFilters } from "./components/appointment-filters";
-import { appointment } from "@/app/api/appointment";
-import { patient } from "@/app/api/patient";
-import { doctor } from "@/app/api/doctor";
-import { appointmentType } from "@/app/api/appointmentType";
+import { appointment } from "@/app/api";
+import { patient } from "@/app/api";
+import { doctor } from "@/app/api";
+import { appointmentType } from "@/app/api";
 import type { Appointment, AppointmentType, Doctor, Patient } from "./types";
 
 export default function AppointmentsPage() {

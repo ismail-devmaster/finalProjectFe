@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { payment } from "@/app/api/payment";
+import { payment } from "@/app/api";
 
 interface PaymentsViewProps {
   actionId: number;
@@ -63,7 +63,7 @@ export function PaymentsView({ actionId, onBack }: PaymentsViewProps) {
       try {
         const response = await payment.getAllPayments();
         setPayments(
-          response.payments.filter((p: Payment) => p.actionId === actionId)
+          response.payments.filter((p: Payment) => p.actionId === actionId),
         );
         setLoading(false);
       } catch (err) {
@@ -99,7 +99,7 @@ export function PaymentsView({ actionId, onBack }: PaymentsViewProps) {
 
   const totalAmount = filteredPayments.reduce(
     (sum, payment) => sum + payment.amount,
-    0
+    0,
   );
 
   if (loading) return <div>Loading payments...</div>;
