@@ -4,8 +4,8 @@ import type React from "react";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, Trash2, Search } from "lucide-react";
-import { admin } from "@/app/api/admin";
+import { Loader2, Search, Trash2 } from "lucide-react";
+import { admin } from "@/app/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -94,7 +94,7 @@ export default function AdminPage() {
     const verifyAdminAndFetchUsers = async () => {
       try {
         await admin.verify();
-        const fetchedUsers = await admin.getAllUser();
+        const fetchedUsers = await admin.getAllUsers();
         setUsers(fetchedUsers.users);
         setFilteredUsers(fetchedUsers.users);
         setIsLoading(false);
@@ -123,14 +123,15 @@ export default function AdminPage() {
     setConfirmDialog({
       isOpen: true,
       title: "Confirm Role Change",
-      description: `Are you sure you want to change this user's role to ${newRole}?`,
+      description:
+        `Are you sure you want to change this user's role to ${newRole}?`,
       onConfirm: async () => {
         try {
           await admin.updateRole(userId, newRole);
           setUsers(
             users.map((user) =>
               user.id === userId ? { ...user, role: newRole } : user
-            )
+            ),
           );
         } catch (error) {
           console.error("Error updating user role:", error);
@@ -215,8 +216,7 @@ export default function AdminPage() {
                   <Select
                     defaultValue={user.role}
                     onValueChange={(value: User["role"]) =>
-                      updateUserRole(user.id, value)
-                    }
+                      updateUserRole(user.id, value)}
                   >
                     <SelectTrigger className="w-[180px]">
                       <SelectValue placeholder="Select role" />

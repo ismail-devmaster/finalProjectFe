@@ -74,7 +74,7 @@ const Payments = () => {
   };
 
   const updatePaymentHistory = (newPayment) => {
-    setPaymentHistory(prev => [...prev, newPayment]);
+    setPaymentHistory((prev) => [...prev, newPayment]);
   };
 
   return (
@@ -119,9 +119,9 @@ const Payments = () => {
                       <TableCell>{formatDZD(payment.amount)}</TableCell>
                       <TableCell>
                         <Badge
-                          variant={
-                            payment.status === "Paid" ? "success" : "warning"
-                          }
+                          variant={payment.status === "Paid"
+                            ? "success"
+                            : "warning"}
                         >
                           {payment.status}
                         </Badge>

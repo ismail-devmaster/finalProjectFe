@@ -3,16 +3,16 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  Mail,
-  Lock,
   ArrowRight,
+  Calendar,
   Eye,
   EyeOff,
-  User,
+  Lock,
+  Mail,
   Phone,
-  Calendar,
+  User,
 } from "lucide-react";
-import { auth } from "@/app/api/auth";
+import { auth } from "@/app/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -37,7 +37,7 @@ export default function SignUp() {
     lastName,
     dateOfBirth,
     phone,
-    sexId="male",
+    sexId = "male",
     medicalHistory,
     showPassword,
     isLoading,
@@ -63,9 +63,9 @@ export default function SignUp() {
         firstName,
         lastName,
         dateOfBirth,
-        sexId === "male" ? "1": "2",
+        sexId === "male" ? "1" : "2",
         medicalHistory,
-        phone
+        phone,
       );
       toast.success("Please check your email for verification");
       router.push("/auth/login");
@@ -131,11 +131,9 @@ export default function SignUp() {
                 onClick={toggleShowPassword}
                 className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
               >
-                {showPassword ? (
-                  <EyeOff className="h-5 w-5" />
-                ) : (
-                  <Eye className="h-5 w-5" />
-                )}
+                {showPassword
+                  ? <EyeOff className="h-5 w-5" />
+                  : <Eye className="h-5 w-5" />}
               </button>
             </div>
             {errors.password && (
@@ -183,43 +181,43 @@ export default function SignUp() {
                     { regex: /[^A-Za-z0-9]/, text: "One special character" },
                   ].map(({ regex, text }, index) => (
                     <li key={index} className="flex items-center">
-                      {regex.test(password) ? (
-                        <svg
-                          className="w-4 h-4 mr-2 text-green-500"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                      ) : (
-                        <svg
-                          className="w-4 h-4 mr-2 text-red-500"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      )}
+                      {regex.test(password)
+                        ? (
+                          <svg
+                            className="w-4 h-4 mr-2 text-green-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        )
+                        : (
+                          <svg
+                            className="w-4 h-4 mr-2 text-red-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        )}
                       <span
-                        className={
-                          regex.test(password)
-                            ? "text-green-500"
-                            : "text-red-500"
-                        }
+                        className={regex.test(password)
+                          ? "text-green-500"
+                          : "text-red-500"}
                       >
                         {text}
                       </span>
@@ -303,7 +301,10 @@ export default function SignUp() {
           </div>
 
           <div className="space-y-2">
-            <Select value={sexId} onValueChange={(value: string) => setField("sexId", value)}>
+            <Select
+              value={sexId}
+              onValueChange={(value: string) => setField("sexId", value)}
+            >
               <SelectTrigger className={errors.sexId ? "border-red-500" : ""}>
                 <SelectValue placeholder="Select Sex" />
               </SelectTrigger>
@@ -312,7 +313,9 @@ export default function SignUp() {
                 <SelectItem value="female">Female</SelectItem>
               </SelectContent>
             </Select>
-            {errors.sexId && <p className="text-red-500 text-sm">{errors.sexId}</p>}
+            {errors.sexId && (
+              <p className="text-red-500 text-sm">{errors.sexId}</p>
+            )}
           </div>
 
           <div className="space-y-2">

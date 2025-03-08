@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Mail, Lock, LogIn, Eye, EyeOff, AlertCircle } from "lucide-react";
-import { auth } from "@/app/api/auth";
+import { auth } from "@/app/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -111,9 +111,8 @@ export default function Login() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setField("password", e.target.value)}
-                className={`pl-10 pr-10 ${
-                  errors.password ? "border-red-500" : ""
-                }`}
+                className={`pl-10 pr-10 ${errors.password ? "border-red-500" : ""
+                  }`}
                 required
               />
               <button

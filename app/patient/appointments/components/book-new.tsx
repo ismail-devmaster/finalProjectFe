@@ -2,7 +2,7 @@
 
 import { CardFooter } from "@/components/ui/card";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -11,13 +11,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Clock, DollarSign, User, Calendar } from "lucide-react";
+import { Calendar, Clock, DollarSign, PlusCircle, User } from "lucide-react";
 import { formatDate, formatTime } from "@/lib/utils";
 import { CreateActionModal } from "../components/create-action-modal";
 import { BookAppointmentModal } from "../components/book-appointment-modal";
-import { action } from "@/app/api/action";
-import { doctor } from "@/app/api/doctor";
-import { patient } from "@/app/api/patient";
+import { action } from "@/app/api";
+import { doctor } from "@/app/api";
+import { patient } from "@/app/api";
 
 interface Doctor {
   userId: number;
@@ -47,10 +47,12 @@ interface BookNewProps {
 
 export function BookNew({ patientId }: BookNewProps) {
   const [actions, setActions] = useState<Action[]>([]);
-  const [isCreateActionModalOpen, setIsCreateActionModalOpen] =
-    useState<boolean>(false);
-  const [isBookAppointmentModalOpen, setIsBookAppointmentModalOpen] =
-    useState<boolean>(false);
+  const [isCreateActionModalOpen, setIsCreateActionModalOpen] = useState<
+    boolean
+  >(false);
+  const [isBookAppointmentModalOpen, setIsBookAppointmentModalOpen] = useState<
+    boolean
+  >(false);
   const [selectedAction, setSelectedAction] = useState<Action | null>(null);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
 
@@ -133,7 +135,8 @@ export function BookNew({ patientId }: BookNewProps) {
             <CardFooter>
               <Button
                 className="w-full"
-                onClick={() => handleBookAppointment(action)}
+                onClick={() =>
+                  handleBookAppointment(action)}
               >
                 <Calendar className="mr-2 h-4 w-4" />
                 Book New Appointment

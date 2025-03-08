@@ -1,5 +1,77 @@
 "use client";
 
+import * as React from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import AppointmentsDialog from "./appointments-dialog";
+import PaymentsDialog from "./payments-dialog";
+import { appointment } from "@/app/api";
+import { payment } from "@/app/api";
+
+interface Action {
+  id: number;
+  appointmentTypeId: number;
+  patientId: number;
+  description: string;
+  totalPayment: number;
+  startDate: string;
+  endDate: string | null;
+  appointmentType: {
+    id: number;
+    type: string;
+  };
+}
+
+export interface ActionsDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  patientName: string;
+  actions: Action[];
+}
+
+interface AppointmentData {
+  id?: number;
+  date: string;
+  time: string;
+  patientId: number;
+  doctorId: number;
+  status?: string;
+}
+
+interface Payment {
+  id: number;
+  amount: number;
+  status: "pending" | "completed" | "failed";
+  createdAt: string;
+  updatedAt?: string;
+  userId: number;
+  method: string;
+}
+
+interface Appointment {
+  id: number;
+  doctor: { user: { firstName: string; lastName: string } };
+  status: { status: string };
+  date: string;
+  time: string;
+  additionalNotes?: string;
+}
+
+interface PaymentDialog {
+  id: number;
+  doctor: { user: { firstName: string; lastName: string } };
+  status: { status: string };
+  date: string;
+  time: string;
+  description: string;
+  amount: number;
+}
 export default function ActionsDialog(
   props: ActionsDialogProps,
 ): React.ReactElement {
@@ -136,77 +208,4 @@ export default function ActionsDialog(
       )}
     </>
   );
-}
-
-import * as React from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import AppointmentsDialog from "./appointments-dialog";
-import PaymentsDialog from "./payments-dialog";
-import { appointment } from "@/app/api/appointment";
-import { payment } from "@/app/api/payment";
-
-interface Action {
-  id: number;
-  appointmentTypeId: number;
-  patientId: number;
-  description: string;
-  totalPayment: number;
-  startDate: string;
-  endDate: string | null;
-  appointmentType: {
-    id: number;
-    type: string;
-  };
-}
-
-export interface ActionsDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  patientName: string;
-  actions: Action[];
-}
-
-interface AppointmentData {
-  id?: number;
-  date: string;
-  time: string;
-  patientId: number;
-  doctorId: number;
-  status?: string;
-}
-
-interface Payment {
-  id: number;
-  amount: number;
-  status: "pending" | "completed" | "failed";
-  createdAt: string;
-  updatedAt?: string;
-  userId: number;
-  method: string;
-}
-
-interface Appointment {
-  id: number;
-  doctor: { user: { firstName: string; lastName: string } };
-  status: { status: string };
-  date: string;
-  time: string;
-  additionalNotes?: string;
-}
-
-interface PaymentDialog {
-  id: number;
-  doctor: { user: { firstName: string; lastName: string } };
-  status: { status: string };
-  date: string;
-  time: string;
-  description: string;
-  amount: number;
 }
