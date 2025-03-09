@@ -59,7 +59,8 @@ export function ActionHistoryDialog({
     const fetchPatientActions = async () => {
       if (!patient) return;
       try {
-        const res = await action.getActionsByPatientId(patient.user.id);
+        // const res = await action.getActionsByPatientId(patient.user.id);
+        const res = await action.getAllActions();
         setPatientActions(res.actions);
       } catch (err) {
         console.error("Failed to fetch patient actions:", err);
