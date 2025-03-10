@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import type React from "react";
 
 import { Lock, AlertCircle, Eye, EyeOff } from "lucide-react";
-import { auth } from "@/app/api/auth";
+import { auth } from "@/app/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -90,9 +90,8 @@ export default function ResetPassword({
                 placeholder="New Password"
                 value={newPassword}
                 onChange={(e) => setField("newPassword", e.target.value)}
-                className={`pl-10 pr-10 ${
-                  errors.newPassword ? "border-red-500" : ""
-                }`}
+                className={`pl-10 pr-10 ${errors.newPassword ? "border-red-500" : ""
+                  }`}
                 required
               />
               <button
@@ -114,28 +113,26 @@ export default function ResetPassword({
                     {["weak", "medium", "strong"].map((strength, index) => (
                       <div
                         key={strength}
-                        className={`h-full transition-all duration-300 ${
-                          passwordStrength === "weak"
+                        className={`h-full transition-all duration-300 ${passwordStrength === "weak"
                             ? "w-1/3 bg-red-500"
                             : passwordStrength === "medium"
-                            ? "w-2/3 bg-yellow-500"
-                            : passwordStrength === "strong"
-                            ? "w-full bg-green-500"
-                            : "w-0"
-                        }`}
+                              ? "w-2/3 bg-yellow-500"
+                              : passwordStrength === "strong"
+                                ? "w-full bg-green-500"
+                                : "w-0"
+                          }`}
                       />
                     ))}
                   </div>
                   <span
-                    className={`text-sm font-medium ${
-                      passwordStrength === "weak"
+                    className={`text-sm font-medium ${passwordStrength === "weak"
                         ? "text-red-500"
                         : passwordStrength === "medium"
-                        ? "text-yellow-500"
-                        : passwordStrength === "strong"
-                        ? "text-green-500"
-                        : "text-gray-500"
-                    }`}
+                          ? "text-yellow-500"
+                          : passwordStrength === "strong"
+                            ? "text-green-500"
+                            : "text-gray-500"
+                      }`}
                   >
                     {passwordStrength || "Enter password"}
                   </span>
@@ -207,9 +204,8 @@ export default function ResetPassword({
                 placeholder="Confirm New Password"
                 value={confirmPassword}
                 onChange={(e) => setField("confirmPassword", e.target.value)}
-                className={`pl-10 ${
-                  errors.confirmPassword ? "border-red-500" : ""
-                }`}
+                className={`pl-10 ${errors.confirmPassword ? "border-red-500" : ""
+                  }`}
                 required
               />
             </div>

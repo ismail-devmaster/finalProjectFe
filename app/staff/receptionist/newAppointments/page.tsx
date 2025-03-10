@@ -32,8 +32,8 @@ import {
 import { format } from "date-fns";
 
 // Import the real API functions
-import { appointment } from "@/app/api/appointment";
-import { doctor } from "@/app/api/doctor";
+import { appointment } from "@/app/api";
+import { doctor } from "@/app/api";
 
 interface Patient {
   user: User;

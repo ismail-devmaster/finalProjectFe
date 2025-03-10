@@ -2,7 +2,11 @@
 
 import { CardFooter } from "@/components/ui/card";
 
+<<<<<<< HEAD
 import { useState, useEffect } from "react";
+=======
+import { useEffect, useState } from "react";
+>>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
 import {
   Card,
   CardContent,
@@ -11,6 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+<<<<<<< HEAD
 import { PlusCircle, Clock, DollarSign, User, Calendar } from "lucide-react";
 import { formatDate, formatTime } from "@/lib/utils";
 import { CreateActionModal } from "../components/create-action-modal";
@@ -18,6 +23,15 @@ import { BookAppointmentModal } from "../components/book-appointment-modal";
 import { action } from "@/app/api/action";
 import { doctor } from "@/app/api/doctor";
 import { patient } from "@/app/api/patient";
+=======
+import { Calendar, Clock, DollarSign, PlusCircle, User } from "lucide-react";
+import { formatDate, formatTime } from "@/lib/utils";
+import { CreateActionModal } from "../components/create-action-modal";
+import { BookAppointmentModal } from "../components/book-appointment-modal";
+import { action } from "@/app/api";
+import { doctor } from "@/app/api";
+import { patient } from "@/app/api";
+>>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
 
 interface Doctor {
   userId: number;
@@ -47,10 +61,19 @@ interface BookNewProps {
 
 export function BookNew({ patientId }: BookNewProps) {
   const [actions, setActions] = useState<Action[]>([]);
+<<<<<<< HEAD
   const [isCreateActionModalOpen, setIsCreateActionModalOpen] =
     useState<boolean>(false);
   const [isBookAppointmentModalOpen, setIsBookAppointmentModalOpen] =
     useState<boolean>(false);
+=======
+  const [isCreateActionModalOpen, setIsCreateActionModalOpen] = useState<
+    boolean
+  >(false);
+  const [isBookAppointmentModalOpen, setIsBookAppointmentModalOpen] = useState<
+    boolean
+  >(false);
+>>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
   const [selectedAction, setSelectedAction] = useState<Action | null>(null);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
 
@@ -133,7 +156,12 @@ export function BookNew({ patientId }: BookNewProps) {
             <CardFooter>
               <Button
                 className="w-full"
+<<<<<<< HEAD
                 onClick={() => handleBookAppointment(action)}
+=======
+                onClick={() =>
+                  handleBookAppointment(action)}
+>>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
               >
                 <Calendar className="mr-2 h-4 w-4" />
                 Book New Appointment
