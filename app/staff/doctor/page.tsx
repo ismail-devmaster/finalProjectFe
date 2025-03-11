@@ -1,7 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+<<<<<<< HEAD
 import { motion, AnimatePresence } from "framer-motion";
+=======
+import { AnimatePresence, motion } from "framer-motion";
+>>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -16,20 +20,26 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Sun,
-  Moon,
-  Users,
-  User,
-  Stethoscope,
-  Menu,
-  LogOut,
   CalendarIcon,
+  LogOut,
+  Menu,
+  Moon,
+  Stethoscope,
+  Sun,
+  User,
+  Users,
 } from "lucide-react";
 import Appointments from "./appointments";
 import Patients from "./patients";
+<<<<<<< HEAD
 import { patient } from "@/app/api/patient";
 // Import the real appointment API from your appointment.ts file
 import { appointment } from "@/app/api/appointment";
+=======
+import { patient } from "@/app/api";
+// Import the real appointment API from your appointment.ts file
+import { appointment } from "@/app/api";
+>>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
 
 interface Patient {
   id: number;
@@ -141,11 +151,9 @@ export default function Dashboard() {
               <Label htmlFor="dark-mode" className="sr-only">
                 Dark mode
               </Label>
-              {isDarkMode ? (
-                <Moon className="h-[1.2rem] w-[1.2rem]" />
-              ) : (
-                <Sun className="h-[1.2rem] w-[1.2rem]" />
-              )}
+              {isDarkMode
+                ? <Moon className="h-[1.2rem] w-[1.2rem]" />
+                : <Sun className="h-[1.2rem] w-[1.2rem]" />}
             </nav>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

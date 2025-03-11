@@ -10,11 +10,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
+<<<<<<< HEAD
 import { action } from "@/app/api/action";
 import { AppointmentsDialog } from "./appointments-dialog";
 import { PaymentsDialog } from "./payments-dialog";
 import { appointment } from "@/app/api/appointment";
 import { payment } from "@/app/api/payment";
+=======
+import { action } from "@/app/api";
+import { AppointmentsDialog } from "./appointments-dialog";
+import { PaymentsDialog } from "./payments-dialog";
+import { appointment } from "@/app/api";
+import { payment } from "@/app/api";
+>>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
 import { Calendar, ClipboardList, CreditCard } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -51,8 +59,14 @@ export function ActionHistoryDialog({
   const [patientActions, setPatientActions] = useState<Action[]>([]);
   const [appointments, setAppointments] = useState([]);
   const [payments, setPayments] = useState([]);
+<<<<<<< HEAD
   const [isAppointmentsDialogOpen, setIsAppointmentsDialogOpen] =
     useState(false);
+=======
+  const [isAppointmentsDialogOpen, setIsAppointmentsDialogOpen] = useState(
+    false,
+  );
+>>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
   const [isPaymentsDialogOpen, setIsPaymentsDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -101,6 +115,7 @@ export function ActionHistoryDialog({
         </DialogHeader>
         <ScrollArea className="flex-grow">
           <div className="grid gap-6 p-6">
+<<<<<<< HEAD
             {patientActions.length > 0 ? (
               patientActions.map((action) => (
                 <Card
@@ -148,6 +163,57 @@ export function ActionHistoryDialog({
                 </p>
               </div>
             )}
+=======
+            {patientActions.length > 0
+              ? (
+                patientActions.map((action) => (
+                  <Card
+                    key={action.id}
+                    className="overflow-hidden transition-shadow hover:shadow-md"
+                  >
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-xl font-semibold text-primary">
+                          {action.appointmentType.type}
+                        </h3>
+                        <span className="text-sm text-gray-500">
+                          {format(new Date(action.startDate), "MMMM d, yyyy")}
+                        </span>
+                      </div>
+                      <p className="mb-4 text-gray-600">{action.description}</p>
+                      <div className="flex space-x-4">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex items-center space-x-2"
+                          onClick={() => fetchAppointments(action.id)}
+                        >
+                          <Calendar className="w-4 h-4" />
+                          <span>View Appointments</span>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex items-center space-x-2"
+                          onClick={() => fetchPayments(action.id)}
+                        >
+                          <CreditCard className="w-4 h-4" />
+                          <span>View Payments</span>
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )
+              : (
+                <div className="text-center py-8">
+                  <ClipboardList className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-500">
+                    No actions found for this patient.
+                  </p>
+                </div>
+              )}
+>>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
           </div>
         </ScrollArea>
         <AppointmentsDialog

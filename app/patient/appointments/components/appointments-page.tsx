@@ -6,8 +6,8 @@ import { BookNew } from "../components/book-new";
 import { Waiting } from "../components/waiting";
 import { Upcoming } from "../components/upcoming";
 import { History } from "../components/history";
-import { CalendarPlus, Clock, CalendarClock, HistoryIcon } from "lucide-react";
-import { patient } from "@/app/api/patient";
+import { CalendarClock, CalendarPlus, Clock, HistoryIcon } from "lucide-react";
+import { patient } from "@/app/api";
 
 interface PatientIdResponse {
   patientId: number;

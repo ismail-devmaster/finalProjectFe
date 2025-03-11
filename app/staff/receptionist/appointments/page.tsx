@@ -10,16 +10,11 @@ import {
 } from "@/components/ui/card";
 import { AppointmentTable } from "./components/appointment-table";
 import { AppointmentFilters } from "./components/appointment-filters";
-import { appointment } from "@/app/api/appointment";
-import { patient } from "@/app/api/patient";
-import { doctor } from "@/app/api/doctor";
-import { appointmentType } from "@/app/api/appointmentType";
-import type {
-  Appointment,
-  Patient,
-  Doctor,
-  AppointmentType,
-} from "./types";
+import { appointment } from "@/app/api";
+import { patient } from "@/app/api";
+import { doctor } from "@/app/api";
+import { appointmentType } from "@/app/api";
+import type { Appointment, AppointmentType, Doctor, Patient } from "./types";
 
 export default function AppointmentsPage() {
   const [appointments, setAppointments] = React.useState<Appointment[]>([]);
@@ -65,10 +60,10 @@ export default function AppointmentsPage() {
           date: updatedAppointment.date,
           time: updatedAppointment.time,
           additionalNotes: updatedAppointment.additionalNotes,
-        }
+        },
       );
       setAppointments(
-        appointments.map((app) => (app.id === response.id ? response : app))
+        appointments.map((app) => (app.id === response.id ? response : app)),
       );
     } catch (error) {
       console.error("Error updating appointment:", error);
@@ -85,10 +80,9 @@ export default function AppointmentsPage() {
   };
 
   const filteredAppointments = appointments.filter((appointment) => {
-    const matchesSearch =
-      appointment.patient.user.firstName
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) ||
+    const matchesSearch = appointment.patient.user.firstName
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase()) ||
       appointment.patient.user.lastName
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
