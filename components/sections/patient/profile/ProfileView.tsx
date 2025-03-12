@@ -1,12 +1,53 @@
-const ProfileView = ({ userInfo }) => (
+"use client";
+
+type PersonalInfoType = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  dob: string;
+  address: string;
+  patientId: string;
+  medicalHistory: string;
+};
+type insuranceInfoType = {
+  provider: string;
+  policyNumber: string;
+  groupNumber: string;
+  coveragePeriod: string;
+};
+type TabType = {
+  value: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+};
+
+import type React from "react";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { AlertCircle, Calendar, Mail, Phone, Shield, User } from "lucide-react";
+
+const ProfileView = (
+  { userInfo, insuranceInfo }: {
+    userInfo: PersonalInfoType;
+    insuranceInfo: insuranceInfoType;
+  },
+) => (
   <>
     <PersonalInfoCard userInfo={userInfo} />
     <MedicalHistoryCard medicalHistory={userInfo.medicalHistory} />
-    <InsuranceInfoCard />
+    <InsuranceInfoCard insuranceInfo={insuranceInfo} />
   </>
 );
-
-const PersonalInfoCard = ({ userInfo }) => (
+export default ProfileView;
+const PersonalInfoCard = ({ userInfo }: { userInfo: PersonalInfoType }) => (
   <Card className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg border-none shadow-xl">
     <CardHeader>
       <CardTitle className="text-3xl font-bold text-gray-800 dark:text-white">
@@ -20,7 +61,7 @@ const PersonalInfoCard = ({ userInfo }) => (
   </Card>
 );
 
-const UserProfile = ({ userInfo }) => (
+const UserProfile = ({ userInfo }: { userInfo: PersonalInfoType }) => (
   <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-8">
     <Avatar className="h-32 w-32 border-4 border-white dark:border-gray-700 shadow-lg">
       <AvatarImage
@@ -37,18 +78,19 @@ const UserProfile = ({ userInfo }) => (
         {userInfo.firstName} {userInfo.lastName}
       </h2>
       <p className="text-gray-500 dark:text-gray-400 text-lg">
-        Patient ID: {mockData.personalInfo.patientId}
+        Patient ID: {userInfo.patientId}
       </p>
     </div>
   </div>
 );
 
-const UserDetails = ({ userInfo }) => {
+const UserDetails = ({ userInfo }: { userInfo: PersonalInfoType }) => {
   const details = [
     {
       icon: <User className="h-6 w-6 text-blue-500" />,
-      text: `${new Date().getFullYear() - new Date(userInfo.dob).getFullYear()
-        } years old`,
+      text: `${
+        new Date().getFullYear() - new Date(userInfo.dob).getFullYear()
+      } years old`,
     },
     {
       icon: <Phone className="h-6 w-6 text-green-500" />,
@@ -73,14 +115,19 @@ const UserDetails = ({ userInfo }) => {
   );
 };
 
-const InfoCard = ({ icon, text }) => (
+const InfoCard = (
+  { icon, text }: {
+    icon: React.ReactNode;
+    text: string;
+  },
+) => (
   <div className="flex items-center space-x-3 bg-white dark:bg-gray-700 p-4 rounded-lg shadow-md transition-all duration-300 hover:shadow-xl">
     {icon}
     <span className="text-lg dark:text-white">{text}</span>
   </div>
 );
 
-const MedicalHistoryCard = ({ medicalHistory }) => (
+const MedicalHistoryCard = ({ medicalHistory }: { medicalHistory: string }) => (
   <Card className="mt-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg border-none shadow-xl">
     <CardHeader>
       <CardTitle className="text-2xl font-bold text-gray-800 dark:text-white">
@@ -104,40 +151,43 @@ const MedicalHistoryCard = ({ medicalHistory }) => (
   </Card>
 );
 
-const InsuranceInfoCard = () => (
-  <Card className="mt-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg border-none shadow-xl">
-    <CardHeader>
-      <CardTitle className="text-2xl font-bold text-gray-800 dark:text-white">
-        Insurance Information
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
-      <div className="space-y-4">
-        {insuranceDetails.map((info, index) => (
-          <InfoCard key={index} icon={info.icon} text={info.text} />
-        ))}
-      </div>
-    </CardContent>
-  </Card>
-);
-
-const insuranceDetails = [
-  {
-    icon: <Shield className="h-6 w-6 text-indigo-500" />,
-    text: mockData.insuranceInfo.provider,
+const InsuranceInfoCard = (
+  { insuranceInfo }: {
+    insuranceInfo: insuranceInfoType;
   },
-  {
-    icon: <AlertCircle className="h-6 w-6 text-yellow-500" />,
-    text: mockData.insuranceInfo.policyNumber,
-  },
-  {
-    icon: <User className="h-6 w-6 text-teal-500" />,
-    text: mockData.insuranceInfo.groupNumber,
-  },
-  {
-    icon: <Calendar className="h-6 w-6 text-pink-500" />,
-    text: mockData.insuranceInfo.coveragePeriod,
-  },
-];
-
-export default ProfileView;
+) => {
+  const insuranceDetails = [
+    {
+      icon: <Shield className="h-6 w-6 text-indigo-500" />,
+      text: insuranceInfo.provider,
+    },
+    {
+      icon: <AlertCircle className="h-6 w-6 text-yellow-500" />,
+      text: insuranceInfo.policyNumber,
+    },
+    {
+      icon: <User className="h-6 w-6 text-teal-500" />,
+      text: insuranceInfo.groupNumber,
+    },
+    {
+      icon: <Calendar className="h-6 w-6 text-pink-500" />,
+      text: insuranceInfo.coveragePeriod,
+    },
+  ];
+  return (
+    <Card className="mt-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg border-none shadow-xl">
+      <CardHeader>
+        <CardTitle className="text-2xl font-bold text-gray-800 dark:text-white">
+          Insurance Information
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {insuranceDetails.map((info, index) => (
+            <InfoCard key={index} icon={info.icon} text={info.text} />
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
