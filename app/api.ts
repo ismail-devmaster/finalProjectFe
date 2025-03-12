@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000";
 
 const request = async (method: string, endpoint: string, data?: any) => {
   try {
@@ -147,4 +147,26 @@ export const payment = {
 
   getPaymentsByActionId: (actionId: number) =>
     request("get", `/payments/action/${actionId}`),
+};
+
+export const category = {
+  getAllCategories: () => request("get", "/categories"),
+  getCategoryById: (id: number) => request("get", `/categories/${id}`),
+  createCategory: (data: any) => request("post", "/categories", data),
+  updateCategory: (id: number, data: any) =>
+    request("put", `/categories/${id}`, data),
+  deleteCategory: (id: number) => request("delete", `/categories/${id}`),
+};
+
+export const inventory = {
+  createInventory: (data: any) => request("post", "/inventory", data),
+  getAllInventories: () => request("get", "/inventory"),
+  getInventoryById: (id: number) => request("get", `/inventory/${id}`),
+  updateInventory: (id: number, data: any) =>
+    request("put", `/inventory/${id}`, data),
+  deleteInventory: (id: number) => request("delete", `/inventory/${id}`),
+};
+
+export const unit = {
+  getInventoryUnits: () => request("get", "/units"),
 };

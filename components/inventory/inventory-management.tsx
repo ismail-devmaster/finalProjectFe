@@ -8,9 +8,9 @@ import { InventoryStats } from "./inventory-stats";
 import { InventoryTabs } from "./inventory-tabs";
 import { ItemFormDialog } from "./item-form-dialog";
 import { ItemDetailsDialog } from "./item-details-dialog";
-import { inventory } from "@/app/api/inventory";
-import { category } from "@/app/api/category";
-import { unit } from "@/app/api/unit";
+import { inventory } from "@/app/api";
+import { category } from "@/app/api";
+import { unit } from "@/app/api";
 
 export function InventoryManagement() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -144,16 +144,16 @@ export function InventoryManagement() {
   // Calculate inventory stats
   const totalItems = inventoryItems.reduce(
     (sum, item) => sum + item.quantity,
-    0
+    0,
   );
   const lowStockItems = inventoryItems.filter(
-    (item) => item.status === "LOW_STOCK"
+    (item) => item.status === "LOW_STOCK",
   ).length;
   const outOfStockItems = inventoryItems.filter(
-    (item) => item.status === "OUT_OF_STOCK"
+    (item) => item.status === "OUT_OF_STOCK",
   ).length;
   const inStockItems = inventoryItems.filter(
-    (item) => item.status === "IN_STOCK"
+    (item) => item.status === "IN_STOCK",
   ).length;
 
   return (

@@ -20,15 +20,9 @@ import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
-<<<<<<< HEAD
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-=======
   DialogFooter,
   DialogHeader,
   DialogTitle,
->>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -41,13 +35,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-<<<<<<< HEAD
-import { appointment } from "@/app/api/appointment";
-import { payment } from "@/app/api/payment";
-=======
 import { appointment } from "@/app/api";
 import { payment } from "@/app/api";
->>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
 
 interface Appointment {
   doctorId: number;
@@ -110,14 +99,10 @@ export default function Appointments({
   appointments,
   patients,
 }: AppointmentsProps) {
-<<<<<<< HEAD
-  const [selectedAppointment, setselectedAppointment] =
-    React.useState<Appointment | null>(null);
-=======
   const [selectedAppointment, setselectedAppointment] = React.useState<
     Appointment | null
   >(null);
->>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
+
   const [selectedStatus, setSelectedStatus] = React.useState<string>("ALL");
   const [selectedDate, setSelectedDate] = React.useState<DateFilter>("ALL");
   const [showAppointments, setShowAppointments] = React.useState(false);
@@ -171,21 +156,12 @@ export default function Appointments({
           return true;
       }
     },
-<<<<<<< HEAD
-    []
-=======
     [],
->>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
   );
 
   const filteredAppointments = React.useMemo(() => {
     return appointments.filter((appointment) => {
-<<<<<<< HEAD
-      const matchesStatus =
-        selectedStatus === "ALL" ||
-=======
       const matchesStatus = selectedStatus === "ALL" ||
->>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
         appointment.status.status.toUpperCase() === selectedStatus;
 
       const matchesDate = isInDateRange(appointment.date, selectedDate);
@@ -198,11 +174,7 @@ export default function Appointments({
     const res = await appointment.getAppointmentsByActionId(actionId);
     setPatientAppointments(res.appointments);
     setselectedAppointment(
-<<<<<<< HEAD
-      appointments.find((app) => app.actionId === actionId) || null
-=======
       appointments.find((app) => app.actionId === actionId) || null,
->>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
     );
     setShowAppointments(true);
   };
@@ -210,11 +182,7 @@ export default function Appointments({
     const res = await payment.getPaymentsByActionId(actionId);
     setPatientPayments(res.payments);
     setselectedAppointment(
-<<<<<<< HEAD
-      appointments.find((app) => app.actionId === actionId) || null
-=======
       appointments.find((app) => app.actionId === actionId) || null,
->>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
     );
     setShowPayments(true);
   };
@@ -275,17 +243,6 @@ export default function Appointments({
                 <SelectContent>
                   {DATE_OPTIONS.map((dateOption) => (
                     <SelectItem key={dateOption} value={dateOption}>
-<<<<<<< HEAD
-                      {dateOption === "ALL"
-                        ? "All Dates"
-                        : dateOption
-                            .split("_")
-                            .map(
-                              (word) =>
-                                word.charAt(0) + word.slice(1).toLowerCase()
-                            )
-                            .join(" ")}
-=======
                       {dateOption === "ALL" ? "All Dates" : dateOption
                         .split("_")
                         .map(
@@ -293,7 +250,6 @@ export default function Appointments({
                             word.charAt(0) + word.slice(1).toLowerCase(),
                         )
                         .join(" ")}
->>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -326,74 +282,6 @@ export default function Appointments({
               </TableRow>
             </TableHeader>
             <TableBody>
-<<<<<<< HEAD
-              {filteredAppointments.length === 0 ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={6}
-                    className="text-center text-muted-foreground"
-                  >
-                    No appointments found for the selected filters
-                  </TableCell>
-                </TableRow>
-              ) : (
-                filteredAppointments.map((appointment) => (
-                  <TableRow
-                    key={appointment.id}
-                    className="cursor-pointer hover:bg-muted/50"
-                  >
-                    <TableCell>
-                      {appointment.patient.user.firstName}{" "}
-                      {appointment.patient.user.lastName}
-                    </TableCell>
-                    <TableCell>
-                      {new Date(appointment.date).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      {new Date(appointment.time).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </TableCell>
-                    <TableCell>
-                      {appointment.action.appointmentType.type}
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          appointment.status.status === "Confirmed"
-                            ? "default"
-                            : "secondary"
-                        }
-                      >
-                        {appointment.status.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="mr-2"
-                        onClick={() =>
-                          handleAppointmentsClick(appointment.actionId)
-                        }
-                      >
-                        Appointments
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
-                          handlePaymentsClick(appointment.actionId)
-                        }
-                      >
-                        Payments
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-=======
               {filteredAppointments.length === 0
                 ? (
                   <TableRow>
@@ -458,7 +346,6 @@ export default function Appointments({
                     </TableRow>
                   ))
                 )}
->>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
             </TableBody>
           </Table>
         </CardContent>
@@ -503,17 +390,9 @@ export default function Appointments({
                       <TableCell>{app.action.appointmentType.type}</TableCell>
                       <TableCell>
                         <Badge
-<<<<<<< HEAD
-                          variant={
-                            app.status.status === "Confirmed"
-                              ? "default"
-                              : "secondary"
-                          }
-=======
                           variant={app.status.status === "Confirmed"
                             ? "default"
                             : "secondary"}
->>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
                         >
                           {app.status.status}
                         </Badge>
@@ -569,17 +448,9 @@ export default function Appointments({
                       <TableCell>{pay.description || "-"}</TableCell>
                       <TableCell>
                         <Badge
-<<<<<<< HEAD
-                          variant={
-                            pay.status.status === "Confirmed"
-                              ? "default"
-                              : "secondary"
-                          }
-=======
                           variant={pay.status.status === "Confirmed"
                             ? "default"
                             : "secondary"}
->>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
                         >
                           {pay.status.status}
                         </Badge>
@@ -615,15 +486,10 @@ export default function Appointments({
                 className="col-span-3"
                 value={newAppointment.date}
                 onChange={(e) =>
-<<<<<<< HEAD
-                  setNewAppointment({ ...newAppointment, date: e.target.value })
-                }
-=======
                   setNewAppointment({
                     ...newAppointment,
                     date: e.target.value,
                   })}
->>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -636,15 +502,10 @@ export default function Appointments({
                 className="col-span-3"
                 value={newAppointment.time}
                 onChange={(e) =>
-<<<<<<< HEAD
-                  setNewAppointment({ ...newAppointment, time: e.target.value })
-                }
-=======
                   setNewAppointment({
                     ...newAppointment,
                     time: e.target.value,
                   })}
->>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -655,19 +516,11 @@ export default function Appointments({
                 id="notes"
                 className="col-span-3"
                 value={newAppointment.notes}
-<<<<<<< HEAD
                 onChange={(e) =>
                   setNewAppointment({
                     ...newAppointment,
                     notes: e.target.value,
-                  })
-                }
-=======
-                onChange={(e) => setNewAppointment({
-                  ...newAppointment,
-                  notes: e.target.value,
-                })}
->>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
+                  })}
               />
             </div>
           </div>
@@ -696,12 +549,7 @@ export default function Appointments({
                 className="col-span-3"
                 value={newPayment.amount}
                 onChange={(e) =>
-<<<<<<< HEAD
-                  setNewPayment({ ...newPayment, amount: e.target.value })
-                }
-=======
                   setNewPayment({ ...newPayment, amount: e.target.value })}
->>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -714,12 +562,7 @@ export default function Appointments({
                 className="col-span-3"
                 value={newPayment.date}
                 onChange={(e) =>
-<<<<<<< HEAD
-                  setNewPayment({ ...newPayment, date: e.target.value })
-                }
-=======
                   setNewPayment({ ...newPayment, date: e.target.value })}
->>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -732,12 +575,7 @@ export default function Appointments({
                 className="col-span-3"
                 value={newPayment.time}
                 onChange={(e) =>
-<<<<<<< HEAD
-                  setNewPayment({ ...newPayment, time: e.target.value })
-                }
-=======
                   setNewPayment({ ...newPayment, time: e.target.value })}
->>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -748,19 +586,11 @@ export default function Appointments({
                 id="description"
                 className="col-span-3"
                 value={newPayment.description}
-<<<<<<< HEAD
                 onChange={(e) =>
                   setNewPayment({
                     ...newPayment,
                     description: e.target.value,
-                  })
-                }
-=======
-                onChange={(e) => setNewPayment({
-                  ...newPayment,
-                  description: e.target.value,
-                })}
->>>>>>> ccdfed42d2f3e66a843c98c2fdb4312fb07caa95
+                  })}
               />
             </div>
           </div>

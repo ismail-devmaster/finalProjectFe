@@ -1,16 +1,42 @@
-export default const ProfileEdit = ({ userInfo, handleInputChange, handleSaveChanges }) => {
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+
+type PersonalInfoType = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  dob: string;
+  address: string;
+  medicalHistory: string;
+};
+
+type Props = {
+  userInfo: PersonalInfoType;
+  handleInputChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => void;
+  handleSaveChanges: () => void;
+};
+
+const ProfileEdit = (
+  { userInfo, handleInputChange, handleSaveChanges }: Props,
+) => {
   const fields = [
     { id: "firstName", label: "First Name" },
     { id: "lastName", label: "Last Name" },
     { id: "email", label: "Email", type: "email" },
     { id: "phone", label: "Phone", type: "tel" },
     { id: "dob", label: "Date of Birth", type: "date" },
-  ];
-
-  const passwords = [
-    { id: "current-password", label: "Current Password" },
-    { id: "new-password", label: "New Password" },
-    { id: "confirm-password", label: "Confirm New Password" },
   ];
 
   return (
@@ -21,9 +47,9 @@ export default const ProfileEdit = ({ userInfo, handleInputChange, handleSaveCha
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <form className="space-y-8">
+        <form className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {fields.map(({ id, label, type = "text" }) => (
+            {fields.map(({ id, label, type }) => (
               <div key={id} className="space-y-2">
                 <Label
                   htmlFor={id}
@@ -33,8 +59,8 @@ export default const ProfileEdit = ({ userInfo, handleInputChange, handleSaveCha
                 </Label>
                 <Input
                   id={id}
-                  type={type}
-                  value={userInfo[id]}
+                  type={type || "text"}
+                  value={userInfo[id as keyof PersonalInfoType]}
                   onChange={handleInputChange}
                   className="text-lg p-3 dark:bg-gray-700 dark:text-white"
                 />
@@ -48,29 +74,12 @@ export default const ProfileEdit = ({ userInfo, handleInputChange, handleSaveCha
                 htmlFor={id}
                 className="text-lg font-medium dark:text-white"
               >
-                {id === "medicalHistory" ? "Medical History" : "Address"}
+                {id === "address" ? "Address" : "Medical History"}
               </Label>
               <Textarea
                 id={id}
-                value={userInfo[id]}
+                value={userInfo[id as keyof PersonalInfoType]}
                 onChange={handleInputChange}
-                className="text-lg p-3 dark:bg-gray-700 dark:text-white"
-                rows={id === "medicalHistory" ? 6 : undefined}
-              />
-            </div>
-          ))}
-
-          {passwords.map(({ id, label }) => (
-            <div key={id} className="space-y-2">
-              <Label
-                htmlFor={id}
-                className="text-lg font-medium dark:text-white"
-              >
-                {label}
-              </Label>
-              <Input
-                id={id}
-                type="password"
                 className="text-lg p-3 dark:bg-gray-700 dark:text-white"
               />
             </div>
@@ -88,3 +97,5 @@ export default const ProfileEdit = ({ userInfo, handleInputChange, handleSaveCha
     </Card>
   );
 };
+
+export default ProfileEdit;

@@ -1,5 +1,53 @@
-const NotificationsSettings = () => {
-  const settings = [
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+type NotificationOptionProps = {
+  id: string;
+  label: string;
+};
+
+type NotificationSectionProps = {
+  title: string;
+  options: NotificationOptionProps[];
+};
+
+const NotificationSection = ({ title, options }: NotificationSectionProps) => (
+  <div className="space-y-6">
+    <h3 className="text-2xl font-semibold text-gray-800 dark:text-white">
+      {title}
+    </h3>
+    {options.map(({ id, label }) => (
+      <div
+        key={id}
+        className="flex items-center justify-between bg-white dark:bg-gray-700 p-4 rounded-lg shadow-md"
+      >
+        <Label htmlFor={id} className="text-lg dark:text-white">{label}</Label>
+        <Switch id={id} />
+      </div>
+    ))}
+  </div>
+);
+
+type SettingsType = NotificationSectionProps;
+
+export default function NotificationsSettings() {
+  const settings: SettingsType[] = [
     {
       title: "Appointment Reminders",
       options: [
@@ -10,9 +58,10 @@ const NotificationsSettings = () => {
     },
     {
       title: "General Announcements",
-      options: [
-        { id: "general-announcements", label: "Receive General Announcements" },
-      ],
+      options: [{
+        id: "general-announcements",
+        label: "Receive General Announcements",
+      }],
     },
   ];
 
@@ -27,25 +76,9 @@ const NotificationsSettings = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">
-        {settings.map(({ title, options }) => (
-          <div key={title} className="space-y-6">
-            <h3 className="text-2xl font-semibold text-gray-800 dark:text-white">
-              {title}
-            </h3>
-            {options.map(({ id, label }) => (
-              <div
-                key={id}
-                className="flex items-center justify-between bg-white dark:bg-gray-700 p-4 rounded-lg shadow-md"
-              >
-                <Label htmlFor={id} className="text-lg dark:text-white">
-                  {label}
-                </Label>
-                <Switch id={id} />
-              </div>
-            ))}
-          </div>
+        {settings.map((section) => (
+          <NotificationSection key={section.title} {...section} />
         ))}
-
         <div className="space-y-6">
           <h3 className="text-2xl font-semibold text-gray-800 dark:text-white">
             Test Results Notifications
@@ -65,9 +98,13 @@ const NotificationsSettings = () => {
                 <SelectValue placeholder="Select method" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="email">Email</SelectItem>
-                <SelectItem value="sms">SMS</SelectItem>
-                <SelectItem value="push">Push Notification</SelectItem>
+                {[
+                  { value: "email", label: "Email" },
+                  { value: "sms", label: "SMS" },
+                  { value: "push", label: "Push Notification" },
+                ].map(({ value, label }) => (
+                  <SelectItem key={value} value={value}>{label}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -80,4 +117,4 @@ const NotificationsSettings = () => {
       </CardFooter>
     </Card>
   );
-};
+}
