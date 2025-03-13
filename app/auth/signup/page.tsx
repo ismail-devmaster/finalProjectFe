@@ -1,5 +1,4 @@
 "use client";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,9 +10,6 @@ import { DateOfBirthInput } from "@/components/sections/signup/DateOfBirthInput"
 import { PhoneInput } from "@/components/sections/signup/PhoneInput";
 import { SexSelect } from "@/components/sections/signup/SexSelect";
 import { MedicalHistoryInput } from "@/components/sections/signup/MedicalHistoryInput";
-import { usePasswordStrength } from "@/hooks/pages/usePasswordStrength";
-import { useSignUpSubmit } from "@/hooks/pages/useSignUpSubmit";
-import { useSignUpStore } from "@/hooks/store/useSignUpStore";
 import { useSignUp } from "@/hooks/pages/useSignUp"
 import type React from "react";
 export default function SignUp() {
