@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { patient } from "@/app/api";
@@ -27,7 +28,7 @@ export default function usePatients() {
         setIsLoading(false);
       } catch (error) {
         console.error("Error fetching patients:", error);
-        router.push("/auth/login");
+        //       router.push("/auth/login");
       }
     };
 

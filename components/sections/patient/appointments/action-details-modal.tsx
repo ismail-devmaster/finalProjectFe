@@ -1,47 +1,64 @@
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { formatDate, formatTime } from "@/lib/utils"
-import { Calendar, Clock } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { formatDate, formatTime } from "@/lib/utils";
+import { Calendar, Clock } from "lucide-react";
 
 interface AppointmentType {
-  type: string
+  type: string;
 }
 
 interface Status {
-  status: string
+  status: string;
 }
 
 interface Action {
-  id: number
-  appointmentType: AppointmentType
-  description: string
-  totalPayment: number
-  startDate: string
-  endDate: string
+  id: number;
+  appointmentType: AppointmentType;
+  description: string;
+  totalPayment: number;
+  startDate: string;
+  endDate: string;
 }
 
 interface Appointment {
-  id: number
-  date: string
-  time: string
-  doctorId: number
-  status: Status
+  id: number;
+  date: string;
+  time: string;
+  doctorId: number;
+  status: Status;
 }
 
 interface ActionDetailsModalProps {
-  isOpen: boolean
-  onClose: () => void
-  action: Action
-  appointments: Appointment[]
+  isOpen: boolean;
+  onClose: () => void;
+  action: Action;
+  appointments: Appointment[];
 }
 
-export function ActionDetailsModal({ isOpen, onClose, action, appointments }: ActionDetailsModalProps) {
+export function ActionDetailsModal(
+  { isOpen, onClose, action, appointments }: ActionDetailsModalProps,
+) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>
           <DialogTitle>Action Details</DialogTitle>
-          <DialogDescription>Viewing details for action ID: {action.id}</DialogDescription>
+          <DialogDescription>
+            Viewing details for action ID: {action.id}
+          </DialogDescription>
         </DialogHeader>
         <div className="mt-4">
           <h3 className="text-lg font-semibold">Action Information</h3>
@@ -63,43 +80,45 @@ export function ActionDetailsModal({ isOpen, onClose, action, appointments }: Ac
         </div>
         <div className="mt-6">
           <h3 className="text-lg font-semibold mb-2">Related Appointments</h3>
-          {appointments.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Time</TableHead>
-                  <TableHead>Doctor</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {appointments.map((appointment) => (
-                  <TableRow key={appointment.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-muted-foreground" />
-                        {formatDate(appointment.date)}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-muted-foreground" />
-                        {formatTime(appointment.time)}
-                      </div>
-                    </TableCell>
-                    <TableCell>Dr. {appointment.doctorId === 1 ? "Alice Smith" : "Unknown"}</TableCell>
-                    <TableCell>{appointment.status.status}</TableCell>
+          {appointments.length > 0
+            ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Time</TableHead>
+                    <TableHead>Doctor</TableHead>
+                    <TableHead>Status</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <p>No appointments found for this action.</p>
-          )}
+                </TableHeader>
+                <TableBody>
+                  {appointments.map((appointment) => (
+                    <TableRow key={appointment.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-muted-foreground" />
+                          {formatDate(appointment.date)}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-4 w-4 text-muted-foreground" />
+                          {formatTime(appointment.time)}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        Dr.{" "}
+                        {appointment.doctorId === 1 ? "Alice Smith" : "Unknown"}
+                      </TableCell>
+                      <TableCell>{appointment.status.status}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )
+            : <p>No appointments found for this action.</p>}
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
-

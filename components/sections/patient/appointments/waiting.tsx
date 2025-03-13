@@ -19,8 +19,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { AlertCircle, Calendar, Clock } from "lucide-react";
 import { formatDate, formatTime } from "@/lib/utils";
-import { RescheduleModal } from "../components/reschedule-modal";
-import { ConfirmationDialog } from "../components/confirmation-dialog";
+import { RescheduleModal } from "./reschedule-modal";
+import { ConfirmationDialog } from "./confirmation-dialog";
 import { appointment } from "@/app/api";
 
 interface User {

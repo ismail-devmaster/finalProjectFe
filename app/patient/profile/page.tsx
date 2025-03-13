@@ -5,11 +5,9 @@ import NotificationsSettings from "@/components/sections/patient/profile/Notific
 import ProfileEdit from "@/components/sections/patient/profile/ProfileEdit";
 import ProfileView from "@/components/sections/patient/profile/ProfileView";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Bell, Edit2, User } from "lucide-react";
 import usePatients from "@/hooks/pages/usePatients";
-const { isLoading, patients, searchTerm, setSearchTerm } = usePatients();
 type PersonalInfoType = {
   firstName: string;
   lastName: string;
@@ -121,8 +119,6 @@ export default function MyProfilePage() {
           <NotificationsSettings />
         </TabsContent>
       </Tabs>
-
-      <Button onClick={toggleDarkMode}>Toggle Dark Mode</Button>
     </div>
   );
 }
