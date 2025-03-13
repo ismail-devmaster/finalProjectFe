@@ -1,11 +1,9 @@
 "use client";
-
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useSignUpStore } from "./useSignUpStore";
 import { EmailInput } from "@/components/sections/signup/EmailInput";
 import { PasswordInput } from "@/components/sections/signup/PasswordInput";
 import { NameInputs } from "@/components/sections/signup/NameInputs";
@@ -13,13 +11,13 @@ import { DateOfBirthInput } from "@/components/sections/signup/DateOfBirthInput"
 import { PhoneInput } from "@/components/sections/signup/PhoneInput";
 import { SexSelect } from "@/components/sections/signup/SexSelect";
 import { MedicalHistoryInput } from "@/components/sections/signup/MedicalHistoryInput";
-import { toast } from "sonner";
-import { auth } from "@/app/api";
+import { usePasswordStrength } from "@/hooks/pages/usePasswordStrength";
+import { useSignUpSubmit } from "@/hooks/pages/useSignUpSubmit";
+import { useSignUpStore } from "@/hooks/store/useSignUpStore";
+import { useSignUp } from "@/hooks/pages/useSignUp"
 import type React from "react";
-
-
 export default function SignUp() {
-  const router = useRouter();
+
   const {
     email,
     password,
@@ -27,54 +25,16 @@ export default function SignUp() {
     lastName,
     dateOfBirth,
     phone,
-    sexId = "male",
+    sexId,
     medicalHistory,
     showPassword,
     isLoading,
     errors,
     setField,
     toggleShowPassword,
-    setIsLoading,
-    validateForm,
-  } = useSignUpStore();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm()) {
-      toast.error("Please fix the errors in the form");
-      return;
-    }
-    setIsLoading(true);
-
-    try {
-      await auth.signup(
-        email,
-        password,
-        firstName,
-        lastName,
-        dateOfBirth,
-        sexId === "male" ? "1" : "2",
-        medicalHistory,
-        phone,
-      );
-      toast.success("Please check your email for verification");
-      router.push("/auth/login");
-    } catch (error: any) {
-      toast.error(error.error || "Failed to sign up");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  const getPasswordStrength = () => {
-    if (!password) return "";
-    const checks = [/.{8,}/, /[A-Z]/, /[a-z]/, /[0-9]/, /[^A-Za-z0-9]/];
-    const passedChecks = checks.filter((regex) => regex.test(password)).length;
-    if (passedChecks <= 2) return "weak";
-    if (passedChecks <= 4) return "medium";
-    return "strong";
-  };
-
-  const passwordStrength = getPasswordStrength();
+    passwordStrength,
+    handleSubmit,
+  } = useSignUp();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
