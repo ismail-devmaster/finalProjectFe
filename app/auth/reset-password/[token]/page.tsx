@@ -2,10 +2,10 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useResetPassword } from "@/hooks/pages/useResetPassword";
-import { PasswordInput } from "@/components/sections/reset-password/PasswordInput";
-import { ConfirmPasswordInput } from "@/components/sections/reset-password/ConfirmPasswordInput";
-import { PasswordStrengthMeter } from "@/components/sections/reset-password/PasswordStrengthMeter";
-import { PasswordRequirementList } from "@/components/sections/reset-password/PasswordRequirementList";
+import { PasswordInput } from "@/components/sections/auth/resetPassword/PasswordInput";
+import { ConfirmPasswordInput } from "@/components/sections/auth/resetPassword/ConfirmPasswordInput";
+import { PasswordStrengthMeter } from "@/components/sections/auth/resetPassword/PasswordStrengthMeter";
+import { PasswordRequirementList } from "@/components/sections/auth/resetPassword/PasswordRequirementList";
 
 export default function ResetPassword(
   { params }: { params: { token: string } },

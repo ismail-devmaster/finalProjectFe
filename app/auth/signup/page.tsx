@@ -3,13 +3,13 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { EmailInput } from "@/components/sections/signup/EmailInput";
-import { PasswordInput } from "@/components/sections/signup/PasswordInput";
-import { NameInputs } from "@/components/sections/signup/NameInputs";
-import { DateOfBirthInput } from "@/components/sections/signup/DateOfBirthInput";
-import { PhoneInput } from "@/components/sections/signup/PhoneInput";
-import { SexSelect } from "@/components/sections/signup/SexSelect";
-import { MedicalHistoryInput } from "@/components/sections/signup/MedicalHistoryInput";
+import { EmailInput } from "@/components/sections/auth/signup/EmailInput";
+import { PasswordInput } from "@/components/sections/auth/signup/PasswordInput";
+import { NameInputs } from "@/components/sections/auth/signup/NameInputs";
+import { DateOfBirthInput } from "@/components/sections/auth/signup/DateOfBirthInput";
+import { PhoneInput } from "@/components/sections/auth/signup/PhoneInput";
+import { SexSelect } from "@/components/sections/auth/signup/SexSelect";
+import { MedicalHistoryInput } from "@/components/sections/auth/signup/MedicalHistoryInput";
 import { useSignUp } from "@/hooks/pages/useSignUp"
 import type React from "react";
 export default function SignUp() {

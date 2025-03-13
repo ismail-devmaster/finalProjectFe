@@ -1,11 +1,11 @@
 "use client";
 import { Card } from "@/components/ui/card";
 import { useCompleteProfile } from "@/hooks/pages/useCompleteProfile";
-import renderHeader from "@/components/sections/completeProfile/renderHeader";
-import renderDateOfBirthField from "@/components/sections/completeProfile/renderDateOfBirthField";
-import renderPhoneField from "@/components/sections/completeProfile/renderPhoneField";
-import renderSexSelection from "@/components/sections/completeProfile/renderSexSelection";
-import renderSubmitButton from "@/components/sections/completeProfile/renderSubmitButton";
+import renderHeader from "@/components/sections/auth/completeProfile/renderHeader";
+import renderDateOfBirthField from "@/components/sections/auth/completeProfile/renderDateOfBirthField";
+import renderPhoneField from "@/components/sections/auth/completeProfile/renderPhoneField";
+import renderSexSelection from "@/components/sections/auth/completeProfile/renderSexSelection";
+import renderSubmitButton from "@/components/sections/auth/completeProfile/renderSubmitButton";
 
 export default function CompleteProfile() {
   const {

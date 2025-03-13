@@ -60,7 +60,7 @@ const tabs: TabType[] = [
 ];
 
 export default function MyProfilePage() {
-  const { isLoading, patients, searchTerm, setSearchTerm } = usePatients(); // ⬅️ استدعاء الهوك داخل المكون
+  const { isLoading, patients, searchTerm, setSearchTerm } = usePatients();
   const [userInfo, setUserInfo] = useState<PersonalInfoType>(
     MOCK_DATA.personalInfo,
   );
