@@ -17,7 +17,7 @@ const request = async (method: string, endpoint: string, data?: any) => {
       error.response?.data || error.message,
     );
     throw error.response?.data?.error ||
-      { error: `Failed to ${method} ${endpoint}` };
+    { error: `Failed to ${method} ${endpoint}` };
   }
 };
 
@@ -128,7 +128,9 @@ export const doctor = {
 export const patient = {
   getAllPatients: () => request("get", "/patients"),
 
-  getPatientById: (id: number) => request("get", `/patients/${id}`),
+  getPatientDataById: (id: number) => request("get", `/patients/${id}`),
+
+  getPatientData: () => request("get", "/patients/data"),
 
   getPatientId: () => request("get", "/patients/id"),
 };

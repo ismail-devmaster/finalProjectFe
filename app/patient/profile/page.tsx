@@ -7,7 +7,7 @@ import ProfileView from "@/components/sections/patient/profile/ProfileView";
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Bell, Edit2, User } from "lucide-react";
-import usePatients from "@/hooks/pages/usePatients";
+import { patient } from "@/app/api";
 type PersonalInfoType = {
   firstName: string;
   lastName: string;
@@ -58,7 +58,25 @@ const tabs: TabType[] = [
 ];
 
 export default function MyProfilePage() {
-  const { isLoading, patients, searchTerm, setSearchTerm } = usePatients();
+  const [actions, setActions] = useState<any[]>([]);
+  const [selectedAction, setSelectedAction] = useState<number | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchActions = async () => {
+      try {
+        const patientData = await patient.getPatientData();
+        console.log(patientData);
+      } catch (error) {
+        console.error("Error fetching actions:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchActions();
+  }, []);
+
   const [userInfo, setUserInfo] = useState<PersonalInfoType>(
     MOCK_DATA.personalInfo,
   );

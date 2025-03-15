@@ -69,9 +69,9 @@ export default function PaymentsHistory() {
   useEffect(() => {
     const fetchActions = async () => {
       try {
-        const patientIdData = await patient.getPatientId();
+        const patientId = await patient.getPatientId();
         const actionData = await action.getActionsByPatientId(
-          patientIdData.patientId,
+          patientId.patientId,
         );
         setActions(actionData.actions);
       } catch (error) {
@@ -211,8 +211,7 @@ export default function PaymentsHistory() {
                             <div className="flex items-center gap-2">
                               <Calendar className="h-4 w-4 text-muted-foreground" />
                               <span className="text-sm">
-                                Date:{" "}
-                                {format(
+                                Date: {format(
                                   new Date(payment.date),
                                   "MMMM dd, yyyy",
                                 )}
