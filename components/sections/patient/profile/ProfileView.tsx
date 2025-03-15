@@ -10,17 +10,6 @@ type PersonalInfoType = {
   patientId: string;
   medicalHistory: string;
 };
-type insuranceInfoType = {
-  provider: string;
-  policyNumber: string;
-  groupNumber: string;
-  coveragePeriod: string;
-};
-type TabType = {
-  value: string;
-  label: string;
-  icon: React.ComponentType<{ className?: string }>;
-};
 
 import type React from "react";
 
@@ -32,18 +21,16 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { AlertCircle, Calendar, Mail, Phone, Shield, User } from "lucide-react";
+import { Calendar, Mail, Phone, User } from "lucide-react";
 
 const ProfileView = (
-  { userInfo, insuranceInfo }: {
+  { userInfo }: {
     userInfo: PersonalInfoType;
-    insuranceInfo: insuranceInfoType;
   },
 ) => (
   <>
     <PersonalInfoCard userInfo={userInfo} />
     <MedicalHistoryCard medicalHistory={userInfo.medicalHistory} />
-    <InsuranceInfoCard insuranceInfo={insuranceInfo} />
   </>
 );
 export default ProfileView;
@@ -88,9 +75,8 @@ const UserDetails = ({ userInfo }: { userInfo: PersonalInfoType }) => {
   const details = [
     {
       icon: <User className="h-6 w-6 text-blue-500" />,
-      text: `${
-        new Date().getFullYear() - new Date(userInfo.dob).getFullYear()
-      } years old`,
+      text: `${new Date().getFullYear() - new Date(userInfo.dob).getFullYear()
+        } years old`,
     },
     {
       icon: <Phone className="h-6 w-6 text-green-500" />,
@@ -150,44 +136,3 @@ const MedicalHistoryCard = ({ medicalHistory }: { medicalHistory: string }) => (
     </CardContent>
   </Card>
 );
-
-const InsuranceInfoCard = (
-  { insuranceInfo }: {
-    insuranceInfo: insuranceInfoType;
-  },
-) => {
-  const insuranceDetails = [
-    {
-      icon: <Shield className="h-6 w-6 text-indigo-500" />,
-      text: insuranceInfo.provider,
-    },
-    {
-      icon: <AlertCircle className="h-6 w-6 text-yellow-500" />,
-      text: insuranceInfo.policyNumber,
-    },
-    {
-      icon: <User className="h-6 w-6 text-teal-500" />,
-      text: insuranceInfo.groupNumber,
-    },
-    {
-      icon: <Calendar className="h-6 w-6 text-pink-500" />,
-      text: insuranceInfo.coveragePeriod,
-    },
-  ];
-  return (
-    <Card className="mt-8 bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg border-none shadow-xl">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold text-gray-800 dark:text-white">
-          Insurance Information
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {insuranceDetails.map((info, index) => (
-            <InfoCard key={index} icon={info.icon} text={info.text} />
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  );
-};

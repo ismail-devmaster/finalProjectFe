@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Bell,
   Calendar,
   CreditCard,
   FileText,
+  LogOut,
   Menu,
   Moon,
   Sun,
@@ -19,14 +19,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import Link from "next/link";
 
 const PatientDashboardComponent = ({
@@ -59,9 +52,8 @@ const PatientDashboardComponent = ({
 
   return (
     <div
-      className={`flex flex-col h-screen overflow-hidden ${
-        darkMode ? "dark" : ""
-      }`}
+      className={`flex flex-col h-screen overflow-hidden ${darkMode ? "dark" : ""
+        }`}
     >
       <header className="bg-white dark:bg-gray-800 shadow-md">
         <div className="max-w-7xl mx-auto px-4 py-2 flex justify-between items-center">
@@ -107,11 +99,9 @@ const PatientDashboardComponent = ({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button variant="ghost" size="icon" onClick={toggleDarkMode}>
-                    {darkMode ? (
-                      <Sun className="h-4 w-4" />
-                    ) : (
-                      <Moon className="h-4 w-4" />
-                    )}
+                    {darkMode
+                      ? <Sun className="h-4 w-4" />
+                      : <Moon className="h-4 w-4" />}
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -119,26 +109,9 @@ const PatientDashboardComponent = ({
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Bell className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <span>New appointment scheduled</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <span>Test results available</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <span>Prescription refill reminder</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Button variant="ghost" size="icon">
+              <LogOut className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </header>

@@ -36,7 +36,6 @@ type TabType = {
 const tabs: TabType[] = [
   { value: "view", label: "View Profile", icon: User },
   { value: "edit", label: "Edit Profile", icon: Edit2 },
-  { value: "notifications", label: "Notifications", icon: Bell },
 ];
 
 export default function MyProfilePage() {
@@ -96,12 +95,6 @@ export default function MyProfilePage() {
             ? (
               <ProfileView
                 userInfo={userInfo}
-                insuranceInfo={{
-                  provider: "Not Provided",
-                  policyNumber: "Not Provided",
-                  groupNumber: "Not Provided",
-                  coveragePeriod: "Not Provided",
-                }}
               />
             )
             : <div className="text-center">No patient data available.</div>}
@@ -119,10 +112,6 @@ export default function MyProfilePage() {
                 console.log("Saving changes:", userInfo)}
             />
           )}
-        </TabsContent>
-
-        <TabsContent value="notifications">
-          <NotificationsSettings />
         </TabsContent>
       </Tabs>
     </div>
