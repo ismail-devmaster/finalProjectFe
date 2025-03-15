@@ -7,15 +7,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Calendar,
+  CheckSquare,
   CreditCard,
   Home,
   Menu,
   Moon,
-  Sun,
-  SmileIcon as Tooth,
-  Users,
   Package,
-  CheckSquare,
+  SmileIcon as Tooth,
+  Sun,
+  Users,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 
@@ -96,11 +96,10 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                     key={index}
                     href={item.href}
                     onClick={() => setOpen(false)}
-                    className={`flex items-center gap-2 rounded-lg px-3 py-2 ${
-                      isActive
+                    className={`flex items-center gap-2 rounded-lg px-3 py-2 ${isActive
                         ? "bg-primary text-primary-foreground"
                         : "hover:bg-accent"
-                    }`}
+                      }`}
                   >
                     <item.icon className="h-5 w-5" />
                     {item.title}
@@ -118,11 +117,9 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon">
-              {theme === "dark" ? (
-                <Moon className="h-5 w-5" />
-              ) : (
-                <Sun className="h-5 w-5" />
-              )}
+              {theme === "dark"
+                ? <Moon className="h-5 w-5" />
+                : <Sun className="h-5 w-5" />}
               <span className="sr-only">Toggle theme</span>
             </Button>
           </DropdownMenuTrigger>
@@ -152,11 +149,10 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 <Link
                   key={index}
                   href={item.href}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-colors ${
-                    isActive
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-colors ${isActive
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                  }`}
+                    }`}
                 >
                   <item.icon className="h-4 w-4" />
                   {item.title}

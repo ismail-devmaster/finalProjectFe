@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,11 +16,11 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { appointmentType } from "@/app/api/appointmentType";
+import { appointmentType } from "@/app/api";
 interface NewActionModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -40,7 +40,7 @@ export function NewActionModal({
   const [description, setDescription] = useState("");
   const [appointmentTypeId, setAppointmentTypeId] = useState<string>("");
   const [appointmentTypes, setAppointmentTypes] = useState<AppointmentType[]>(
-    []
+    [],
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
