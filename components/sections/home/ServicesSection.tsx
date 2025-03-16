@@ -1,36 +1,101 @@
-import { Clock, HeartPulse, Sparkles, Stethoscope, Wrench } from "lucide-react";
+import {
+  Baby,
+  Brush,
+  Crown,
+  HeartPulse,
+  Scissors,
+  Sparkles,
+  Stethoscope,
+  Wrench,
+} from "lucide-react";
 import { ServiceCard } from "@/components/ui/card-service";
 
-const services = [
+const serviceCategories = [
   {
-    title: "General Checkups",
+    title: "Dental Examinations & Diagnosis",
     description:
-      "Comprehensive dental examinations and preventive care to maintain your oral health.",
+      "Comprehensive dental check-ups, digital X-rays, and oral health assessments.",
     icon: Stethoscope,
+    services: [
+      "Comprehensive dental and gum check-up",
+      "Digital X-rays (Dental Radiography)",
+      "Oral health assessment",
+    ],
   },
   {
-    title: "Teeth Whitening",
+    title: "General Dental Care",
     description:
-      "Professional whitening treatments for a brighter, more confident smile.",
+      "Professional cleaning, cavity treatments, and gum disease management.",
+    icon: Brush,
+    services: [
+      "Teeth cleaning & tartar removal (Scaling & Polishing)",
+      "Cavity treatment & aesthetic fillings",
+      "Gum disease treatment (Gingivitis & Periodontitis treatment)",
+    ],
+  },
+  {
+    title: "Cosmetic Dentistry",
+    description:
+      "Enhance your smile with professional whitening, veneers, and smile makeovers.",
     icon: Sparkles,
-  },
-  {
-    title: "Dental Implants",
-    description:
-      "Permanent, natural-looking tooth replacements to restore your smile.",
-    icon: Wrench,
-  },
-  {
-    title: "Emergency Care",
-    description:
-      "24/7 emergency dental services when you need immediate attention.",
-    icon: Clock,
+    services: [
+      "Teeth whitening",
+      "Dental veneers",
+      "Smile makeover (Teeth reshaping)",
+    ],
   },
   {
     title: "Orthodontics",
     description:
-      "Traditional braces and clear aligners for straighter teeth and better bite alignment.",
+      "Straighten your teeth with clear aligners, traditional braces, and bite correction treatments.",
     icon: HeartPulse,
+    services: [
+      "Invisible aligners (Clear aligners)",
+      "Traditional metal braces",
+      "Bite correction & misalignment treatment",
+    ],
+  },
+  {
+    title: "Dental Implants",
+    description:
+      "Replace missing teeth with permanent, natural-looking dental implants.",
+    icon: Wrench,
+    services: [
+      "Dental implants placement",
+      "Restoration of missing teeth",
+    ],
+  },
+  {
+    title: "Fixed & Removable Prosthetics",
+    description:
+      "Restore your smile with crowns, bridges, and dentures customized for you.",
+    icon: Crown,
+    services: [
+      "Ceramic crowns & bridges",
+      "Full & partial dentures",
+    ],
+  },
+  {
+    title: "Oral & Dental Surgery",
+    description:
+      "Specialized surgical procedures including extractions and bone grafting.",
+    icon: Scissors,
+    services: [
+      "Tooth extraction",
+      "Wisdom tooth surgery",
+      "Bone grafting for implants",
+    ],
+  },
+  {
+    title: "Pediatric Dentistry",
+    description:
+      "Child-friendly dental care focused on prevention and healthy development.",
+    icon: Baby,
+    services: [
+      "Dental check-ups & treatments for children",
+      "Cavity prevention (Fissure sealants)",
+      "Guided growth of teeth & jaws",
+    ],
   },
 ];
 
@@ -52,14 +117,27 @@ export function ServicesSection() {
             </p>
           </div>
         </div>
-        <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 mt-12">
-          {services.map((service) => (
+        <div className="mx-auto grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-12">
+          {serviceCategories.map((category) => (
             <ServiceCard
-              key={service.title}
-              title={service.title}
-              description={service.description}
-              icon={service.icon}
-            />
+              key={category.title}
+              title={category.title}
+              description={category.description}
+              icon={category.icon}
+              className="group cursor-pointer"
+            >
+              <ul className="mt-4 space-y-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                {category.services.map((service, index) => (
+                  <li
+                    key={index}
+                    className="text-sm text-gray-600 flex items-start"
+                  >
+                    <span className="text-dental-600 mr-2">•</span>
+                    {service}
+                  </li>
+                ))}
+              </ul>
+            </ServiceCard>
           ))}
         </div>
         <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
