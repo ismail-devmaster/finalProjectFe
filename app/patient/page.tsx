@@ -79,147 +79,144 @@ export default function Page() {
           </CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[{
-            title: "Profile",
-            icon: <User />,
-            content: (
-              <>
-                <p className="text-sm font-medium">{mockData.profile.name}</p>
-                <p className="text-xs text-muted-foreground">
-                  DOB: {mockData.profile.dob}
-                </p>
-                {[Phone, Mail, MapPin].map((Icon, i) => (
-                  <div key={i} className="flex items-center space-x-2">
-                    <Icon className="h-4 w-4 text-muted-foreground" />
-                    <p className="text-xs">
-                      {Object.values(mockData.profile)[i + 2]}
-                    </p>
-                  </div>
-                ))}
-              </>
-            ),
-          }, {
-            title: "Appointments",
-            icon: <Calendar />,
-            content: (
-              isNewPatient
-                ? (
-                  <p className="text-sm text-muted-foreground text-center">
-                    No upcoming appointments
+          {[
+            {
+              title: "Profile",
+              icon: <User />,
+              content: (
+                <>
+                  <p className="text-sm font-medium">{mockData.profile.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    DOB: {mockData.profile.dob}
                   </p>
-                )
-                : (
-                  mockData.appointments.upcoming.map((apt, i) => (
-                    <p key={i} className="text-xs">{apt}</p>
-                  ))
-                )
-            ),
-          }, {
-            title: "Health Records",
-            icon: <FileText />,
-            content: (
-              isNewPatient
-                ? (
-                  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="link"
-                        className="text-sm text-blue-600 hover:underline"
-                      >
-                        Complete health questionnaire
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
-                      <DialogHeader>
-                        <DialogTitle>Health Questionnaire</DialogTitle>
-                        <DialogDescription>
-                          Please fill out your health information.
-                        </DialogDescription>
-                      </DialogHeader>
-                      {["Height", "Weight", "Allergies", "Medications"].map((
-                        label,
-                        i,
-                      ) => (
+                  {[Phone, Mail, MapPin].map((Icon, i) => (
+                    <div key={i} className="flex items-center space-x-2">
+                      <Icon className="h-4 w-4 text-muted-foreground" />
+                      <p className="text-xs">
+                        {Object.values(mockData.profile)[i + 2]}
+                      </p>
+                    </div>
+                  ))}
+                </>
+              ),
+            },
+            {
+              title: "Appointments",
+              icon: <Calendar />,
+              content: isNewPatient ? (
+                <p className="text-sm text-muted-foreground text-center">
+                  No upcoming appointments
+                </p>
+              ) : (
+                mockData.appointments.upcoming.map((apt, i) => (
+                  <p key={i} className="text-xs">
+                    {apt}
+                  </p>
+                ))
+              ),
+            },
+            {
+              title: "Health Records",
+              icon: <FileText />,
+              content: isNewPatient ? (
+                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="link"
+                      className="text-sm text-blue-600 hover:underline"
+                    >
+                      Complete health questionnaire
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>Health Questionnaire</DialogTitle>
+                      <DialogDescription>
+                        Please fill out your health information.
+                      </DialogDescription>
+                    </DialogHeader>
+                    {["Height", "Weight", "Allergies", "Medications"].map(
+                      (label, i) => (
                         <div
                           key={i}
                           className="grid grid-cols-4 items-center gap-4"
                         >
                           <Label className="text-right">{label}</Label>
-                          {i < 3
-                            ? <Input className="col-span-3" />
-                            : <Textarea className="col-span-3" />}
+                          {i < 3 ? (
+                            <Input className="col-span-3" />
+                          ) : (
+                            <Textarea className="col-span-3" />
+                          )}
                         </div>
-                      ))}
-                      <Button
-                        type="submit"
-                        onClick={() => setIsDialogOpen(false)}
-                      >
-                        Submit
-                      </Button>
-                    </DialogContent>
-                  </Dialog>
-                )
-                : (
-                  <>
-                    <p className="text-sm font-medium">Recent Procedures</p>
-                    {mockData.records.procedures.map((p, i) => (
-                      <p key={i} className="text-xs">{p}</p>
-                    ))}
-                    <p className="text-sm font-medium">Allergies</p>
-                    <p className="text-xs text-red-500">
-                      {mockData.records.allergies}
-                    </p>
-                  </>
-                )
-            ),
-          }, {
-            title: "Payments",
-            icon: <CreditCard />,
-            content: (
-              isNewPatient
-                ? (
-                  <p className="text-sm text-muted-foreground">
-                    No recent transactions
-                  </p>
-                )
-                : (
-                  <>
-                    {mockData.payments.transactions.map((t, i) => (
-                      <p key={i} className="text-xs">{t}</p>
-                    ))}
-                    <p
-                      className={`text-lg font-bold ${mockData.payments.balanceColor}`}
+                      )
+                    )}
+                    <Button
+                      type="submit"
+                      onClick={() => setIsDialogOpen(false)}
                     >
-                      {mockData.payments.balance}
+                      Submit
+                    </Button>
+                  </DialogContent>
+                </Dialog>
+              ) : (
+                <>
+                  <p className="text-sm font-medium">Recent Procedures</p>
+                  {mockData.records.procedures.map((p, i) => (
+                    <p key={i} className="text-xs">
+                      {p}
                     </p>
-                  </>
-                )
-            ),
-          }, {
-            title: "Queue Status",
-            icon: <HourglassIcon />,
-            content: (
-              isNewPatient
-                ? (
-                  <p className="text-sm text-muted-foreground text-center">
-                    No current appointment
+                  ))}
+                  <p className="text-sm font-medium">Allergies</p>
+                  <p className="text-xs text-red-500">
+                    {mockData.records.allergies}
                   </p>
-                )
-                : (
-                  <>
-                    <p className="text-2xl font-bold text-green-600">
-                      {mockData.queue.waitTime}
+                </>
+              ),
+            },
+            {
+              title: "Payments",
+              icon: <CreditCard />,
+              content: isNewPatient ? (
+                <p className="text-sm text-muted-foreground">
+                  No recent transactions
+                </p>
+              ) : (
+                <>
+                  {mockData.payments.transactions.map((t, i) => (
+                    <p key={i} className="text-xs">
+                      {t}
                     </p>
-                    <p className="text-xs">
-                      Your appointment: {mockData.queue.appointment}
-                    </p>
-                    <p className="text-xs">
-                      Estimated start: {mockData.queue.estimatedStart}
-                    </p>
-                  </>
-                )
-            ),
-          }].map(({ title, icon, content }, i) => (
+                  ))}
+                  <p
+                    className={`text-lg font-bold ${mockData.payments.balanceColor}`}
+                  >
+                    {mockData.payments.balance}
+                  </p>
+                </>
+              ),
+            },
+            {
+              title: "Queue Status",
+              icon: <HourglassIcon />,
+              content: isNewPatient ? (
+                <p className="text-sm text-muted-foreground text-center">
+                  No current appointment
+                </p>
+              ) : (
+                <>
+                  <p className="text-2xl font-bold text-green-600">
+                    {mockData.queue.waitTime}
+                  </p>
+                  <p className="text-xs">
+                    Your appointment: {mockData.queue.appointment}
+                  </p>
+                  <p className="text-xs">
+                    Estimated start: {mockData.queue.estimatedStart}
+                  </p>
+                </>
+              ),
+            },
+          ].map(({ title, icon, content }, i) => (
             <Card key={i}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">{title}</CardTitle>

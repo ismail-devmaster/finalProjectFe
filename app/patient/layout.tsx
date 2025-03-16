@@ -46,7 +46,6 @@ const PatientDashboardComponent = ({
   const navItems = [
     { href: "/patient/profile", icon: User, label: "My Profile" },
     { href: "/patient/appointments", icon: Calendar, label: "Appointments" },
-    { href: "/patient/queue", icon: FileText, label: "Queue Status" },
     { href: "/patient/payments", icon: CreditCard, label: "Payments" },
   ];
 
