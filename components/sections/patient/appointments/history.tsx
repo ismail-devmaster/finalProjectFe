@@ -19,7 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { AlertCircle, Calendar, CheckCircle, Tag, User } from "lucide-react";
 import { formatDate } from "@/lib/utils";
-import { ActionDetailsModal } from "../components/action-details-modal";
+import { ActionDetailsModal } from "./action-details-modal";
 import { action } from "@/app/api";
 import { appointment } from "@/app/api";
 

@@ -68,13 +68,13 @@ const ProfileEdit = (
             ))}
           </div>
 
-          {["address", "medicalHistory"].map((id) => (
+          {[, "medicalHistory"].map((id) => (
             <div key={id} className="space-y-2">
               <Label
                 htmlFor={id}
                 className="text-lg font-medium dark:text-white"
               >
-                {id === "address" ? "Address" : "Medical History"}
+                {"Medical History"}
               </Label>
               <Textarea
                 id={id}

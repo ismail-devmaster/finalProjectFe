@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useLogin } from "@/hooks/pages/useLogin";
-import EmailInput from "@/components/sections/login/EmailInput";
-import PasswordInput from "@/components/sections/login/PasswordInput";
-import GoogleSignInButton from "@/components/sections/login/GoogleSignInButton";
+import EmailInput from "@/components/sections/auth/login/EmailInput";
+import PasswordInput from "@/components/sections/auth/login/PasswordInput";
+import GoogleSignInButton from "@/components/sections/auth/login/GoogleSignInButton";
 
 export default function Login() {
   const {

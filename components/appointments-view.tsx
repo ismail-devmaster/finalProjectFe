@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,8 +14,8 @@ import {
 } from "@/components/ui/table";
 import { NewAppointmentModal } from "@/components/new-appointment-modal";
 import { EditAppointmentModal } from "@/components/edit-appointment-modal";
-import { appointment } from "@/app/api/appointment";
-import { doctor } from "@/app/api/doctor";
+import { appointment } from "@/app/api";
+import { doctor } from "@/app/api";
 
 interface AppointmentsViewProps {
   actionId: number;
@@ -28,12 +28,14 @@ export function AppointmentsView({ actionId }: AppointmentsViewProps) {
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [searchTerm, setSearchTerm] = useState("");
-  const [isNewAppointmentModalOpen, setIsNewAppointmentModalOpen] =
-    useState(false);
-  const [isEditAppointmentModalOpen, setIsEditAppointmentModalOpen] =
-    useState(false);
+  const [isNewAppointmentModalOpen, setIsNewAppointmentModalOpen] = useState(
+    false,
+  );
+  const [isEditAppointmentModalOpen, setIsEditAppointmentModalOpen] = useState(
+    false,
+  );
   const [selectedAppointment, setSelectedAppointment] = useState<any | null>(
-    null
+    null,
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -82,10 +84,10 @@ export function AppointmentsView({ actionId }: AppointmentsViewProps) {
   const handleNewAppointment = async (newAppointment: any) => {
     try {
       const createdAppointment = await appointment.createAppointment(
-        newAppointment
+        newAppointment,
       );
       const appointmentsData = await appointment.getAppointmentsByActionId(
-        actionId
+        actionId,
       );
       setAppointments(appointmentsData.appointments);
     } catch (err) {
@@ -98,10 +100,10 @@ export function AppointmentsView({ actionId }: AppointmentsViewProps) {
     try {
       await appointment.updateAppointment(
         selectedAppointment.id,
-        updatedAppointment
+        updatedAppointment,
       );
       const appointmentsData = await appointment.getAppointmentsByActionId(
-        actionId
+        actionId,
       );
       setAppointments(appointmentsData.appointments);
     } catch (err) {
@@ -182,17 +184,17 @@ export function AppointmentsView({ actionId }: AppointmentsViewProps) {
               <TableCell>
                 {(appointment.status.status === "WAITING" ||
                   appointment.status.status === "UPCOMING") && (
-                  <Button
-                    onClick={() => {
-                      setSelectedAppointment(appointment);
-                      setIsEditAppointmentModalOpen(true);
-                    }}
-                    variant="outline"
-                    size="sm"
-                  >
-                    Edit
-                  </Button>
-                )}
+                    <Button
+                      onClick={() => {
+                        setSelectedAppointment(appointment);
+                        setIsEditAppointmentModalOpen(true);
+                      }}
+                      variant="outline"
+                      size="sm"
+                    >
+                      Edit
+                    </Button>
+                  )}
               </TableCell>
             </TableRow>
           ))}

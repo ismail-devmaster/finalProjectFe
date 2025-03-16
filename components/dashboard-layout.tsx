@@ -7,15 +7,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Calendar,
+  CheckSquare,
   CreditCard,
   Home,
   Menu,
   Moon,
-  Sun,
-  SmileIcon as Tooth,
-  Users,
   Package,
-  CheckSquare,
+  SmileIcon as Tooth,
+  Sun,
+  Users,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 
@@ -63,7 +63,7 @@ const navItems: NavItem[] = [
   },
   {
     title: "Tasks",
-    href: "/tasks",
+    href: "/admin/tasks",
     icon: CheckSquare,
   },
 ];

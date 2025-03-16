@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { SuccessNotification } from "@/components/ui/success-notification";
 import { ErrorNotification } from "@/components/ui/error-notification";
-import EmailInput from "@/components/sections/forgetPassword/EmailInput";
-import HeaderSection from "@/components/sections/forgetPassword/HeaderSection";
-import BackToLogin from "@/components/sections/forgetPassword/BackToLogin";
+import EmailInput from "@/components/sections/auth/forgetPassword/EmailInput";
+import HeaderSection from "@/components/sections/auth/forgetPassword/HeaderSection";
+import BackToLogin from "@/components/sections/auth/forgetPassword/BackToLogin";
 import { useForgotPassword } from "@/hooks/pages/useForgotPassword";
 
 export default function ForgotPassword() {

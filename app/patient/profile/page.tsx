@@ -1,15 +1,13 @@
 "use client";
 
 import type React from "react";
-import NotificationsSettings from "@/components/sections/patient/profile/NotificationSettings";
 import ProfileEdit from "@/components/sections/patient/profile/ProfileEdit";
 import ProfileView from "@/components/sections/patient/profile/ProfileView";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Bell, Edit2, User } from "lucide-react";
-import usePatients from "@/hooks/pages/usePatients";
-const { isLoading, patients, searchTerm, setSearchTerm } = usePatients();
+import { patient } from "@/app/api";
+
 type PersonalInfoType = {
   firstName: string;
   lastName: string;
@@ -20,75 +18,64 @@ type PersonalInfoType = {
   patientId: string;
   medicalHistory: string;
 };
+
 type insuranceInfoType = {
   provider: string;
   policyNumber: string;
   groupNumber: string;
   coveragePeriod: string;
 };
+
 type TabType = {
   value: string;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
 };
-const MOCK_DATA: {
-  personalInfo: PersonalInfoType;
-  insuranceInfo: insuranceInfoType;
-} = {
-  personalInfo: {
-    firstName: "John",
-    lastName: "Doe",
-    email: "johndoe@example.com",
-    phone: "+1 (555) 123-4567",
-    dob: "1988-01-15",
-    address: "123 Main St, Anytown, USA 12345",
-    patientId: "123456",
-    medicalHistory:
-      "Allergies: Penicillin, Peanuts\nChronic Conditions: Hypertension (2015), Type 2 Diabetes (2018)\nPast Surgeries: Appendectomy (2010)",
-  },
-  insuranceInfo: {
-    provider: "HealthGuard Insurance",
-    policyNumber: "HGI-987654321",
-    groupNumber: "HG-GROUP-001",
-    coveragePeriod: "Jan 1, 2023 - Dec 31, 2023",
-  },
-};
+
 const tabs: TabType[] = [
   { value: "view", label: "View Profile", icon: User },
   { value: "edit", label: "Edit Profile", icon: Edit2 },
-  { value: "notifications", label: "Notifications", icon: Bell },
 ];
 
 export default function MyProfilePage() {
-  const { isLoading, patients, searchTerm, setSearchTerm } = usePatients(); // ⬅️ استدعاء الهوك داخل المكون
-  const [userInfo, setUserInfo] = useState<PersonalInfoType>(
-    MOCK_DATA.personalInfo,
-  );
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
-  useEffect((): void => {
-    document.documentElement.classList.toggle("dark", isDarkMode);
-  }, [isDarkMode]);
+  const [userInfo, setUserInfo] = useState<PersonalInfoType | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ): void => {
-    const { id, value } = e.target;
-    setUserInfo((prevInfo: PersonalInfoType) => ({ ...prevInfo, [id]: value }));
-  };
+  useEffect(() => {
+    const fetchPatientData = async () => {
+      try {
+        const response = await patient.getPatientData();
+        if (response?.patientData) {
+          const { user, medicalHistory } = response.patientData;
+          setUserInfo({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            phone: user.phone,
+            dob: new Date(user.dateOfBirth).toISOString().split("T")[0],
+            address: "", // Placeholder until actual data is available
+            patientId: user.id.toString(),
+            medicalHistory: medicalHistory || "No medical history available.",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching patient data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchPatientData();
+  }, []);
 
-  const handleSaveChanges = (): void => {
-    console.log("Saving changes:", userInfo);
-  };
-
-  const toggleDarkMode = (): void =>
-    setIsDarkMode((prev: boolean): boolean => !prev);
+  if (isLoading) {
+    return <div className="text-center p-4">Loading...</div>;
+  }
 
   return (
     <div className="w-full max-w-6xl mx-auto p-4 transition-colors duration-200 dark:bg-gray-900">
       <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center dark:text-white">
-        My profile
+        My Profile
       </h1>
-
       <Tabs defaultValue="view" className="w-full">
         <TabsList className="grid w-full grid-cols-3 mb-12 bg-white dark:bg-gray-800 rounded-full p-1 shadow-lg">
           {tabs.map(({ value, label, icon: Icon }) => (
@@ -103,26 +90,29 @@ export default function MyProfilePage() {
         </TabsList>
 
         <TabsContent value="view">
-          <ProfileView
-            userInfo={userInfo}
-            insuranceInfo={MOCK_DATA.insuranceInfo}
-          />
+          {userInfo
+            ? (
+              <ProfileView
+                userInfo={userInfo}
+              />
+            )
+            : <div className="text-center">No patient data available.</div>}
         </TabsContent>
 
         <TabsContent value="edit">
-          <ProfileEdit
-            userInfo={userInfo}
-            handleInputChange={handleInputChange}
-            handleSaveChanges={handleSaveChanges}
-          />
-        </TabsContent>
-
-        <TabsContent value="notifications">
-          <NotificationsSettings />
+          {userInfo && (
+            <ProfileEdit
+              userInfo={userInfo}
+              handleInputChange={(e) => {
+                const { id, value } = e.target;
+                setUserInfo((prev) => prev ? { ...prev, [id]: value } : prev);
+              }}
+              handleSaveChanges={() =>
+                console.log("Saving changes:", userInfo)}
+            />
+          )}
         </TabsContent>
       </Tabs>
-
-      <Button onClick={toggleDarkMode}>Toggle Dark Mode</Button>
     </div>
   );
 }

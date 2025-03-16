@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-
+import Link from "next/link";
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -48,23 +48,28 @@ export function Navigation() {
                 {link.text}
               </a>
             ))}
-            <Button
-              variant="outline"
-              className={`text-base  ${
-                isScrolled ? "hover:bg-gray-100" : "bg-gray-200 hover:bg-white"
-              } font-medium mr-2`}
-            >
-              Login
-            </Button>
-            <Button
-              className={` ${
-                isScrolled
-                  ? "bg-dental-600 hover:bg-dental-700"
-                  : "bg-dental-600 hover:bg-dental-500"
-              } text-base font-medium`}
-            >
-              Sign Up
-            </Button>
+            <Link href="/auth/login">
+              <Button
+                className={`${
+                  isScrolled
+                    ? "hover:bg-gray-200 bg-gray-100"
+                    : "bg-gray-200 hover:bg-white"
+                } text-base text-black font-medium`}
+              >
+                Login
+              </Button>
+            </Link>
+            <Link href="/auth/signup">
+              <Button
+                className={` ${
+                  isScrolled
+                    ? "bg-dental-600 hover:bg-dental-700"
+                    : "bg-dental-600 hover:bg-dental-500"
+                } text-base font-medium`}
+              >
+                Sign Up
+              </Button>
+            </Link>
           </nav>
         </div>
       </div>

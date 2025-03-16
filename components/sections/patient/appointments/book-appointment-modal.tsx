@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { TimePicker } from "../components/time-picker";
+import { TimePicker } from "./time-picker";
 import { Label } from "@/components/ui/label";
 import { appointment } from "@/app/api";
 

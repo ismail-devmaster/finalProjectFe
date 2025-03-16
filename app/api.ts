@@ -14,10 +14,13 @@ const request = async (method: string, endpoint: string, data?: any) => {
   } catch (error: any) {
     console.error(
       `Error ${method} ${endpoint}:`,
-      error.response?.data || error.message,
+      error.response?.data || error.message
     );
-    throw error.response?.data?.error ||
-      { error: `Failed to ${method} ${endpoint}` };
+    throw (
+      error.response?.data?.error || {
+        error: `Failed to ${method} ${endpoint}`,
+      }
+    );
   }
 };
 
@@ -75,7 +78,7 @@ export const auth = {
     dateOfBirth: string,
     sexId: string,
     medicalHistory: string,
-    phone: string,
+    phone: string
   ) =>
     request("post", "/auth/signup", {
       email,
@@ -105,7 +108,7 @@ export const auth = {
     tempToken: string,
     phone: string,
     sexId: number,
-    dateOfBirth: string,
+    dateOfBirth: string
   ) =>
     request("post", "/auth/update-profile", {
       tempToken,
@@ -117,6 +120,8 @@ export const auth = {
   googleLogin: () => {
     window.location.href = `${API_URL}/auth/google`;
   },
+
+  getUserId: () => request("get", "/auth/userId"),
 };
 
 export const doctor = {
@@ -128,7 +133,9 @@ export const doctor = {
 export const patient = {
   getAllPatients: () => request("get", "/patients"),
 
-  getPatientById: (id: number) => request("get", `/patients/${id}`),
+  getPatientDataById: (id: number) => request("get", `/patients/${id}`),
+
+  getPatientData: () => request("get", "/patients/data"),
 
   getPatientId: () => request("get", "/patients/id"),
 };
@@ -169,4 +176,20 @@ export const inventory = {
 
 export const unit = {
   getInventoryUnits: () => request("get", "/units"),
+};
+
+export const allTasks = {
+  createTask: (data: any) => request("post", "/tasks", data),
+  getAllTasks: () => request("get", "/tasks"),
+  getTaskById: (id: number) => request("get", `/tasks/${id}`),
+  updateTask: (id: number, data: any) => request("put", `/tasks/${id}`, data),
+  deleteTask: (id: number) => request("delete", `/tasks/${id}`),
+};
+
+export const taskStauts = {
+  getAllTaskStatuses: () => request("get", "/task-status"),
+};
+
+export const taskPriority = {
+  getAllTaskPriorities: () => request("get", "/task-priority"),
 };

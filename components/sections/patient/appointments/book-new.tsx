@@ -13,8 +13,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, DollarSign, PlusCircle, User } from "lucide-react";
 import { formatDate, formatTime } from "@/lib/utils";
-import { CreateActionModal } from "../components/create-action-modal";
-import { BookAppointmentModal } from "../components/book-appointment-modal";
+import { CreateActionModal } from "./create-action-modal";
+import { BookAppointmentModal } from "./book-appointment-modal";
 import { action } from "@/app/api";
 import { doctor } from "@/app/api";
 interface Doctor {

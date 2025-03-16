@@ -19,8 +19,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { AlertCircle, Calendar, Clock } from "lucide-react";
 import { formatDate, formatTime } from "@/lib/utils";
-import { RescheduleModal } from "../components/reschedule-modal";
-import { ConfirmationDialog } from "../components/confirmation-dialog";
+import { RescheduleModal } from "./reschedule-modal";
+import { ConfirmationDialog } from "./confirmation-dialog";
 import { appointment } from "@/app/api";
 
 interface User {
@@ -50,7 +50,7 @@ interface Appointment {
   additionalNotes: string;
 }
 
-export function Upcoming() {
+export function Waiting() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [selectedAppointment, setSelectedAppointment] = useState<
     Appointment | null
@@ -62,10 +62,10 @@ export function Upcoming() {
   useEffect(() => {
     async function fetchAppointments() {
       try {
-        const appointmetnData = await appointment
-          .getAppointmentsWithUpcomingStatus();
-        const upcomingAppointments = appointmetnData.appointments;
-        setAppointments(upcomingAppointments);
+        const appointmentData = await appointment
+          .getAppointmentsWithWaitingStatus();
+        const waitingAppointments = appointmentData.appointments;
+        setAppointments(waitingAppointments);
       } catch (error) {
         console.error("Failed to fetch appointments:", error);
       }
@@ -83,18 +83,20 @@ export function Upcoming() {
     setIsCancelDialogOpen(true);
   };
 
-  const confirmReschedule = () => {
-    const updatedAppointments = appointments.filter((appointment) =>
-      appointment.id !== selectedAppointment?.id
+  const confirmReschedule = (updatedAppointment: Appointment) => {
+    const updatedAppointments = appointments.map((appointment) =>
+      appointment.id === updatedAppointment.id
+        ? updatedAppointment
+        : appointment
     );
     setAppointments(updatedAppointments);
     setIsRescheduleModalOpen(false);
     setSelectedAppointment(null);
   };
-  const confirmCancel = () => {
+  const confirmCancel = async () => {
     try {
       if (selectedAppointment) {
-        appointment.deleteAppointment(selectedAppointment.id);
+        await appointment.deleteAppointment(selectedAppointment.id);
         const updatedAppointments = appointments.filter((appointment) =>
           appointment.id !== selectedAppointment.id
         );
@@ -109,9 +111,9 @@ export function Upcoming() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Upcoming Appointments</CardTitle>
+        <CardTitle>Waiting Appointments</CardTitle>
         <CardDescription>
-          Your scheduled appointments that are coming up.
+          Appointments that are currently in the waiting queue.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -119,9 +121,9 @@ export function Upcoming() {
           ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <AlertCircle className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-xl font-medium">No upcoming appointments</h3>
+              <h3 className="text-xl font-medium">No waiting appointments</h3>
               <p className="text-muted-foreground max-w-md mt-2">
-                You don't have any upcoming appointments scheduled at the
+                You don't have any appointments in the waiting queue at the
                 moment.
               </p>
             </div>
