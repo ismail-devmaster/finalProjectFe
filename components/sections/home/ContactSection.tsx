@@ -49,8 +49,7 @@ export function ContactSection() {
                   loading="lazy"
                   style={{ border: 0 }}
                   allowFullScreen
-                >
-                </iframe>
+                ></iframe>
               </div>
             </CardContent>
           </Card>
