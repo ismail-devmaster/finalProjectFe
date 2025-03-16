@@ -20,7 +20,7 @@ export function ContactSection() {
             <CardContent className="flex flex-col items-center p-6 text-center">
               <Phone className="h-12 w-12 text-dental-600 mb-4" />
               <h3 className="text-xl font-semibold mb-2">Phone</h3>
-              <p className="text-gray-500">+1 (555) 123-4567</p>
+              <p className="text-gray-500">+213 5 41 93 09 17</p>
             </CardContent>
           </Card>
           <Card className="bg-white/50 backdrop-blur-sm">
