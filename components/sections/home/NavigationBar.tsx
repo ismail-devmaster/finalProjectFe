@@ -45,13 +45,17 @@ export function Navigation() {
                 {link.text}
               </a>
             ))}
-            <Button
-              variant="outline"
-              className={`text-base  ${isScrolled ? "hover:bg-gray-100" : "bg-gray-200 hover:bg-white"
-                } font-medium mr-2`}
-            >
-              Login
-            </Button>
+            <Link href="/auth/login">
+              <Button
+                variant="outline"
+                className={`text-base  ${isScrolled
+                    ? "hover:bg-gray-100"
+                    : "bg-gray-200 hover:bg-white"
+                  } font-medium mr-2`}
+              >
+                Login
+              </Button>
+            </Link>
             <Link href="/auth/signup">
               <Button
                 className={` ${isScrolled
