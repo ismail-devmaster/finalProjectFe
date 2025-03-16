@@ -29,14 +29,20 @@ export default function Login() {
   const queryString = searchParams.toString();
 
   // 🔹 Start with 'false' if there are query params; otherwise 'true'
-  const [showError, setShowError] = useState(!queryString);
+  const [showErrorPassword, setShowErrorPassword] = useState(false);
+  const [showErrorEmail, setShowErrorEmail] = useState(false);
   const [isSubmited, setisSubmited] = useState(true);
   // 🔹 Update 'showError' based on 'errors.password' (fix dependency issue)
   useEffect(() => {
     if (errors.password) {
-      setShowError(true);
+      setShowErrorPassword(true);
     }
-  }, [password != "", isSubmited]);
+  }, [password != "" && email != "", isSubmited]);
+  useEffect(() => {
+    if (errors.email) {
+      setShowErrorEmail(true);
+    }
+  }, [password != "" && email != "", isSubmited]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -54,13 +60,17 @@ export default function Login() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <EmailInput email={email} setField={setField} error={errors.email} />
+          <EmailInput
+            email={email}
+            setField={setField}
+            error={showErrorEmail ? errors.email : ""}
+          />
           <PasswordInput
             password={password}
             setField={setField}
             showPassword={showPassword}
             toggleShowPassword={toggleShowPassword}
-            error={showError ? errors.password : ""}
+            error={showErrorPassword ? errors.password : ""}
           />
           <div className="flex items-center justify-between">
             <Link

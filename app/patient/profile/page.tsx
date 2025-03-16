@@ -18,14 +18,6 @@ type PersonalInfoType = {
   patientId: string;
   medicalHistory: string;
 };
-
-type insuranceInfoType = {
-  provider: string;
-  policyNumber: string;
-  groupNumber: string;
-  coveragePeriod: string;
-};
-
 type TabType = {
   value: string;
   label: string;

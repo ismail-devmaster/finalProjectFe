@@ -23,6 +23,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+
+type PersonalInfoType = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  dob: string;
+  address: string;
+  patientId: string;
+  medicalHistory: string;
+};
+
 const mockData = {
   profile: {
     name: "John Doe",
@@ -62,10 +74,88 @@ const mockData = {
     estimatedStart: "10:05 AM",
   },
 };
-
+import { action, patient, payment } from "@/app/api";
+import { useEffect } from "react";
 export default function Page() {
+  const [profileInfo, setProfileInfo] = useState<PersonalInfoType | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isNewPatient] = useState(false);
+  const [actions, setActions] = useState<any[]>([]);
+  const [payments, setPayments] = useState<any[]>([]);
+  const [selectedAction, setSelectedAction] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchActions = async () => {
+      try {
+        const patientId = await patient.getPatientId();
+        const actionData = await action.getActionsByPatientId(
+          patientId.patientId,
+        );
+        setActions(actionData.actions);
+      } catch (error) {
+        console.error("Error fetching actions:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchActions();
+  }, []);
+  useEffect(() => {
+    const fetchPatientData = async () => {
+      try {
+        const response = await patient.getPatientData();
+        if (response?.patientData) {
+          const { user, medicalHistory } = response.patientData;
+          setProfileInfo({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            phone: user.phone,
+            dob: new Date(user.dateOfBirth).toISOString().split("T")[0],
+            address: "", // Placeholder until actual data is available
+            patientId: user.id.toString(),
+            medicalHistory: medicalHistory || "No medical history available.",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching patient data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchPatientData();
+  }, []);
+
+  useEffect(() => {
+    const fetchPatientData = async () => {
+      try {
+        const response = await patient.getPatientData();
+        if (response?.patientData) {
+          const { user, medicalHistory } = response.patientData;
+          setProfileInfo({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            phone: user.phone,
+            dob: new Date(user.dateOfBirth).toISOString().split("T")[0],
+            address: "", // Placeholder until actual data is available
+            patientId: user.id.toString(),
+            medicalHistory: medicalHistory || "No medical history available.",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching patient data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchPatientData();
+  }, []);
+
+  if (isLoading) {
+    return <div className="text-center p-4">Loading...</div>;
+  }
 
   return (
     <div className="w-full max-w-6xl mx-auto">
@@ -103,118 +193,124 @@ export default function Page() {
             {
               title: "Appointments",
               icon: <Calendar />,
-              content: isNewPatient ? (
-                <p className="text-sm text-muted-foreground text-center">
-                  No upcoming appointments
-                </p>
-              ) : (
-                mockData.appointments.upcoming.map((apt, i) => (
-                  <p key={i} className="text-xs">
-                    {apt}
+              content: isNewPatient
+                ? (
+                  <p className="text-sm text-muted-foreground text-center">
+                    No upcoming appointments
                   </p>
-                ))
-              ),
+                )
+                : (
+                  mockData.appointments.upcoming.map((apt, i) => (
+                    <p key={i} className="text-xs">
+                      {apt}
+                    </p>
+                  ))
+                ),
             },
             {
               title: "Health Records",
               icon: <FileText />,
-              content: isNewPatient ? (
-                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="link"
-                      className="text-sm text-blue-600 hover:underline"
-                    >
-                      Complete health questionnaire
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                      <DialogTitle>Health Questionnaire</DialogTitle>
-                      <DialogDescription>
-                        Please fill out your health information.
-                      </DialogDescription>
-                    </DialogHeader>
-                    {["Height", "Weight", "Allergies", "Medications"].map(
-                      (label, i) => (
-                        <div
-                          key={i}
-                          className="grid grid-cols-4 items-center gap-4"
-                        >
-                          <Label className="text-right">{label}</Label>
-                          {i < 3 ? (
-                            <Input className="col-span-3" />
-                          ) : (
-                            <Textarea className="col-span-3" />
-                          )}
-                        </div>
-                      )
-                    )}
-                    <Button
-                      type="submit"
-                      onClick={() => setIsDialogOpen(false)}
-                    >
-                      Submit
-                    </Button>
-                  </DialogContent>
-                </Dialog>
-              ) : (
-                <>
-                  <p className="text-sm font-medium">Recent Procedures</p>
-                  {mockData.records.procedures.map((p, i) => (
-                    <p key={i} className="text-xs">
-                      {p}
+              content: isNewPatient
+                ? (
+                  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="link"
+                        className="text-sm text-blue-600 hover:underline"
+                      >
+                        Complete health questionnaire
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>Health Questionnaire</DialogTitle>
+                        <DialogDescription>
+                          Please fill out your health information.
+                        </DialogDescription>
+                      </DialogHeader>
+                      {["Height", "Weight", "Allergies", "Medications"].map(
+                        (label, i) => (
+                          <div
+                            key={i}
+                            className="grid grid-cols-4 items-center gap-4"
+                          >
+                            <Label className="text-right">{label}</Label>
+                            {i < 3
+                              ? <Input className="col-span-3" />
+                              : <Textarea className="col-span-3" />}
+                          </div>
+                        ),
+                      )}
+                      <Button
+                        type="submit"
+                        onClick={() => setIsDialogOpen(false)}
+                      >
+                        Submit
+                      </Button>
+                    </DialogContent>
+                  </Dialog>
+                )
+                : (
+                  <>
+                    <p className="text-sm font-medium">Recent Procedures</p>
+                    {mockData.records.procedures.map((p, i) => (
+                      <p key={i} className="text-xs">
+                        {p}
+                      </p>
+                    ))}
+                    <p className="text-sm font-medium">Allergies</p>
+                    <p className="text-xs text-red-500">
+                      {mockData.records.allergies}
                     </p>
-                  ))}
-                  <p className="text-sm font-medium">Allergies</p>
-                  <p className="text-xs text-red-500">
-                    {mockData.records.allergies}
-                  </p>
-                </>
-              ),
+                  </>
+                ),
             },
             {
               title: "Payments",
               icon: <CreditCard />,
-              content: isNewPatient ? (
-                <p className="text-sm text-muted-foreground">
-                  No recent transactions
-                </p>
-              ) : (
-                <>
-                  {mockData.payments.transactions.map((t, i) => (
-                    <p key={i} className="text-xs">
-                      {t}
-                    </p>
-                  ))}
-                  <p
-                    className={`text-lg font-bold ${mockData.payments.balanceColor}`}
-                  >
-                    {mockData.payments.balance}
+              content: isNewPatient
+                ? (
+                  <p className="text-sm text-muted-foreground">
+                    No recent transactions
                   </p>
-                </>
-              ),
+                )
+                : (
+                  <>
+                    {mockData.payments.transactions.map((t, i) => (
+                      <p key={i} className="text-xs">
+                        {t}
+                      </p>
+                    ))}
+                    <p
+                      className={`text-lg font-bold ${mockData.payments.balanceColor}`}
+                    >
+                      {mockData.payments.balance}
+                    </p>
+                  </>
+                ),
             },
             {
               title: "Queue Status",
               icon: <HourglassIcon />,
-              content: isNewPatient ? (
-                <p className="text-sm text-muted-foreground text-center">
-                  No current appointment
-                </p>
-              ) : (
-                <>
-                  <p className="text-2xl font-bold text-green-600">
-                    {mockData.queue.waitTime}
+              content: isNewPatient
+                ? (
+                  <p className="text-sm text-muted-foreground text-center">
+                    No current appointment
                   </p>
-                  <p className="text-xs">
-                    Your appointment: {mockData.queue.appointment}
-                  </p>
-                  <p className="text-xs">
-                    Estimated start: {mockData.queue.estimatedStart}
-                  </p>
-                </>
-              ),
+                )
+                : (
+                  <>
+                    <p className="text-2xl font-bold text-green-600">
+                      {mockData.queue.waitTime}
+                    </p>
+                    <p className="text-xs">
+                      Your appointment: {mockData.queue.appointment}
+                    </p>
+                    <p className="text-xs">
+                      Estimated start: {mockData.queue.estimatedStart}
+                    </p>
+                  </>
+                ),
             },
           ].map(({ title, icon, content }, i) => (
             <Card key={i}>
