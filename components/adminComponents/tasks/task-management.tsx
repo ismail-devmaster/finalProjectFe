@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,13 +13,13 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import type { Task, TaskFormData } from "@/types/task";
-import { TaskStats } from "./task-stats";
-import { TaskFilters } from "./task-filters";
-import { TaskTable } from "./task-table";
-import { MyTasksTable } from "./my-tasks-table";
-import { CompletedTasksTable } from "./completed-tasks-table";
-import { TaskDetailsDialog } from "./task-details-dialog";
-import { TaskFormDialog } from "./task-form-dialog";
+import { TaskStats } from "@/components/adminComponents/tasks/task-stats";
+import { TaskFilters } from "@/components/adminComponents/tasks/task-filters";
+import { TaskTable } from "@/components/adminComponents/tasks/task-table";
+import { MyTasksTable } from "@/components/adminComponents/tasks/my-tasks-table";
+import { CompletedTasksTable } from "@/components/adminComponents/tasks/completed-tasks-table";
+import { TaskDetailsDialog } from "@/components/adminComponents/tasks/task-details-dialog";
+import { TaskFormDialog } from "@/components/adminComponents/tasks/task-form-dialog";
 
 // Import the API function from your api.ts file
 import { allTasks, auth } from "@/app/api";
@@ -67,10 +67,10 @@ export function TaskManagement() {
       task.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       task.assignee.firstName.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesPriority =
-      priorityFilter === "all" || task.priority === priorityFilter;
-    const matchesStatus =
-      statusFilter === "all" || task.status === statusFilter;
+    const matchesPriority = priorityFilter === "all" ||
+      task.priority === priorityFilter;
+    const matchesStatus = statusFilter === "all" ||
+      task.status === statusFilter;
 
     return matchesSearch && matchesPriority && matchesStatus;
   });
@@ -88,18 +88,16 @@ export function TaskManagement() {
     setTaskFormData({
       title: task.title,
       description: task.description,
-      assignee:
-        task.assignee.firstName === "Sarah Thompson"
-          ? "sarah"
-          : task.assignee.firstName === "Dr. Emma Wilson"
-          ? "emma"
-          : "michael",
-      assignor:
-        task.assignor.firstName === "Sarah Thompson"
-          ? "sarah"
-          : task.assignor.firstName === "Dr. Emma Wilson"
-          ? "emma"
-          : "michael",
+      assignee: task.assignee.firstName === "Sarah Thompson"
+        ? "sarah"
+        : task.assignee.firstName === "Dr. Emma Wilson"
+        ? "emma"
+        : "michael",
+      assignor: task.assignor.firstName === "Sarah Thompson"
+        ? "sarah"
+        : task.assignor.firstName === "Dr. Emma Wilson"
+        ? "emma"
+        : "michael",
       priority: task.priority,
       dueDate: formattedDueDate,
     });
@@ -176,7 +174,8 @@ export function TaskManagement() {
       // Update existing task
       toast({
         title: "Task Updated",
-        description: `Task "${taskFormData.title}" has been updated successfully`,
+        description:
+          `Task "${taskFormData.title}" has been updated successfully`,
       });
       setIsEditTaskDialogOpen(false);
     } else {
