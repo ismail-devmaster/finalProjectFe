@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-import NotificationsSettings from "@/components/sections/patient/profile/NotificationSettings";
 import ProfileEdit from "@/components/sections/patient/profile/ProfileEdit";
 import ProfileView from "@/components/sections/patient/profile/ProfileView";
 import { useEffect, useState } from "react";
