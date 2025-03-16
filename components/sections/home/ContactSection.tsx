@@ -44,7 +44,7 @@ export function ContactSection() {
             <CardContent className="p-0">
               <div className="aspect-[2/1] w-full">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.991641538527!2d2.2922926156744784!3d48.8583736792866!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66e2964e34e2d%3A0x8ddca9ee380ef7e0!2sEiffel%20Tower!5e0!3m2!1sen!2sfr!4v1647951371002!5m2!1sen!2sfr"
+                  src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d1288.3903746345609!2d2.8527784!3d36.4961343!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sar!2sdz!4v1742107248442!5m2!1sar!2sdz                  "
                   className="w-full h-full"
                   loading="lazy"
                   style={{ border: 0 }}
