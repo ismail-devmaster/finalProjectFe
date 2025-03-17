@@ -143,7 +143,7 @@ export function PaymentTable({
                         <AvatarImage src={`/placeholder.svg?height=32&width=32`} alt={`Patient ${payment.patientId}`} />
                         <AvatarFallback>{payment.patientId}</AvatarFallback>
                       </Avatar>
-                      <div className="font-medium">Patient {payment.patientId}</div>
+                      <div className="font-medium">{payment.patient.user.firstName} {payment.patient.user.lastName}</div>
                     </div>
                   </TableCell>
                   <TableCell>${payment.amount.toFixed(2)}</TableCell>

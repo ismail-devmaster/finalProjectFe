@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,37 +10,60 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import type { Payment } from "@/types/payment"
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import type { Payment } from "@/types/payment";
 
 interface DetailsDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  payment: Payment | null
-  payments: Payment[]
-  onViewReceipt: (payment: Payment) => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  payment: Payment | null;
+  payments: Payment[];
+  onViewReceipt: (payment: Payment) => void;
 }
 
-export function DetailsDialog({ open, onOpenChange, payment, payments, onViewReceipt }: DetailsDialogProps) {
-  if (!payment) return null
+export function DetailsDialog({
+  open,
+  onOpenChange,
+  payment,
+  payments,
+  onViewReceipt,
+}: DetailsDialogProps) {
+  if (!payment) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
           <DialogTitle>Payment Details</DialogTitle>
-          <DialogDescription>Payment information for Patient {payment.patientId}</DialogDescription>
+          <DialogDescription>
+            Payment information for {payment.patient.user.firstName}{" "}
+            {payment.patient.user.lastName}
+          </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="flex items-center gap-4">
             <Avatar className="h-16 w-16">
-              <AvatarImage src={`/placeholder.svg?height=64&width=64`} alt={`Patient ${payment.patientId}`} />
+              <AvatarImage
+                src={`/placeholder.svg?height=64&width=64`}
+                alt={`Patient ${payment.patientId}`}
+              />
               <AvatarFallback>{payment.patientId}</AvatarFallback>
             </Avatar>
             <div>
-              <h3 className="text-lg font-medium">Patient {payment.patientId}</h3>
-              <p className="text-sm text-muted-foreground">{payment.patient.medicalHistory}</p>
+              <h3 className="text-lg font-medium">
+                {payment.patient.user.firstName} {payment.patient.user.lastName}
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                {payment.patient.user.id}
+              </p>
             </div>
           </div>
 
@@ -57,7 +80,9 @@ export function DetailsDialog({ open, onOpenChange, payment, payments, onViewRec
             </div>
             <div>
               <h4 className="text-sm font-medium">Amount</h4>
-              <p className="text-sm font-semibold">${payment.amount.toFixed(2)}</p>
+              <p className="text-sm font-semibold">
+                ${payment.amount.toFixed(2)}
+              </p>
             </div>
             <div>
               <h4 className="text-sm font-medium">Status</h4>
@@ -66,8 +91,8 @@ export function DetailsDialog({ open, onOpenChange, payment, payments, onViewRec
                   payment.status.status === "PAID"
                     ? "outline"
                     : payment.status.status === "PENDING"
-                      ? "secondary"
-                      : "destructive"
+                    ? "secondary"
+                    : "destructive"
                 }
               >
                 {payment.status.status.toLowerCase()}
@@ -97,11 +122,15 @@ export function DetailsDialog({ open, onOpenChange, payment, payments, onViewRec
 
           <div>
             <h4 className="text-sm font-medium">Description</h4>
-            <p className="text-sm mt-1 p-3 bg-muted rounded-md">{payment.description}</p>
+            <p className="text-sm mt-1 p-3 bg-muted rounded-md">
+              {payment.description}
+            </p>
           </div>
 
           <div>
-            <h4 className="text-sm font-medium mb-2">Patient Payment History</h4>
+            <h4 className="text-sm font-medium mb-2">
+              Patient Payment History
+            </h4>
             <div className="border rounded-md overflow-hidden">
               <Table>
                 <TableHeader>
@@ -115,7 +144,10 @@ export function DetailsDialog({ open, onOpenChange, payment, payments, onViewRec
                 <TableBody>
                   {payments
                     .filter((pay) => pay.patientId === payment.patientId)
-                    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                    .sort(
+                      (a, b) =>
+                        new Date(b.date).getTime() - new Date(a.date).getTime()
+                    )
                     .map((pay) => (
                       <TableRow key={pay.id}>
                         <TableCell>
@@ -133,8 +165,8 @@ export function DetailsDialog({ open, onOpenChange, payment, payments, onViewRec
                               pay.status.status === "PAID"
                                 ? "outline"
                                 : pay.status.status === "PENDING"
-                                  ? "secondary"
-                                  : "destructive"
+                                ? "secondary"
+                                : "destructive"
                             }
                           >
                             {pay.status.status.toLowerCase()}
@@ -153,8 +185,8 @@ export function DetailsDialog({ open, onOpenChange, payment, payments, onViewRec
           </Button>
           <Button
             onClick={() => {
-              onOpenChange(false)
-              onViewReceipt(payment)
+              onOpenChange(false);
+              onViewReceipt(payment);
             }}
           >
             View Receipt
@@ -162,6 +194,5 @@ export function DetailsDialog({ open, onOpenChange, payment, payments, onViewRec
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
-
