@@ -48,7 +48,7 @@ const navItems: NavItem[] = [
   },
   {
     title: "Appointments",
-    href: "/appointments",
+    href: "/admin/appointments",
     icon: Calendar,
   },
   {

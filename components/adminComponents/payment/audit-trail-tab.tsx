@@ -30,7 +30,7 @@ export function AuditTrailTab({ payments }: AuditTrailTabProps) {
           details: `Payment received for ${payment.action.description}`,
         })
 
-        // Add a receipt printed entry for some payments
+        // Add aeceipt printed entry for some payments
         if (payment.id % 3 === 0) {
           auditEntries.push({
             id: `AUD-${payment.id}-2`,
