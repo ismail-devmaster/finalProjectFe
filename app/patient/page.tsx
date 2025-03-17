@@ -53,7 +53,6 @@ export default function Page() {
             email: user.email,
             address: user.address || "No address available",
           });
-          profileInfo && console.log("Profile Info:", profileInfo);
           setAppointments(
             actionData.actions.map((appt: any) =>
               `${capitalize(appt.appointmentType?.type || "Unknown")}: ${formatDate(

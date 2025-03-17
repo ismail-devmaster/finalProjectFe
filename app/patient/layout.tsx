@@ -20,8 +20,20 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+type PersonalInfoType = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  dob: string;
+  address: string;
+  patientId: string;
+  medicalHistory: string;
+};
+import { auth, patient } from "@/app/api";
 const PatientDashboardComponent = ({
   children,
 }: {
@@ -30,7 +42,44 @@ const PatientDashboardComponent = ({
   // export default function PatientDashboardComponent({ children }: { children: React.ReactNode }) {
   const [darkMode, setDarkMode] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userInfo, setUserInfo] = useState<PersonalInfoType | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
+  const router = useRouter();
+  // Handle Logout
+  const handleLogout = async () => {
+    try {
+      await auth.logout();
+      router.push("/"); // Redirect to home or login page
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
+  useEffect(() => {
+    const fetchPatientData = async () => {
+      try {
+        const response = await patient.getPatientData();
+        if (response?.patientData) {
+          const { user, medicalHistory } = response.patientData;
+          setUserInfo({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            phone: user.phone,
+            dob: new Date(user.dateOfBirth).toISOString().split("T")[0],
+            address: "", // Placeholder until actual data is available
+            patientId: user.id.toString(),
+            medicalHistory: medicalHistory || "No medical history available.",
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching patient data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchPatientData();
+  }, []);
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
@@ -48,7 +97,14 @@ const PatientDashboardComponent = ({
     { href: "/patient/appointments", icon: Calendar, label: "Appointments" },
     { href: "/patient/payments", icon: CreditCard, label: "Payments" },
   ];
-
+  const getInitials = (firstName: string, lastName: string) => {
+    return `${firstName.charAt(0).toUpperCase()}${lastName.charAt(0).toUpperCase()
+      }`;
+  };
+  const PFP = getInitials(
+    userInfo ? userInfo.firstName : "",
+    userInfo ? userInfo.lastName : "",
+  );
   return (
     <div
       className={`flex flex-col h-screen overflow-hidden ${darkMode ? "dark" : ""
@@ -71,10 +127,10 @@ const PatientDashboardComponent = ({
                   src="/placeholder.svg?height=32&width=32"
                   alt="Patient"
                 />
-                <AvatarFallback>JD</AvatarFallback>
+                <AvatarFallback>{PFP}</AvatarFallback>
               </Avatar>
               <span className="text-sm font-semibold text-gray-800 dark:text-white md:text-base">
-                John Doe
+                {userInfo?.firstName} {userInfo?.lastName}
               </span>
             </Link>
           </div>
@@ -108,7 +164,11 @@ const PatientDashboardComponent = ({
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-            <Button variant="ghost" size="icon">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => handleLogout()}
+            >
               <LogOut className="h-4 w-4" />
             </Button>
           </div>
