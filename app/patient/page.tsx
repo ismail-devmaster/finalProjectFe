@@ -1,8 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { action, patient, payment } from "@/app/api";
-import { useEffect } from "react";
+import { action, patient } from "@/app/api";
 import Overview from "@/components/sections/patient/Overview";
 
 type PersonalInfoType = {
@@ -15,6 +14,7 @@ type PersonalInfoType = {
   patientId: string;
   medicalHistory: string;
 };
+
 export default function Page() {
   const [profileInfo, setProfileInfo] = useState<PersonalInfoType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -22,16 +22,13 @@ export default function Page() {
   const [isNewPatient] = useState(false);
   const [actions, setActions] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
-  const [selectedAction, setSelectedAction] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchActions = async () => {
       try {
         const patientId = await patient.getPatientId();
-        const actionData = await action.getActionsByPatientId(
-          patientId.patientId,
-        );
-        setActions(actionData.actions);
+        const actionData = await action.getActionsByPatientId(patientId.patientId);
+        setActions(actionData.actions || []);
       } catch (error) {
         console.error("Error fetching actions:", error);
       } finally {
@@ -40,7 +37,6 @@ export default function Page() {
     };
     fetchActions();
   }, []);
-  console.log(actions);
 
   useEffect(() => {
     const fetchPatientData = async () => {
@@ -54,7 +50,7 @@ export default function Page() {
             email: user.email,
             phone: user.phone,
             dob: new Date(user.dateOfBirth).toISOString().split("T")[0],
-            address: "", // Placeholder until actual data is available
+            address: user.address || "there is no address", // Placeholder until actual data is available
             patientId: user.id.toString(),
             medicalHistory: medicalHistory || "No medical history available.",
           });
@@ -72,53 +68,73 @@ export default function Page() {
     return <div className="text-center p-4">Loading...</div>;
   }
 
-  const mockData = {
-    profile: {
-      name: "John Doe",
-      dob: "05/15/1985",
-      phone: "+1 (555) 123-4567",
-      email: "john.doe@example.com",
-      address: "123 Main St, Anytown, USA",
-    },
-    appointments: {
-      upcoming: [
-        "Cleaning: June 15, 2023 at 10:00 AM",
-        "Check-up: August 22, 2023 at 2:30 PM",
-      ],
-      past: [
-        "Check-up: March 3, 2023 at 2:30 PM",
-        "Filling: January 12, 2023 at 11:00 AM",
-      ],
-    },
-    records: {
-      procedures: [
-        "Filling (Tooth #18): January 12, 2023",
-        "Root Canal (Tooth #30): November 5, 2022",
-      ],
-      allergies: "Penicillin, Latex",
-    },
-    payments: {
-      transactions: [
-        "$150 - Check-up (March 3, 2023)",
-        "$300 - Filling (January 12, 2023)",
-      ],
-      balance: "$75",
-      balanceColor: "text-red-500",
-    },
-    queue: {
-      waitTime: "15 min",
-      appointment: "10:00 AM",
-      estimatedStart: "10:05 AM",
-    },
-  };
+  const fetchedDataValid = profileInfo && actions.length > 0;
+
+  const mockData = fetchedDataValid
+    ? {
+      profile: {
+        name: `${profileInfo.firstName} ${profileInfo.lastName}`,
+        dob: profileInfo.dob,
+        phone: profileInfo.phone,
+        email: profileInfo.email,
+        address: profileInfo.address,
+      },
+      appointments: actions.length
+        ? {
+          upcoming: actions.map((act) => act.description),
+          past: [],
+        }
+        : { upcoming: [], past: [] },
+      records: {
+        procedures: [],
+        allergies: "Cannot fetch data",
+      },
+      payments: payments.length
+        ? {
+          transactions: payments.map((pay) => `$${pay.amount} - ${pay.description}`),
+          balance: "$0",
+          balanceColor: "text-green-500",
+        }
+        : { transactions: [], balance: "Cannot fetch data", balanceColor: "text-red-500" },
+      queue: {
+        waitTime: "Cannot fetch data",
+        appointment: "Canoot fetch data",
+        estimatedStart: "Canoot fetch data",
+      },
+    }
+    : {
+      profile: {
+        name: "Cannot fetch data",
+        dob: "Cannot fetch data",
+        phone: "Cannot fetch data",
+        email: "Cannot fetch data",
+        address: "Cannot fetch data",
+      },
+      appointments: {
+        upcoming: ["Cannot fetch data"],
+        past: ["Cannot fetch data"],
+      },
+      records: {
+        procedures: ["Cannot fetch data"],
+        allergies: "Cannot fetch data",
+      },
+      payments: {
+        transactions: ["Cannot fetch data"],
+        balance: "Cannot fetch data",
+        balanceColor: "text-red-500",
+      },
+      queue: {
+        waitTime: "Cannot fetch data",
+        appointment: "Cannot fetch data",
+        estimatedStart: "Cannot fetch data",
+      },
+    };
 
   return (
     <div className="w-full max-w-6xl mx-auto">
       <Card className="w-full max-w-4xl mx-auto">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">
-            Quick Actions Overview
-          </CardTitle>
+          <CardTitle className="text-2xl font-bold">Quick Actions Overview</CardTitle>
         </CardHeader>
         <Overview
           mockData={mockData}
@@ -130,4 +146,3 @@ export default function Page() {
     </div>
   );
 }
-
