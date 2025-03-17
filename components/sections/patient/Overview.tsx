@@ -1,40 +1,7 @@
 "use client";
-import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Calendar,
-  CreditCard,
-  FileText,
-  HourglassIcon,
-  Mail,
-  MapPin,
-  Phone,
-  User,
-} from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Calendar, CreditCard, Mail, MapPin, Phone, User } from "lucide-react";
 import { ReactNode } from "react";
-type PersonalInfoType = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  dob: string;
-  address: string;
-  patientId: string;
-  medicalHistory: string;
-};
-
 function IconCard(
   { title, icon, content }: {
     title: string;
@@ -60,7 +27,7 @@ interface OverviewProps {
 }
 
 const Overview: React.FC<OverviewProps> = (
-  { mockData, isNewPatient, isDialogOpen, setIsDialogOpen },
+  { mockData, isNewPatient },
 ) => {
   const sections = [
     {
@@ -99,55 +66,6 @@ const Overview: React.FC<OverviewProps> = (
         ),
     },
     {
-      title: "Health Records",
-      icon: <FileText />,
-      content: isNewPatient
-        ? (
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button
-                variant="link"
-                className="text-sm text-blue-600 hover:underline"
-              >
-                Complete health questionnaire
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Health Questionnaire</DialogTitle>
-                <DialogDescription>
-                  Please fill out your health information.
-                </DialogDescription>
-              </DialogHeader>
-              {["Height", "Weight", "Allergies", "Medications"].map((
-                label,
-                i,
-              ) => (
-                <div key={i} className="grid grid-cols-4 items-center gap-4">
-                  <Label className="text-right">{label}</Label>
-                  {i < 3
-                    ? <Input className="col-span-3" />
-                    : <Textarea className="col-span-3" />}
-                </div>
-              ))}
-              <Button type="submit" onClick={() => setIsDialogOpen(false)}>
-                Submit
-              </Button>
-            </DialogContent>
-          </Dialog>
-        )
-        : (
-          <>
-            <p className="text-sm font-medium">Recent Procedures</p>
-            {mockData.records.procedures.map((p: string, i: number) => (
-              <p key={i} className="text-xs">{p}</p>
-            ))}
-            <p className="text-sm font-medium">Allergies</p>
-            <p className="text-xs text-red-500">{mockData.records.allergies}</p>
-          </>
-        ),
-    },
-    {
       title: "Payments",
       icon: <CreditCard />,
       content: isNewPatient
@@ -164,30 +82,7 @@ const Overview: React.FC<OverviewProps> = (
             <p
               className={`text-lg font-bold ${mockData.payments.balanceColor}`}
             >
-              {mockData.payments.balance}
-            </p>
-          </>
-        ),
-    },
-    {
-      title: "Queue Status",
-      icon: <HourglassIcon />,
-      content: isNewPatient
-        ? (
-          <p className="text-sm text-muted-foreground text-center">
-            No current appointment
-          </p>
-        )
-        : (
-          <>
-            <p className="text-2xl font-bold text-green-600">
-              {mockData.queue.waitTime}
-            </p>
-            <p className="text-xs">
-              Your appointment: {mockData.queue.appointment}
-            </p>
-            <p className="text-xs">
-              Estimated start: {mockData.queue.estimatedStart}
+              ${mockData.payments.balance}
             </p>
           </>
         ),
@@ -196,12 +91,10 @@ const Overview: React.FC<OverviewProps> = (
 
   return (
     <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-
       {sections.map(({ title, icon, content }, i) => (
         <IconCard key={i} title={title} icon={icon} content={content} />
       ))}
     </CardContent>
-
   );
 };
 export default Overview;

@@ -72,7 +72,6 @@ export function History({ patientId }: HistoryProps) {
       fetchActions();
     }
   }, [patientId]);
-
   const handleViewDetails = async (actionItem: Action) => {
     setSelectedAction(actionItem);
     try {
@@ -80,6 +79,7 @@ export function History({ patientId }: HistoryProps) {
         actionItem.id,
       );
       setAppointments(appointmentData.appointments);
+      console.log(actionItem);
       setIsModalOpen(true);
     } catch (error) {
       console.error("Failed to fetch appointments:", error);
