@@ -66,6 +66,7 @@ export function Upcoming() {
           .getAppointmentsWithUpcomingStatus();
         const upcomingAppointments = appointmetnData.appointments;
         setAppointments(upcomingAppointments);
+        console.log("upcomingapppointments", upcomingAppointments);
       } catch (error) {
         console.error("Failed to fetch appointments:", error);
       }
