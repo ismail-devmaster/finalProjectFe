@@ -6,9 +6,9 @@ import { useState } from "react";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from "@/components/ui/card";
 import {
   Table,
@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/dialog";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
-import { ActionHistoryDialog } from "./action-history-dialog";
+import { ActionHistoryDialog } from "@/components/sections/doctor/parts/union/action-history-dialog";
 
 interface Patient {
   id: number;
@@ -54,8 +54,9 @@ export default function Patients({ patients }: PatientsProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [showActionHistory, setShowActionHistory] = useState(false);
-  const [actionHistoryPatient, setActionHistoryPatient] =
-    useState<Patient | null>(null);
+  const [actionHistoryPatient, setActionHistoryPatient] = useState<
+    Patient | null
+  >(null);
 
   const filteredPatients = patients.filter((patient) =>
     patient.user.firstName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -99,42 +100,48 @@ export default function Patients({ patients }: PatientsProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredPatients.length > 0 ? (
-                filteredPatients.map((patient) => (
-                  <TableRow key={patient.id} className="hover:bg-muted/50">
-                    <TableCell>
-                      <span
-                        className="cursor-pointer hover:underline"
-                        onClick={() => handleNameClick(patient)}
-                      >
-                        {patient.user.firstName} {patient.user.lastName}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      {format(new Date(patient.user.dateOfBirth), "dd/MM/yyyy")}
-                    </TableCell>
-                    <TableCell>{patient.user.email}</TableCell>
-                    <TableCell>{patient.user.phone}</TableCell>
-                    <TableCell>
-                      <div className="flex space-x-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={(e) => handleActionsClick(e, patient)}
+              {filteredPatients.length > 0
+                ? (
+                  filteredPatients.map((patient) => (
+                    <TableRow key={patient.id} className="hover:bg-muted/50">
+                      <TableCell>
+                        <span
+                          className="cursor-pointer hover:underline"
+                          onClick={() =>
+                            handleNameClick(patient)}
                         >
-                          Actions
-                        </Button>
-                      </div>
+                          {patient.user.firstName} {patient.user.lastName}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        {format(
+                          new Date(patient.user.dateOfBirth),
+                          "dd/MM/yyyy",
+                        )}
+                      </TableCell>
+                      <TableCell>{patient.user.email}</TableCell>
+                      <TableCell>{patient.user.phone}</TableCell>
+                      <TableCell>
+                        <div className="flex space-x-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={(e) => handleActionsClick(e, patient)}
+                          >
+                            Actions
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )
+                : (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center">
+                      No patients found.
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center">
-                    No patients found.
-                  </TableCell>
-                </TableRow>
-              )}
+                )}
             </TableBody>
           </Table>
         </CardContent>
@@ -162,7 +169,7 @@ export default function Patients({ patients }: PatientsProps) {
                 <div className="col-span-3">
                   {format(
                     new Date(selectedPatient.user.dateOfBirth),
-                    "dd/MM/yyyy"
+                    "dd/MM/yyyy",
                   )}
                 </div>
               </div>

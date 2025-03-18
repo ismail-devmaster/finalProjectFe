@@ -3,9 +3,8 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import Appointments from "@/app/staff/doctor/appointments";
-import Patients from "@/app/staff/doctor/patients";
-// Import the real appointment API from your appointment.ts file
+import Appointments from "@/components/sections/doctor/parts/appointments";
+import Patients from "@/components/sections/doctor/parts/patients";
 
 interface Patient {
   id: number;
