@@ -126,7 +126,8 @@ export default function Patients({ patients }: PatientsProps) {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={(e) => handleActionsClick(e, patient)}
+                            onClick={(e) =>
+                              handleActionsClick(e, patient)}
                           >
                             Actions
                           </Button>
@@ -201,7 +202,7 @@ export default function Patients({ patients }: PatientsProps) {
 
       <ActionHistoryDialog
         open={showActionHistory}
-        onOpenChange={(open) => {
+        onOpenChangeAction={(open) => {
           setShowActionHistory(open);
           if (!open) setActionHistoryPatient(null);
         }}
