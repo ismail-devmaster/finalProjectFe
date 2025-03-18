@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import {
   Table,
@@ -26,48 +25,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Calendar, Clock, DollarSign, FileText, User } from "lucide-react";
-import { action, patient, payment } from "@/app/api";
+import { Calendar, FileText } from "lucide-react";
+import { usePatientPayments } from "@/hooks/pages/usePatientPayments";
 export default function PaymentsHistory() {
-  const [actions, setActions] = useState<any[]>([]);
-  const [payments, setPayments] = useState<any[]>([]);
-  const [selectedAction, setSelectedAction] = useState<number | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchActions = async () => {
-      try {
-        const patientId = await patient.getPatientId();
-        const actionData = await action.getActionsByPatientId(
-          patientId.patientId,
-        );
-        setActions(actionData.actions);
-      } catch (error) {
-        console.error("Error fetching actions:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchActions();
-  }, []);
-
-  const handleViewDetails = async (actionId: number) => {
-    setSelectedAction(actionId);
-    setIsDialogOpen(true);
-    try {
-      const paymentsData = await payment.getPaymentsByActionId(actionId);
-      setPayments(paymentsData.payments);
-    } catch (error) {
-      console.error("Error fetching payments:", error);
-      setPayments([]);
-    }
-  };
-
-  const actionDetails = selectedAction
-    ? actions.find((action) => action.id === selectedAction)
-    : null;
-
+  const {
+    actions,
+    payments,
+    isDialogOpen,
+    setIsDialogOpen,
+    isLoading,
+    handleViewDetails,
+    actionDetails,
+  } = usePatientPayments();
   if (isLoading) {
     return <div className="container mx-auto py-8 px-4">Loading...</div>;
   }
@@ -99,20 +68,6 @@ const getAppointmentTypeColor = (type: string) => {
       return "bg-gray-100 text-gray-800";
   }
 };
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case "PENDING":
-      return "bg-yellow-100 text-yellow-800";
-    case "COMPLETED":
-      return "bg-green-100 text-green-800";
-    case "CANCELLED":
-      return "bg-red-100 text-red-800";
-    default:
-      return "bg-gray-100 text-gray-800";
-  }
-};
-
 const ActionsTable = (
   { actions, handleViewDetails }: {
     actions: any[];

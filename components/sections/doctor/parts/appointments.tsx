@@ -95,10 +95,7 @@ const DATE_OPTIONS = ["ALL", "TODAY", "THIS_WEEK", "THIS_MONTH"] as const;
 
 type DateFilter = (typeof DATE_OPTIONS)[number];
 
-export default function Appointments({
-  appointments,
-  patients,
-}: AppointmentsProps) {
+export default function Appointments({ appointments }: AppointmentsProps) {
   const [selectedAppointment, setselectedAppointment] = React.useState<
     Appointment | null
   >(null);
