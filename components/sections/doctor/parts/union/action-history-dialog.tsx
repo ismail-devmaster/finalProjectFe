@@ -39,13 +39,13 @@ interface Action {
 
 interface ActionHistoryDialogProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onOpenChangeAction: (open: boolean) => void;
   patient: Patient | null;
 }
 
 export function ActionHistoryDialog({
   open,
-  onOpenChange,
+  onOpenChangeAction: onOpenChange,
   patient,
 }: ActionHistoryDialogProps) {
   const [patientActions, setPatientActions] = useState<Action[]>([]);

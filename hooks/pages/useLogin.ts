@@ -1,9 +1,11 @@
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect } from "react";
 import { useLoginStore } from "@/hooks/store/useLoginStore";
 import { auth } from "@/app/api";
 import { toast } from "sonner";
 
 export function useLogin() {
+  const searchParams = useSearchParams();
   const router = useRouter();
   const {
     email,
@@ -20,32 +22,59 @@ export function useLogin() {
     resetErrors,
   } = useLoginStore();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    resetErrors();
-    if (!validateForm()) return;
-
-    setIsLoading(true);
-    try {
-      const response = await auth.login(email, password);
-      let redirectPath = "/patient";
-      if (response.user.role === "ADMIN") {
-        redirectPath = "/admin";
-      } else if (response.user.role === "DOCTOR") {
-        redirectPath = "/staff/doctor";
-      } else if (response.user.role === "RECEPTIONIST") {
-        redirectPath = "/staff/receptionist";
-      }
-
-      toast.success("Logged in successfully");
-      router.push(redirectPath);
-    } catch (error: any) {
-      const message = error.response?.data?.error || "Login failed";
-      setGeneralError(message);
-    } finally {
-      setIsLoading(false);
+  // Extract email from query parameters on mount
+  useEffect(() => {
+    const emailFromParams = searchParams.get("email");
+    if (emailFromParams) {
+      setField("email", emailFromParams);
     }
-  };
+  }, [searchParams, setField]);
+
+  // Ensure the function is memoized and does not re-execute unnecessarily
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      resetErrors();
+
+      if (!validateForm()) return;
+
+      setIsLoading(true);
+      try {
+        const response = await auth.login(email, password);
+        let redirectPath = "/patient";
+        if (response.user.role === "ADMIN") {
+          redirectPath = "/admin";
+        } else if (response.user.role === "DOCTOR") {
+          redirectPath = "/staff/doctor";
+        } else if (response.user.role === "RECEPTIONIST") {
+          redirectPath = "/staff/receptionist";
+        }
+
+        const queryString = searchParams.toString();
+        if (queryString) {
+          redirectPath += `?${queryString}`;
+        }
+
+        toast.success("Logged in successfully");
+        router.push(redirectPath);
+      } catch (error: any) {
+        const message = error.response?.data?.error || "Login failed";
+        setGeneralError(message);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [
+      email,
+      password,
+      resetErrors,
+      validateForm,
+      setIsLoading,
+      setGeneralError,
+      router,
+      searchParams,
+    ],
+  );
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
@@ -67,7 +96,7 @@ export function useLogin() {
     generalError,
     setField,
     toggleShowPassword,
-    handleSubmit,
+    handleSubmit, // This is only called on explicit user action
     handleGoogleSignIn,
   };
 }

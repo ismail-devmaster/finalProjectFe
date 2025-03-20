@@ -1,5 +1,5 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -21,32 +21,51 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export function BookingSection() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [service, setService] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
-  const [message, setMessage] = useState("");
+interface FormState {
+  name: string;
+  email: string;
+  phone: string;
+  service: string;
+  date: string;
+  time: string;
+  message: string;
+}
 
+export function BookingSection() {
+  const router = useRouter();
+  const [form, setForm] = useState<FormState>({
+    name: "",
+    email: "",
+    phone: "",
+    service: "",
+    date: "",
+    time: "",
+    message: "",
+  });
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => setForm({ ...form, [e.target.name]: e.target.value });
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send this data to your backend
-    console.log({ name, email, phone, service, date, time, message });
+    console.log(form);
+    // ✅ إنشاء بارامترات من بيانات النموذج
+    const queryParams = new URLSearchParams(form as any).toString();
+
     toast({
       title: "Appointment Requested",
       description:
         "We've received your booking request and will contact you soon to confirm.",
     });
-    // Reset form
-    setName("");
-    setEmail("");
-    setPhone("");
-    setService("");
-    setDate("");
-    setTime("");
-    setMessage("");
+    setForm({
+      name: "",
+      email: "",
+      phone: "",
+      service: "",
+      date: "",
+      time: "",
+      message: "",
+    });
+    router.push(`/auth/login?${queryParams}`);
   };
 
   return (
@@ -81,25 +100,13 @@ export function BookingSection() {
               </CardHeader>
               <CardContent>
                 <ol className="list-decimal list-inside space-y-2 text-gray-700">
-                  <li>
-                    Fill out the appointment request form with your details and
-                    preferred date/time.
-                  </li>
-                  <li>
-                    Our team will review your request and check availability.
-                  </li>
-                  <li>
-                    We'll contact you within 24 hours to confirm your
-                    appointment or suggest alternative times.
-                  </li>
-                  <li>
-                    Once confirmed, you'll receive an email with appointment
-                    details and any necessary pre-visit instructions.
-                  </li>
-                  <li>
-                    A reminder will be sent 24 hours before your scheduled
-                    appointment.
-                  </li>
+                  {[
+                    "Fill out the form with your details.",
+                    "Our team will check availability.",
+                    "We'll contact you within 24 hours.",
+                    "You'll receive an email confirmation.",
+                    "A reminder will be sent 24 hours before.",
+                  ].map((step, i) => <li key={i}>{step}</li>)}
                 </ol>
               </CardContent>
             </Card>
@@ -111,60 +118,52 @@ export function BookingSection() {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <form onSubmit={handleSubmit} className="space-y-4">
-              <Input
-                placeholder="Your Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+              {["name", "email", "phone"].map((field) => (
+                <Input
+                  key={field}
+                  name={field}
+                  placeholder={`Your ${field.charAt(0).toUpperCase() + field.slice(1)
+                    }`}
+                  value={form[field as keyof FormState]}
+                  onChange={handleChange}
+                  required
+                  className="bg-white"
+                />
+              ))}
+              <Select
+                value={form.service}
+                onValueChange={(val) => setForm({ ...form, service: val })}
                 required
-                className="bg-white"
-              />
-              <Input
-                type="email"
-                placeholder="Your Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="bg-white"
-              />
-              <Input
-                type="tel"
-                placeholder="Your Phone"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                required
-                className="bg-white"
-              />
-              <Select value={service} onValueChange={setService} required>
+              >
                 <SelectTrigger className="bg-white">
                   <SelectValue placeholder="Select Service" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="cleaning">Advanced Cleaning</SelectItem>
-                  <SelectItem value="laser">Laser Dentistry</SelectItem>
-                  <SelectItem value="cosmetic">Cosmetic Procedure</SelectItem>
-                  <SelectItem value="checkup">Regular Check-up</SelectItem>
+                  {["cleaning", "laser", "cosmetic", "checkup"].map((s) => (
+                    <SelectItem key={s} value={s}>
+                      {s.replace(/\b\w/g, (l) => l.toUpperCase())}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <div className="flex gap-4">
-                <Input
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  required
-                  className="bg-white"
-                />
-                <Input
-                  type="time"
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                  required
-                  className="bg-white"
-                />
+                {["date", "time"].map((field) => (
+                  <Input
+                    key={field}
+                    type={field}
+                    name={field}
+                    value={form[field as keyof FormState]}
+                    onChange={handleChange}
+                    required
+                    className="bg-white"
+                  />
+                ))}
               </div>
               <Textarea
+                name="message"
                 placeholder="Additional Message or Special Requirements"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                value={form.message}
+                onChange={handleChange}
                 className="bg-white"
               />
               <Button

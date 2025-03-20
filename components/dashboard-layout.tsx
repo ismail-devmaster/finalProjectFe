@@ -38,22 +38,22 @@ interface NavItem {
 const navItems: NavItem[] = [
   {
     title: "Dashboard",
-    href: "/",
+    href: "/admin",
     icon: Home,
   },
   {
     title: "Users",
-    href: "/users",
+    href: "/admin/users",
     icon: Users,
   },
   {
     title: "Appointments",
-    href: "/appointments",
+    href: "/admin/appointments",
     icon: Calendar,
   },
   {
     title: "Payments",
-    href: "/payments",
+    href: "/admin/payments",
     icon: CreditCard,
   },
   {
