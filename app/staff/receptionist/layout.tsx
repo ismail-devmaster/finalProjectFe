@@ -126,7 +126,7 @@ const ReceptionistDashboardComponent = ({
       {/* Main Content */}
       <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-900">
         <header className="bg-white dark:bg-gray-800 shadow-md rounded-lg mb-0 mx-10 my-4">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+          {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             <div className="flex items-center space-x-4">
               <TooltipProvider>
                 <Tooltip>
@@ -153,7 +153,7 @@ const ReceptionistDashboardComponent = ({
                 </Tooltip>
               </TooltipProvider>
             </div>
-          </div>
+          </div> */}
         </header>
         <div className="container px-6 py-8 mx-auto">{children}</div>
       </main>
