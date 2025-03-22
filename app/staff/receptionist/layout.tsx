@@ -57,8 +57,8 @@ const ReceptionistDashboardComponent = ({
           <a
             href="#"
             onClick={(e) => {
-              e.preventDefault()
-              window.scrollTo({ top: 0, behavior: "smooth" })
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
             }}
             className={`text-xd md:text- font-bold font-playfair ${
               isScrolled
@@ -73,8 +73,8 @@ const ReceptionistDashboardComponent = ({
             <Link
               className={`flex items-center px-4 py-2 ${
                 activeContent === "appointments"
-                  ? "text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-700"
-                  : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white"
+                  ? "text-gray-900 dark:text-white bg-gray-900 dark:bg-gray-700"
+                  : "text-gray-600 dark:text-gray-400 hover:bg-gray-900 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white"
               }`}
               href="/staff/receptionist/appointments"
               onClick={() => setActiveContent("appointments")}
@@ -82,12 +82,12 @@ const ReceptionistDashboardComponent = ({
               <Calendar className="w-4 h-4" />
               {isSidebarOpen && <span className="ml-3">Appointments</span>}
             </Link>
-            
+
             <Link
               className={`flex items-center px-4 py-2 ${
                 activeContent === "patients"
-                  ? "text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-700"
-                  : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white"
+                  ? "text-gray-900 dark:text-white bg-gray-900 dark:bg-gray-700"
+                  : "text-gray-600 dark:text-gray-400 hover:bg-gray-900 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white"
               }`}
               href="/staff/receptionist/patients"
               onClick={() => setActiveContent("patients")}
@@ -99,8 +99,8 @@ const ReceptionistDashboardComponent = ({
             <Link
               className={`flex items-center px-4 py-2 ${
                 activeContent === "newAppointments"
-                  ? "text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-700"
-                  : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white"
+                  ? "text-gray-900 dark:text-white bg-gray-900 dark:bg-gray-700"
+                  : "text-gray-600 dark:text-gray-400 hover:bg-gray-900 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white"
               }`}
               href="/staff/receptionist/newAppointments"
               onClick={() => setActiveContent("newAppointments")}
@@ -113,7 +113,7 @@ const ReceptionistDashboardComponent = ({
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
+      <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-900">
         <header className="bg-white dark:bg-gray-800 shadow-md rounded-lg mb-0 mx-10 my-4">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             <div className="flex items-center space-x-4">

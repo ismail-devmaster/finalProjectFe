@@ -340,7 +340,7 @@ const ReceptionistPatient = () => {
   };
   return (
     <div className="w-full max-w-6xl mx-auto">
-      <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center dark:text-gray-900">
+      <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center dark:text-gray-100">
         Patient Management
       </h1>
       <Card className="col-span-2 mb-6">
