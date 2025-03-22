@@ -28,6 +28,8 @@ export default function HeaderSide({
   setIsSidebarOpenAction: setIsSidebarOpen,
   toggleDarkModeAction: toggleDarkMode,
 }: HeaderSideProps) {
+  const isScrolled = false; // Define the isScrolled variable
+
   return (
     <motion.header
       initial={{ y: -100 }}
@@ -37,10 +39,20 @@ export default function HeaderSide({
     >
       <div className="flex h-14 w-full items-center justify-between">
         <div className="flex items-center space-x-4 pl-7">
-          <Stethoscope className="h-6 w-6 text-blue-500 dark:text-blue-400" />
-          <span className="ml-2 text-xl flex justify-center items-center text-center font-bold">
-            DentaCare
-          </span>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault()
+              window.scrollTo({ top: 0, behavior: "smooth" })
+            }}
+            className={`text-2xl md:text-3xl font-bold font-playfair ${
+              isScrolled
+                ? "text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
+                : "text-blue-500 dark:text-blue-300 hover:text-blue-400 dark:hover:text-blue-200"
+            }`}
+          >
+            Ramdani Dental Center
+          </a>
         </div>
         <div className="flex items-center space-x-4 pr-7">
           <Button

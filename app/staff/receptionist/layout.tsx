@@ -20,6 +20,18 @@ const ReceptionistDashboardComponent = ({
   const [activeContent, setActiveContent] = React.useState("");
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
   const [darkMode, setDarkMode] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -42,20 +54,20 @@ const ReceptionistDashboardComponent = ({
             <Menu className="h-6 w-6" />
           </Button>
 
-          <Link href="/staff/receptionist" className="flex items-center mb-5">
-            <Avatar className="h-10 w-10">
-              <AvatarImage
-                src="/placeholder.svg?height=40&width=40"
-                alt="Receptionist"
-              />
-              <AvatarFallback>RC</AvatarFallback>
-            </Avatar>
-            {isSidebarOpen && (
-              <span className="ml-3 text-xl font-semibold text-gray-800 dark:text-white">
-                RamdaniClinic
-              </span>
-            )}
-          </Link>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault()
+              window.scrollTo({ top: 0, behavior: "smooth" })
+            }}
+            className={`text-xd md:text- font-bold font-playfair ${
+              isScrolled
+                ? "text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
+                : "text-blue-500 dark:text-blue-300 hover:text-blue-400 dark:hover:text-blue-200"
+            }`}
+          >
+            Ramdani Dental Center
+          </a>
 
           <nav className="space-y-2">
             <Link

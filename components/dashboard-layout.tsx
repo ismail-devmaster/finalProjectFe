@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -72,6 +72,18 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { setTheme, theme } = useTheme();
   const [open, setOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -110,10 +122,20 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </nav>
           </SheetContent>
         </Sheet>
-        <div className="flex items-center gap-2">
-          <Tooth className="h-6 w-6 text-primary md:h-8 md:w-8" />
-          <span className="text-lg font-semibold md:text-xl">DentalCare</span>
-        </div>
+        <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault()
+              window.scrollTo({ top: 0, behavior: "smooth" })
+            }}
+            className={`text-2xl md:text-3xl font-bold font-playfair ${
+              isScrolled
+                ? "text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
+                : "text-blue-500 dark:text-blue-300 hover:text-blue-400 dark:hover:text-blue-200"
+            }`}
+          >
+            Ramdani Dental Center
+          </a>
         <div className="flex-1" />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

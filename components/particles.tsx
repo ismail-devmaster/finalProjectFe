@@ -59,7 +59,7 @@ export function ParticlesBackground() {
             color: isDark ? "#4d7fff" : "#ffffff",
             distance: 150,
             enable: true,
-            opacity: 0.6,
+            opacity: 0.9,
             width: 2,
           },
           move: {
@@ -86,7 +86,7 @@ export function ParticlesBackground() {
             type: "circle",
           },
           size: {
-            value: { min: 1, max: 3 },
+            value: { min: 1, max: 5 },
           },
           wobble: {
             enable: true,
