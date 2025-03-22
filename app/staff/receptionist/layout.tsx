@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { Calendar, Menu, Armchair, Users, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Tooltip,
   TooltipContent,
@@ -107,6 +106,18 @@ const ReceptionistDashboardComponent = ({
             >
               <Calendar className="w-4 h-4" />
               {isSidebarOpen && <span className="ml-3">New Appointments</span>}
+            </Link>
+            <Link
+              className={`flex items-center px-4 py-2 ${
+                activeContent === "tasks"
+                  ? "text-gray-900 dark:text-white bg-gray-900 dark:bg-gray-700"
+                  : "text-gray-600 dark:text-gray-400 hover:bg-gray-900 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white"
+              }`}
+              href="/staff/receptionist/tasks"
+              onClick={() => setActiveContent("tasks")}
+            >
+              <Calendar className="w-4 h-4" />
+              {isSidebarOpen && <span className="ml-3">Tasks</span>}
             </Link>
           </nav>
         </div>

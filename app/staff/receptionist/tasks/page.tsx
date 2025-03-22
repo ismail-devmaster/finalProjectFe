@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,35 +13,18 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import type { Task, TaskFormData } from "@/types/task";
-import { MyTasksTable } from "./union/my-tasks-table";
-import { CompletedTasksTable } from "./union/completed-tasks-table";
-import { TaskDetailsDialog } from "./union/task-details-dialog";
-import { TaskFormDialog } from "./union/task-form-dialog";
+import { MyTasksTable } from "@/components/sections/doctor/parts/union/my-tasks-table";
+import { CompletedTasksTable } from "@/components/sections/doctor/parts/union/completed-tasks-table";
+import { TaskDetailsDialog } from "@/components/sections/doctor/parts/union/task-details-dialog";
+import { TaskFormDialog } from "@/components/sections/doctor/parts/union/task-form-dialog";
 
-interface Person {
-  id: number;
-  firstName: string;
-  lastName: string;
-  avatar: string;
-}
-interface Tasks {
-  id: string;
-  title: string;
-  description: string;
-  assignee: Person;
-  assignor: Person;
-  priority: "high" | "medium" | "low";
-  status: "PENDING" | "IN_PROGRESS" | "COMPLETED";
-  dueDate: string;
-  createdAt: string;
-  completedAt?: string;
-}
-interface TasksProps {
-  tasks: Tasks[];
-  doctorId: { id: number };
-}
-export default function Tasks({ tasks, doctorId }: TasksProps) {
+// Import the API function from your api.ts file
+import { allTasks, auth } from "@/app/api";
+
+export default function TaskManagement() {
   // Replace mock data with state initialized to an empty array
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [myId, setMyId] = useState();
   const [searchTerm, setSearchTerm] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -61,6 +44,19 @@ export default function Tasks({ tasks, doctorId }: TasksProps) {
   const { toast } = useToast();
 
   // Fetch tasks from the API on component mount
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const { tasks } = await allTasks.getAllTasks();
+        setTasks(tasks);
+        const { user } = await auth.getUserId();
+        setMyId(user);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    }
+    fetchData();
+  }, []);
 
   const filteredTasks = tasks.filter((task) => {
     const matchesSearch =
@@ -111,6 +107,7 @@ export default function Tasks({ tasks, doctorId }: TasksProps) {
   const handleDeleteTask = (task: Task) => {
     // In a real app, this would delete the task from the database
     // For now, we'll just remove it from the local state
+    setTasks((prevTasks) => prevTasks.filter((t) => t.id !== task.id));
   };
   const handleMarkComplete = (task: Task) => {
     // In a real app, this would update the task in the database
@@ -210,7 +207,8 @@ export default function Tasks({ tasks, doctorId }: TasksProps) {
         </Button>
       </div>
 
-      <Tabs defaultValue="my-tasks" className="space-y-4">
+
+      <Tabs defaultValue="completed" className="space-y-4">
         <TabsList>
           <TabsTrigger value="my-tasks">My Tasks</TabsTrigger>
           <TabsTrigger value="completed">Completed</TabsTrigger>
@@ -224,7 +222,7 @@ export default function Tasks({ tasks, doctorId }: TasksProps) {
             <CardContent>
               <MyTasksTable
                 tasks={tasks}
-                myId={doctorId!}
+                myId={myId!}
                 handleMarkComplete={handleMarkComplete}
                 handleViewDetails={handleViewDetails}
               />
