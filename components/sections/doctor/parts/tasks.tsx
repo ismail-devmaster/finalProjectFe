@@ -215,41 +215,11 @@ export default function Tasks({ tasks, doctorId }: TasksProps) {
 
       <TaskStats tasks={tasks} />
 
-      <Tabs defaultValue="all-tasks" className="space-y-4">
+      <Tabs defaultValue="my-tasks" className="space-y-4">
         <TabsList>
-          <TabsTrigger value="all-tasks">All Tasks</TabsTrigger>
           <TabsTrigger value="my-tasks">My Tasks</TabsTrigger>
           <TabsTrigger value="completed">Completed</TabsTrigger>
         </TabsList>
-        <TabsContent value="all-tasks" className="space-y-4">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle>Tasks</CardTitle>
-              <CardDescription>
-                Manage all tasks in the dental clinic.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col gap-4">
-                <TaskFilters
-                  searchTerm={searchTerm}
-                  setSearchTerm={setSearchTerm}
-                  priorityFilter={priorityFilter}
-                  setPriorityFilter={setPriorityFilter}
-                  statusFilter={statusFilter}
-                  setStatusFilter={setStatusFilter}
-                />
-                <TaskTable
-                  tasks={filteredTasks}
-                  handleMarkComplete={handleMarkComplete}
-                  handleViewDetails={handleViewDetails}
-                  handleEditTask={handleEditTask}
-                  handleDeleteTask={handleDeleteTask}
-                />
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
         <TabsContent value="my-tasks" className="space-y-4">
           <Card>
             <CardHeader>
