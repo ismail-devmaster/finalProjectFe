@@ -88,7 +88,7 @@ export default function HeaderSide({
                       src="/placeholder-avatar.jpg"
                       alt="Dr. Smith"
                     />
-                    <AvatarFallback>DS</AvatarFallback>
+                    <AvatarFallback>Dr</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
@@ -108,9 +108,9 @@ export default function HeaderSide({
                   <User className="mr-2 h-4 w-4" />
                   <span>Profile</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                {/* <DropdownMenuItem>
                   <span>Settings</span>
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <LogOut className="mr-2 h-4 w-4" />
