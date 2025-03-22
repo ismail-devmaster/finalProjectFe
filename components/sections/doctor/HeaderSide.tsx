@@ -3,8 +3,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +13,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LogOut, Menu, Moon, Stethoscope, Sun, User } from "lucide-react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { auth } from "@/app/api";
 interface HeaderSideProps {
   isSidebarOpen: boolean;
   isDarkMode: boolean;
@@ -29,7 +29,16 @@ export default function HeaderSide({
   toggleDarkModeAction: toggleDarkMode,
 }: HeaderSideProps) {
   const isScrolled = false; // Define the isScrolled variable
+  const router = useRouter();
 
+  const handleLogout = async () => {
+    try {
+      await auth.logout();
+      router.push("/"); // Redirect to home or login page
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
   return (
     <motion.header
       initial={{ y: -100 }}
@@ -114,7 +123,7 @@ export default function HeaderSide({
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
                   <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
+                  <button onClick={() => handleLogout()}>Log out</button>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
