@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Calendar, Menu, Armchair, Users, Sun, Moon } from "lucide-react";
+import { Calendar, Menu, Users, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -10,6 +10,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { auth } from "@/app/api"; // Adjust the import path as needed
 
 const ReceptionistDashboardComponent = ({
   children,
@@ -20,6 +22,7 @@ const ReceptionistDashboardComponent = ({
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
   const [darkMode, setDarkMode] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const router = useRouter();
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -34,6 +37,15 @@ const ReceptionistDashboardComponent = ({
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await auth.logout();
+      router.push("/"); // Redirect to home or login page
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
 
   return (
@@ -126,34 +138,22 @@ const ReceptionistDashboardComponent = ({
       {/* Main Content */}
       <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-900">
         <header className="bg-white dark:bg-gray-800 shadow-md rounded-lg mb-0 mx-10 my-4">
-          {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             <div className="flex items-center space-x-4">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={toggleDarkMode}
-                    >
-                      {darkMode ? (
-                        <Sun className="h-5 w-5" />
-                      ) : (
-                        <Moon className="h-5 w-5" />
-                      )}
+                    <Button variant="ghost" onClick={handleLogout}>
+                      Logout
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>
-                      {darkMode
-                        ? "Switch to Light Mode"
-                        : "Switch to Dark Mode"}
-                    </p>
+                    <p>Sign out</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             </div>
-          </div> */}
+          </div>
         </header>
         <div className="container px-6 py-8 mx-auto">{children}</div>
       </main>
