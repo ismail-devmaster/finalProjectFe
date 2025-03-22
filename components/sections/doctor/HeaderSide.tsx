@@ -42,8 +42,8 @@ export default function HeaderSide({
           <a
             href="#"
             onClick={(e) => {
-              e.preventDefault()
-              window.scrollTo({ top: 0, behavior: "smooth" })
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
             }}
             className={`text-2xl md:text-3xl font-bold font-playfair ${
               isScrolled
@@ -64,7 +64,7 @@ export default function HeaderSide({
             <Menu className="h-5 w-5" />
           </Button>
           <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-            <nav className="flex items-center space-x-4">
+            {/* <nav className="flex items-center space-x-4">
               <Switch
                 id="dark-mode"
                 checked={isDarkMode}
@@ -76,7 +76,7 @@ export default function HeaderSide({
               {isDarkMode
                 ? <Moon className="h-[1.2rem] w-[1.2rem]" />
                 : <Sun className="h-[1.2rem] w-[1.2rem]" />}
-            </nav>
+            </nav> */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
