@@ -88,7 +88,8 @@ const PaymentsDialog = ({
                       Date: {new Date(payment.date).toLocaleDateString()}
                     </div>
                     <div>
-                      Time: {new Date(payment.time).toLocaleTimeString([], {
+                      Time:{" "}
+                      {new Date(payment.time).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
@@ -144,7 +145,8 @@ const AppointmentsDialog = ({
                       Date: {new Date(appointment.date).toLocaleDateString()}
                     </div>
                     <div>
-                      Time: {new Date(appointment.time).toLocaleTimeString([], {
+                      Time:{" "}
+                      {new Date(appointment.time).toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
                       })}
@@ -178,7 +180,7 @@ const ActionsDialog = ({
   actions: Action[];
 }) => {
   const [selectedAction, setSelectedAction] = React.useState<Action | null>(
-    null,
+    null
   );
   const [showPayments, setShowPayments] = React.useState(false);
   const [appointments, setAppointments] = React.useState<any[]>([]);
@@ -189,7 +191,7 @@ const ActionsDialog = ({
     setLoading(true);
     try {
       const appointmentsData = await appointment.getAppointmentsByActionId(
-        action.id,
+        action.id
       );
       console.log(appointmentsData.appointments);
       setAppointments(appointmentsData.appointments);
@@ -285,7 +287,7 @@ const ReceptionistPatient = () => {
   const [searchTerm, setSearchTerm] = React.useState("");
   const [currentPage, setCurrentPage] = React.useState(1);
   const [selectedPatient, setSelectedPatient] = React.useState<Patient | null>(
-    null,
+    null
   );
   const [actions, setActions] = React.useState<Action[]>([]);
   const [loadingPatients, setLoadingPatients] = React.useState(false);
@@ -309,14 +311,14 @@ const ReceptionistPatient = () => {
   const filteredPatients = patients.filter(
     (patient) =>
       patient.user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      patient.user.lastName.toLowerCase().includes(searchTerm.toLowerCase()),
+      patient.user.lastName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const indexOfLastPatient = currentPage * patientsPerPage;
   const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
   const currentPatients = filteredPatients.slice(
     indexOfFirstPatient,
-    indexOfLastPatient,
+    indexOfLastPatient
   );
 
   const totalPages = Math.ceil(filteredPatients.length / patientsPerPage);
@@ -338,7 +340,7 @@ const ReceptionistPatient = () => {
   };
   return (
     <div className="w-full max-w-6xl mx-auto">
-      <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center dark:text-white">
+      <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center dark:text-gray-900">
         Patient Management
       </h1>
       <Card className="col-span-2 mb-6">
@@ -361,7 +363,9 @@ const ReceptionistPatient = () => {
               </div>
             </div>
           </div>
-          {loadingPatients ? <div>Loading patients...</div> : (
+          {loadingPatients ? (
+            <div>Loading patients...</div>
+          ) : (
             <Table>
               <TableHeader>
                 <TableRow>
@@ -408,7 +412,8 @@ const ReceptionistPatient = () => {
               variant="outline"
               size="sm"
               onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
               disabled={currentPage === totalPages}
             >
               Next
@@ -420,7 +425,9 @@ const ReceptionistPatient = () => {
 
       {selectedPatient && (
         <>
-          {loadingActions ? <div>Loading actions...</div> : (
+          {loadingActions ? (
+            <div>Loading actions...</div>
+          ) : (
             <ActionsDialog
               isOpen={!!selectedPatient}
               onClose={() => setSelectedPatient(null)}

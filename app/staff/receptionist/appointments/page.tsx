@@ -60,10 +60,10 @@ export default function AppointmentsPage() {
           date: updatedAppointment.date,
           time: updatedAppointment.time,
           additionalNotes: updatedAppointment.additionalNotes,
-        },
+        }
       );
       setAppointments(
-        appointments.map((app) => (app.id === response.id ? response : app)),
+        appointments.map((app) => (app.id === response.id ? response : app))
       );
     } catch (error) {
       console.error("Error updating appointment:", error);
@@ -80,9 +80,10 @@ export default function AppointmentsPage() {
   };
 
   const filteredAppointments = appointments.filter((appointment) => {
-    const matchesSearch = appointment.patient.user.firstName
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase()) ||
+    const matchesSearch =
+      appointment.patient.user.firstName
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
       appointment.patient.user.lastName
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
@@ -120,7 +121,7 @@ export default function AppointmentsPage() {
 
   return (
     <div className="w-full max-w-6xl mx-auto">
-      <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center dark:text-white">
+      <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center dark:text-gray-900">
         Appointment Management
       </h1>
       <Card className="mb-8">
