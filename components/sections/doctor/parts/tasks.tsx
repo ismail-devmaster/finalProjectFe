@@ -14,8 +14,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import type { Task, TaskFormData } from "@/types/task";
 import { TaskStats } from "./union/task-stats";
-import { TaskFilters } from "./union/task-filters";
-import { TaskTable } from "./union/task-table";
 import { MyTasksTable } from "./union/my-tasks-table";
 import { CompletedTasksTable } from "./union/completed-tasks-table";
 import { TaskDetailsDialog } from "./union/task-details-dialog";
