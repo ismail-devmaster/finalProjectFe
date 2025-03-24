@@ -271,6 +271,7 @@ export function TaskManagement() {
             <CardContent>
               <CompletedTasksTable
                 tasks={tasks}
+                myId={myId!}
                 handleViewDetails={handleViewDetails}
               />
             </CardContent>
