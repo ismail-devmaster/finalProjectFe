@@ -12,14 +12,17 @@ export default function Dashboard() {
     activeTab,
     setActiveTab,
     patients,
+    tasks,
+    doctorId,
     appointments,
     isSidebarOpen,
     setIsSidebarOpen,
   } = useDoctor();
   return (
     <div
-      className={`min-h-screen ${isDarkMode ? "dark" : ""
-        } bg-gradient-to-br from-blue-50 to-green-50 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white`}
+      className={`min-h-screen ${
+        isDarkMode ? "dark" : ""
+      } bg-gradient-to-br from-blue-50 to-green-50 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white`}
     >
       <HeaderSide
         isSidebarOpen={isSidebarOpen}
@@ -40,6 +43,8 @@ export default function Dashboard() {
           setActiveTabAction={setActiveTab}
           appointments={appointments}
           patients={patients}
+          tasks={tasks}
+          doctorId={doctorId!}
         />
       </div>
     </div>

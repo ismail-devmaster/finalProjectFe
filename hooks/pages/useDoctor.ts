@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { appointment, patient } from "@/app/api";
+import { appointment, patient, allTasks, auth } from "@/app/api";
 
 interface Patient {
   id: number;
@@ -37,11 +37,37 @@ interface Appointment {
   patient: Patient;
 }
 
+interface Person {
+  id: number;
+  firstName: string;
+  lastName: string;
+  avatar: string;
+}
+
+interface Task {
+  id: string;
+  title: string;
+  description: string;
+  assignee: Person;
+  assignor: Person;
+  priority: "high" | "medium" | "low";
+  status: "PENDING" | "IN_PROGRESS" | "COMPLETED";
+  dueDate: string;
+  createdAt: string;
+  completedAt?: string;
+}
+
+interface DoctorId {
+  id: number;
+}
+
 export default function useDashboard() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [activeTab, setActiveTab] = useState("appointments");
   const [patients, setPatients] = useState<Patient[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [doctorId, setDoctorId] = useState<DoctorId>();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const toggleDarkMode = () => {
@@ -68,6 +94,26 @@ export default function useDashboard() {
       }
     };
 
+    const fetchTasks = async () => {
+      try {
+        const { tasks } = await allTasks.getAllTasks();
+        setTasks(tasks);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    };
+
+    const fetchDoctorId = async () => {
+      try {
+        const { user } = await auth.getUserId();
+        setDoctorId(user);
+      } catch (error) {
+        console.error("Error fetching doctor ID:", error);
+      }
+    };
+
+    fetchTasks();
+    fetchDoctorId();
     fetchPatients();
     fetchAppointments();
   }, []);
@@ -78,6 +124,8 @@ export default function useDashboard() {
     activeTab,
     setActiveTab,
     patients,
+    tasks,
+    doctorId,
     appointments,
     isSidebarOpen,
     setIsSidebarOpen,

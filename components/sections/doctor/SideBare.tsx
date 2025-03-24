@@ -44,6 +44,14 @@ export default function SideBare(
               <Users className="mr-2 h-4 w-4" />
               Patients
             </Button>
+            <Button
+              variant={activeTab === "tasks" ? "default" : "ghost"}
+              className="w-full justify-start"
+              onClick={() => setActiveTab("tasks")}
+            >
+              <Users className="mr-2 h-4 w-4" />
+              Tasks
+            </Button>
           </nav>
         </motion.aside>
       )}

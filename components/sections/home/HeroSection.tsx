@@ -19,7 +19,7 @@ export function HeroSection() {
         <div className="flex flex-col items-center space-y-4 text-center">
           <div className="space-y-2">
             <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none text-white animate-fadeIn">
-              A Healthy Smile Starts Heres
+              A Healthy Smile Starts Here
             </h1>
             <p className="mx-auto max-w-[700px] text-gray-200 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
               Expert dental care for a confident, radiant smile. Book your
