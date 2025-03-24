@@ -22,7 +22,7 @@ export function HeroSection() {
               A Healthy Smile Starts Here
             </h1>
             <p className="mx-auto max-w-[700px] text-gray-200 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-              Expert dental care for a confident, radiant smile. Book your
+              Expert dental care for a confident, radiant smile Book your
               appointment today!
             </p>
           </div>
