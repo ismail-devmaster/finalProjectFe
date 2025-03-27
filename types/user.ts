@@ -9,3 +9,25 @@ export interface User {
   lastAppointment: string | null
 }
 
+
+export type UserRole = "ADMIN" | "DOCTOR" | "RECEPTIONIST" | "PATIENT" | "USER";
+
+export interface IUser {
+  id: number;
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: Date;
+  phone?: string;
+  sexId: number;
+  isVerified: boolean;
+  verificationToken?: string | null;
+  resetToken?: string | null;
+  resetTokenExpiry?: Date | null;
+  refreshToken?: string | null;
+  role: UserRole;
+  createdAt: Date;
+  updatedAt: Date;
+}
+

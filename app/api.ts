@@ -35,6 +35,10 @@ export const action = {
   deleteAction: (id: number) => request("delete", `/actions/${id}`),
 };
 
+export const user = {
+  getStaff: () => request("get", "/users/staff"),
+}
+
 export const admin = {
   verify: () => request("get", "/admin/verify"),
   updateRole: (userId: string, newRole: string) =>

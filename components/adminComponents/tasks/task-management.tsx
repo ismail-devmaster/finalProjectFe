@@ -22,14 +22,15 @@ import { TaskDetailsDialog } from "@/components/adminComponents/tasks/task-detai
 import { TaskFormDialog } from "@/components/adminComponents/tasks/task-form-dialog";
 
 // Import the API function from your api.ts file
-import { allTasks, auth } from "@/app/api";
+import { allTasks, user} from "@/app/api";
+import { IUser } from "@/types/user";
 
 export function TaskManagement() {
   // Replace mock data with state initialized to an empty array
   const [tasks, setTasks] = useState<Task[]>([]);
   const [myTasks, setMyTasks] = useState<Task[]>([]);
   const [completedTasks, setCompletedTasks] = useState<Task[]>([]);
-  const [myId, setMyId] = useState();
+  const [staff, setStaff] = useState<IUser[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -54,8 +55,6 @@ export function TaskManagement() {
       try {
         const { tasks } = await allTasks.getAllTasks();
         setTasks(tasks);
-        const { user } = await auth.getUserId();
-        setMyId(user);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
@@ -76,6 +75,15 @@ export function TaskManagement() {
         console.error("Error fetching data: ", error);
       }
     }
+    async function fetchStaff() {
+      try {
+        const staff = await user.getStaff();
+        setStaff(staff);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    }
+    fetchStaff();
     fetchMyTasks();
     fetchMyCompletedTasks();
     fetchAllTasks();
@@ -195,8 +203,9 @@ export function TaskManagement() {
       toast({
         title: "Task Updated",
         description:
-          `Task "${taskFormData.title}" has been updated successfully`,
+        `Task "${taskFormData.title}" has been updated successfully`,
       });
+      console.log(taskFormData);
       setIsEditTaskDialogOpen(false);
     } else {
       // Create new task
@@ -204,6 +213,7 @@ export function TaskManagement() {
         title: "Task Created",
         description: "New task has been created successfully",
       });
+      console.log(taskFormData);
       setIsNewTaskDialogOpen(false);
     }
 
@@ -312,6 +322,7 @@ export function TaskManagement() {
         title="Create New Task"
         description="Add a new task to the system."
         formData={taskFormData}
+        staff={staff}
         handleFormChange={handleTaskFormChange}
         handleSave={handleSaveTask}
       />
@@ -323,6 +334,7 @@ export function TaskManagement() {
         title="Edit Task"
         description="Update the details of this task."
         formData={taskFormData}
+        staff={staff}
         handleFormChange={handleTaskFormChange}
         handleSave={handleSaveTask}
       />
