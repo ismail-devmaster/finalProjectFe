@@ -29,7 +29,7 @@ interface TaskFormDialogProps {
   description: string;
   formData: TaskFormData;
   staff: IUser[];
-  handleFormChange: (field: string, value: string) => void;
+  handleFormChange: (field: string, value: string | number) => void;
   handleSave: () => void;
 }
 
@@ -79,37 +79,16 @@ export function TaskFormDialog({
             <Label htmlFor="assignee" className="text-right">
               Assignee
             </Label>
+            {/* Assignee Select */}
             <Select
-              value={formData.assignee}
-              onValueChange={(value) => handleFormChange("assignee", value)}
+              value={formData.assignee.toString()}
+              onValueChange={(value) =>
+                handleFormChange("assignee", Number(value))
+              }
             >
               <SelectTrigger id="assignee" className="col-span-3">
                 <SelectValue placeholder="Select assignee" />
               </SelectTrigger>
-              {/* Assignee Select */}
-              <SelectContent>
-                {staff.map((user) => (
-                  <SelectItem key={user.id} value={user.id.toString()}>
-                    {user.role === "DOCTOR"
-                      ? `Dr. ${user.firstName} ${user.lastName}`
-                      : `${user.firstName} ${user.lastName}`}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="assignor" className="text-right">
-              Assignor
-            </Label>
-            <Select
-              value={formData.assignor}
-              onValueChange={(value) => handleFormChange("assignor", value)}
-            >
-              <SelectTrigger id="assignor" className="col-span-3">
-                <SelectValue placeholder="Select assignor" />
-              </SelectTrigger>
-              {/* Assignor Select */}
               <SelectContent>
                 {staff.map((user) => (
                   <SelectItem key={user.id} value={user.id.toString()}>
