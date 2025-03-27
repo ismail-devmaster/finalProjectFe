@@ -27,6 +27,8 @@ import { allTasks, auth } from "@/app/api";
 export function TaskManagement() {
   // Replace mock data with state initialized to an empty array
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [myTasks, setMyTasks] = useState<Task[]>([]);
+  const [completedTasks, setCompletedTasks] = useState<Task[]>([]);
   const [myId, setMyId] = useState();
   const [searchTerm, setSearchTerm] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("all");
@@ -48,7 +50,7 @@ export function TaskManagement() {
 
   // Fetch tasks from the API on component mount
   useEffect(() => {
-    async function fetchData() {
+    async function fetchAllTasks() {
       try {
         const { tasks } = await allTasks.getAllTasks();
         setTasks(tasks);
@@ -58,7 +60,25 @@ export function TaskManagement() {
         console.error("Error fetching data: ", error);
       }
     }
-    fetchData();
+    async function fetchMyTasks() {
+      try {
+        const { tasks } = await allTasks.getMyTasks();
+        setMyTasks(tasks);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    }
+    async function fetchMyCompletedTasks() {
+      try {
+        const { tasks } = await allTasks.getCompletedTasks();
+        setCompletedTasks(tasks);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    }
+    fetchMyTasks();
+    fetchMyCompletedTasks();
+    fetchAllTasks();
   }, []);
 
   const filteredTasks = tasks.filter((task) => {
@@ -254,8 +274,7 @@ export function TaskManagement() {
             </CardHeader>
             <CardContent>
               <MyTasksTable
-                tasks={tasks}
-                myId={myId!}
+                tasks={myTasks}
                 handleMarkComplete={handleMarkComplete}
                 handleViewDetails={handleViewDetails}
               />
@@ -270,8 +289,7 @@ export function TaskManagement() {
             </CardHeader>
             <CardContent>
               <CompletedTasksTable
-                tasks={tasks}
-                myId={myId!}
+                tasks={completedTasks}
                 handleViewDetails={handleViewDetails}
               />
             </CardContent>

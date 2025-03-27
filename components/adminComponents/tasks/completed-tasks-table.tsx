@@ -14,20 +14,14 @@ import type { Task } from "@/types/task";
 
 interface CompletedTasksTableProps {
   tasks: Task[];
-  myId: {
-    id: number;
-  };
   handleViewDetails: (task: Task) => void;
 }
 
 export function CompletedTasksTable({
   tasks,
-  myId,
   handleViewDetails,
 }: CompletedTasksTableProps) {
-  const completedTasks = tasks.filter(
-    (task) => task.assignee.id === myId.id && task.status === "COMPLETED"
-  );
+  const completedTasks = tasks;
 
   return (
     <div className="rounded-md border">
