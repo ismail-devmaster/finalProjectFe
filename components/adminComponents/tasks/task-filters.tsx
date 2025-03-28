@@ -1,16 +1,22 @@
-"use client"
+"use client";
 
-import { Search, Filter } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Search, Filter } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface TaskFiltersProps {
-  searchTerm: string
-  setSearchTerm: (value: string) => void
-  priorityFilter: string
-  setPriorityFilter: (value: string) => void
-  statusFilter: string
-  setStatusFilter: (value: string) => void
+  searchTerm: string;
+  setSearchTerm: (value: string) => void;
+  priorityFilter: string;
+  setPriorityFilter: (value: string) => void;
+  statusFilter: string;
+  setStatusFilter: (value: string) => void;
 }
 
 export function TaskFilters({
@@ -46,9 +52,9 @@ export function TaskFilters({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Priorities</SelectItem>
-              <SelectItem value="high">High</SelectItem>
-              <SelectItem value="medium">Medium</SelectItem>
-              <SelectItem value="low">Low</SelectItem>
+              <SelectItem value="HIGH">High</SelectItem>
+              <SelectItem value="MEDIUM">Medium</SelectItem>
+              <SelectItem value="LOW">Low</SelectItem>
             </SelectContent>
           </Select>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -60,14 +66,13 @@ export function TaskFilters({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="in-progress">In Progress</SelectItem>
-              <SelectItem value="completed">Completed</SelectItem>
+              <SelectItem value="PENDING">Pending</SelectItem>
+              <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
+              <SelectItem value="COMPLETED">Completed</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
     </div>
-  )
+  );
 }
-
