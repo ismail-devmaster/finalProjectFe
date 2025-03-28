@@ -316,6 +316,7 @@ export function TaskManagement() {
             <CardContent>
               <MyTasksTable
                 tasks={myTasks}
+                handleEditTask={handleEditTask}
                 handleMarkComplete={handleMarkComplete}
                 handleViewDetails={handleViewDetails}
               />
