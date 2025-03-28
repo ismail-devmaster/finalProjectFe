@@ -11,26 +11,30 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { MoreHorizontal } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { Task } from "@/types/task";
 
 interface MyTasksTableProps {
   tasks: Task[];
-  myId: {
-    id: number;
-  };
+  handleEditTask: (task: Task) => void;
   handleMarkComplete: (task: Task) => void;
   handleViewDetails: (task: Task) => void;
 }
 
 export function MyTasksTable({
   tasks,
-  myId,
+  handleEditTask,
   handleMarkComplete,
   handleViewDetails,
 }: MyTasksTableProps) {
-  const myTasks = tasks.filter(
-    (task) => task.assignee.id === myId.id && task.status !== "COMPLETED"
-  );
+  const myTasks = tasks;
 
   return (
     <div className="rounded-md border">
@@ -63,9 +67,9 @@ export function MyTasksTable({
               <TableCell>
                 <Badge
                   variant={
-                    task.priority === "high"
+                    task.priority === "HIGH"
                       ? "destructive"
-                      : task.priority === "medium"
+                      : task.priority === "MEDIUM"
                       ? "secondary"
                       : "outline"
                   }
@@ -97,13 +101,23 @@ export function MyTasksTable({
                 </Badge>
               </TableCell>
               <TableCell>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleViewDetails(task)}
-                >
-                  View
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <MoreHorizontal className="h-4 w-4" />
+                      <span className="sr-only">Actions</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuItem onClick={() => handleViewDetails(task)}>
+                      View Details
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleEditTask(task)}>
+                      Edit Task
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </TableCell>
             </TableRow>
           ))}

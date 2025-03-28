@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,32 +17,18 @@ import { MyTasksTable } from "./union/my-tasks-table";
 import { CompletedTasksTable } from "./union/completed-tasks-table";
 import { TaskDetailsDialog } from "./union/task-details-dialog";
 import { TaskFormDialog } from "./union/task-form-dialog";
+import { allTasks, auth, user } from "@/app/api";
+import { IUser } from "@/types/user";
 
-interface Person {
-  id: number;
-  firstName: string;
-  lastName: string;
-  avatar: string;
-}
-interface Tasks {
-  id: string;
-  title: string;
-  description: string;
-  assignee: Person;
-  assignor: Person;
-  priority: "high" | "medium" | "low";
-  status: "PENDING" | "IN_PROGRESS" | "COMPLETED";
-  dueDate: string;
-  createdAt: string;
-  completedAt?: string;
-}
-interface TasksProps {
-  tasks: Tasks[];
-  doctorId: { id: number };
-}
-export default function Tasks({ tasks, doctorId }: TasksProps) {
+export default function Tasks() {
   // Replace mock data with state initialized to an empty array
+  const [myId, setMyId] = useState<{ id: number } | null>(null);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [myTasks, setMyTasks] = useState<Task[]>([]);
+  const [completedTasks, setCompletedTasks] = useState<Task[]>([]);
+  const [staff, setStaff] = useState<IUser[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [timeFilter, setTimeFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -51,6 +37,7 @@ export default function Tasks({ tasks, doctorId }: TasksProps) {
   const [isEditTaskDialogOpen, setIsEditTaskDialogOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [taskFormData, setTaskFormData] = useState<TaskFormData>({
+    id: "",
     title: "",
     description: "",
     assignee: "",
@@ -60,12 +47,58 @@ export default function Tasks({ tasks, doctorId }: TasksProps) {
   });
   const { toast } = useToast();
 
-  // Fetch tasks from the API on component mount
-
+  useEffect(() => {
+    async function fetchMyId() {
+      try {
+        const { user } = await auth.getUserId();
+        if (user) setMyId(user);
+      } catch (error) {
+        console.error("Error fetching user ID: ", error);
+      }
+    }
+    async function fetchAllTasks() {
+      try {
+        const { tasks } = await allTasks.getAllTasks();
+        setTasks(tasks);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    }
+    async function fetchMyTasks() {
+      try {
+        const { tasks } = await allTasks.getMyTasks();
+        setMyTasks(tasks);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    }
+    async function fetchMyCompletedTasks() {
+      try {
+        const { tasks } = await allTasks.getCompletedTasks();
+        setCompletedTasks(tasks);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    }
+    async function fetchStaff() {
+      try {
+        const staff = await user.getStaff();
+        setStaff(staff);
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    }
+    fetchMyId();
+    fetchStaff();
+    fetchMyTasks();
+    fetchMyCompletedTasks();
+    fetchAllTasks();
+  }, [tasks]);
   const filteredTasks = tasks.filter((task) => {
     const matchesSearch =
       task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       task.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      task.dueDate.toLowerCase().includes(searchTerm.toLowerCase()) ||
       task.assignee.firstName.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesPriority =
@@ -73,9 +106,22 @@ export default function Tasks({ tasks, doctorId }: TasksProps) {
     const matchesStatus =
       statusFilter === "all" || task.status === statusFilter;
 
-    return matchesSearch && matchesPriority && matchesStatus;
-  });
+    // New time filter logic
+    const matchesTime = (() => {
+      if (timeFilter === "all") return true;
+      if (!task.dueDate) return false;
 
+      const taskDate = new Date(task.dueDate);
+      const now = new Date();
+      const timeDiff = now.getTime() - taskDate.getTime();
+
+      if (timeFilter === "week") return timeDiff <= 7 * 24 * 60 * 60 * 1000;
+      if (timeFilter === "month") return timeDiff <= 30 * 24 * 60 * 60 * 1000;
+      return true;
+    })();
+
+    return matchesSearch && matchesPriority && matchesStatus && matchesTime;
+  });
   const handleEditTask = (task: Task) => {
     setEditingTask(task);
 
@@ -87,6 +133,7 @@ export default function Tasks({ tasks, doctorId }: TasksProps) {
     }
 
     setTaskFormData({
+      id: task.id,
       title: task.title,
       description: task.description,
       assignee:
@@ -108,12 +155,10 @@ export default function Tasks({ tasks, doctorId }: TasksProps) {
     setIsEditTaskDialogOpen(true);
   };
 
-  const handleDeleteTask = (task: Task) => {
-    // In a real app, this would delete the task from the database
-    // For now, we'll just remove it from the local state
+  const handleDeleteTask = async (task: Task) => {
+    await allTasks.deleteTask(task.id);
   };
-  const handleMarkComplete = (task: Task) => {
-    // In a real app, this would update the task in the database
+  const handleMarkComplete = async (task: Task) => {
     const updatedTask = {
       ...task,
       status: "COMPLETED",
@@ -124,6 +169,11 @@ export default function Tasks({ tasks, doctorId }: TasksProps) {
     toast({
       title: "Task Completed",
       description: `Task "${task.title}" has been marked as completedf`,
+    });
+    const today = new Date();
+    await allTasks.updateTask(task.id, {
+      status: "COMPLETED",
+      completedAt: `${today.toISOString().split("T")[0]}`,
     });
 
     // If the task details dialog is open, close it
@@ -137,7 +187,7 @@ export default function Tasks({ tasks, doctorId }: TasksProps) {
     setIsDialogOpen(true);
   };
 
-  const handleTaskFormChange = (field: string, value: string) => {
+  const handleTaskFormChange = (field: string, value: string | number) => {
     setTaskFormData({
       ...taskFormData,
       [field]: value,
@@ -146,6 +196,7 @@ export default function Tasks({ tasks, doctorId }: TasksProps) {
 
   const handleCreateTask = () => {
     setTaskFormData({
+      id: "",
       title: "",
       description: "",
       assignee: "",
@@ -156,7 +207,7 @@ export default function Tasks({ tasks, doctorId }: TasksProps) {
     setIsNewTaskDialogOpen(true);
   };
 
-  const handleSaveTask = () => {
+  const handleSaveTask = async () => {
     // Validate form
     if (
       !taskFormData.title ||
@@ -178,6 +229,15 @@ export default function Tasks({ tasks, doctorId }: TasksProps) {
         title: "Task Updated",
         description: `Task "${taskFormData.title}" has been updated successfully`,
       });
+      const updatedTask = {
+        title: taskFormData.title,
+        description: taskFormData.description,
+        assigneeId: taskFormData.assignee,
+        assignorId: myId?.id,
+        priority: taskFormData.priority.toUpperCase(),
+        dueDate: taskFormData.dueDate,
+      };
+      await allTasks.updateTask(taskFormData.id, updatedTask);
       setIsEditTaskDialogOpen(false);
     } else {
       // Create new task
@@ -185,11 +245,22 @@ export default function Tasks({ tasks, doctorId }: TasksProps) {
         title: "Task Created",
         description: "New task has been created successfully",
       });
+      const newTask = {
+        title: taskFormData.title,
+        description: taskFormData.description,
+        assigneeId: taskFormData.assignee,
+        assignorId: myId?.id,
+        priority: taskFormData.priority.toUpperCase(),
+        status: "PENDING",
+        dueDate: taskFormData.dueDate,
+      };
+      await allTasks.createTask(newTask);
       setIsNewTaskDialogOpen(false);
     }
 
     // Reset form data
     setTaskFormData({
+      id: "",
       title: "",
       description: "",
       assignee: "",
@@ -223,8 +294,8 @@ export default function Tasks({ tasks, doctorId }: TasksProps) {
             </CardHeader>
             <CardContent>
               <MyTasksTable
-                tasks={tasks}
-                myId={doctorId!}
+                tasks={myTasks}
+                handleEditTask={handleEditTask}
                 handleMarkComplete={handleMarkComplete}
                 handleViewDetails={handleViewDetails}
               />
@@ -239,7 +310,7 @@ export default function Tasks({ tasks, doctorId }: TasksProps) {
             </CardHeader>
             <CardContent>
               <CompletedTasksTable
-                tasks={tasks}
+                tasks={completedTasks}
                 handleViewDetails={handleViewDetails}
               />
             </CardContent>
@@ -262,6 +333,7 @@ export default function Tasks({ tasks, doctorId }: TasksProps) {
         title="Create New Task"
         description="Add a new task to the system."
         formData={taskFormData}
+        staff={staff}
         handleFormChange={handleTaskFormChange}
         handleSave={handleSaveTask}
       />
@@ -273,6 +345,7 @@ export default function Tasks({ tasks, doctorId }: TasksProps) {
         title="Edit Task"
         description="Update the details of this task."
         formData={taskFormData}
+        staff={staff}
         handleFormChange={handleTaskFormChange}
         handleSave={handleSaveTask}
       />

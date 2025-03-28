@@ -21,7 +21,7 @@ export function CompletedTasksTable({
   tasks,
   handleViewDetails,
 }: CompletedTasksTableProps) {
-  const completedTasks = tasks.filter((task) => task.status === "COMPLETED");
+  const completedTasks = tasks;
 
   return (
     <div className="rounded-md border">
