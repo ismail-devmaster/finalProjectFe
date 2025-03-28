@@ -164,7 +164,9 @@ export function TaskManagement() {
       title: "Task Completed",
       description: `Task "${task.title}" has been marked as completedf`,
     });
-    await allTasks.updateTask(task.id, {status:"COMPLETED"});
+    const today = new Date();
+    await allTasks.updateTask(task.id, {status:"COMPLETED", completedAt: `${today.toISOString().split("T")[0]}`});
+
     // If the task details dialog is open, close it
     if (isDialogOpen && selectedTask?.id === task.id) {
       setIsDialogOpen(false);
