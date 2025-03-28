@@ -103,6 +103,7 @@ export function TaskManagement() {
     const matchesSearch =
       task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       task.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      task.dueDate.toLowerCase().includes(searchTerm.toLowerCase()) ||
       task.assignee.firstName.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesPriority =
@@ -165,7 +166,10 @@ export function TaskManagement() {
       description: `Task "${task.title}" has been marked as completedf`,
     });
     const today = new Date();
-    await allTasks.updateTask(task.id, {status:"COMPLETED", completedAt: `${today.toISOString().split("T")[0]}`});
+    await allTasks.updateTask(task.id, {
+      status: "COMPLETED",
+      completedAt: `${today.toISOString().split("T")[0]}`,
+    });
 
     // If the task details dialog is open, close it
     if (isDialogOpen && selectedTask?.id === task.id) {
