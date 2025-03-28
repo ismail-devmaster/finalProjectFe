@@ -22,11 +22,12 @@ import { TaskDetailsDialog } from "@/components/adminComponents/tasks/task-detai
 import { TaskFormDialog } from "@/components/adminComponents/tasks/task-form-dialog";
 
 // Import the API function from your api.ts file
-import { allTasks, user} from "@/app/api";
+import { allTasks, auth, user } from "@/app/api";
 import { IUser } from "@/types/user";
 
 export function TaskManagement() {
   // Replace mock data with state initialized to an empty array
+  const [myId, setMyId] = useState<{ id: number } | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [myTasks, setMyTasks] = useState<Task[]>([]);
   const [completedTasks, setCompletedTasks] = useState<Task[]>([]);
@@ -49,8 +50,15 @@ export function TaskManagement() {
   });
   const { toast } = useToast();
 
-  // Fetch tasks from the API on component mount
   useEffect(() => {
+    async function fetchMyId() {
+      try {
+        const { user } = await auth.getUserId();
+        if (user) setMyId(user);
+      } catch (error) {
+        console.error("Error fetching user ID: ", error);
+      }
+    }
     async function fetchAllTasks() {
       try {
         const { tasks } = await allTasks.getAllTasks();
@@ -83,6 +91,7 @@ export function TaskManagement() {
         console.error("Error fetching data: ", error);
       }
     }
+    fetchMyId();
     fetchStaff();
     fetchMyTasks();
     fetchMyCompletedTasks();
@@ -95,10 +104,10 @@ export function TaskManagement() {
       task.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       task.assignee.firstName.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesPriority = priorityFilter === "all" ||
-      task.priority === priorityFilter;
-    const matchesStatus = statusFilter === "all" ||
-      task.status === statusFilter;
+    const matchesPriority =
+      priorityFilter === "all" || task.priority === priorityFilter;
+    const matchesStatus =
+      statusFilter === "all" || task.status === statusFilter;
 
     return matchesSearch && matchesPriority && matchesStatus;
   });
@@ -116,16 +125,18 @@ export function TaskManagement() {
     setTaskFormData({
       title: task.title,
       description: task.description,
-      assignee: task.assignee.firstName === "Sarah Thompson"
-        ? "sarah"
-        : task.assignee.firstName === "Dr. Emma Wilson"
-        ? "emma"
-        : "michael",
-      assignor: task.assignor.firstName === "Sarah Thompson"
-        ? "sarah"
-        : task.assignor.firstName === "Dr. Emma Wilson"
-        ? "emma"
-        : "michael",
+      assignee:
+        task.assignee.firstName === "Sarah Thompson"
+          ? "sarah"
+          : task.assignee.firstName === "Dr. Emma Wilson"
+          ? "emma"
+          : "michael",
+      assignor:
+        task.assignor.firstName === "Sarah Thompson"
+          ? "sarah"
+          : task.assignor.firstName === "Dr. Emma Wilson"
+          ? "emma"
+          : "michael",
       priority: task.priority,
       dueDate: formattedDueDate,
     });
@@ -163,7 +174,7 @@ export function TaskManagement() {
     setIsDialogOpen(true);
   };
 
-  const handleTaskFormChange = (field: string, value: string) => {
+  const handleTaskFormChange = (field: string, value: string | number) => {
     setTaskFormData({
       ...taskFormData,
       [field]: value,
@@ -182,7 +193,7 @@ export function TaskManagement() {
     setIsNewTaskDialogOpen(true);
   };
 
-  const handleSaveTask = () => {
+  const handleSaveTask = async() => {
     // Validate form
     if (
       !taskFormData.title ||
@@ -202,8 +213,7 @@ export function TaskManagement() {
       // Update existing task
       toast({
         title: "Task Updated",
-        description:
-        `Task "${taskFormData.title}" has been updated successfully`,
+        description: `Task "${taskFormData.title}" has been updated successfully`,
       });
       console.log(taskFormData);
       setIsEditTaskDialogOpen(false);
@@ -213,7 +223,16 @@ export function TaskManagement() {
         title: "Task Created",
         description: "New task has been created successfully",
       });
-      console.log(taskFormData);
+      const newTask = {
+        title: taskFormData.title,
+        description: taskFormData.description,
+        assigneeId: taskFormData.assignee,
+        assignorId: myId?.id,
+        priority: taskFormData.priority.toUpperCase(),
+        status: "PENDING",
+        dueDate: taskFormData.dueDate,
+      };
+      await allTasks.createTask(newTask);
       setIsNewTaskDialogOpen(false);
     }
 
