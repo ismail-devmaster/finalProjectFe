@@ -41,6 +41,7 @@ export function TaskManagement() {
   const [isEditTaskDialogOpen, setIsEditTaskDialogOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [taskFormData, setTaskFormData] = useState<TaskFormData>({
+    id: "",
     title: "",
     description: "",
     assignee: "",
@@ -96,7 +97,7 @@ export function TaskManagement() {
     fetchMyTasks();
     fetchMyCompletedTasks();
     fetchAllTasks();
-  }, []);
+  }, [tasks]);
 
   const filteredTasks = tasks.filter((task) => {
     const matchesSearch =
@@ -123,6 +124,7 @@ export function TaskManagement() {
     }
 
     setTaskFormData({
+      id: task.id,
       title: task.title,
       description: task.description,
       assignee:
@@ -183,6 +185,7 @@ export function TaskManagement() {
 
   const handleCreateTask = () => {
     setTaskFormData({
+      id: "",
       title: "",
       description: "",
       assignee: "",
@@ -193,7 +196,7 @@ export function TaskManagement() {
     setIsNewTaskDialogOpen(true);
   };
 
-  const handleSaveTask = async() => {
+  const handleSaveTask = async () => {
     // Validate form
     if (
       !taskFormData.title ||
@@ -215,7 +218,15 @@ export function TaskManagement() {
         title: "Task Updated",
         description: `Task "${taskFormData.title}" has been updated successfully`,
       });
-      console.log(taskFormData);
+      const updatedTask = {
+        title: taskFormData.title,
+        description: taskFormData.description,
+        assigneeId: taskFormData.assignee,
+        assignorId: myId?.id,
+        priority: taskFormData.priority.toUpperCase(),
+        dueDate: taskFormData.dueDate,
+      };
+      await allTasks.updateTask(taskFormData.id, updatedTask);
       setIsEditTaskDialogOpen(false);
     } else {
       // Create new task
@@ -238,6 +249,7 @@ export function TaskManagement() {
 
     // Reset form data
     setTaskFormData({
+      id: "",
       title: "",
       description: "",
       assignee: "",

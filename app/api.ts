@@ -188,7 +188,7 @@ export const allTasks = {
   getTaskById: (id: number) => request("get", `/tasks/${id}`),
   getMyTasks: () => request("get", "/tasks/my-tasks"),
   getCompletedTasks: () => request("get", "/tasks/my-completed-tasks"),
-  updateTask: (id: number, data: any) => request("put", `/tasks/${id}`, data),
+  updateTask: (id: string, data: any) => request("put", `/tasks/${id}`, data),
   deleteTask: (id: number) => request("delete", `/tasks/${id}`),
 };
 

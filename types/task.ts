@@ -19,6 +19,7 @@ export interface Task {
 }
 
 export interface TaskFormData {
+  id: string;
   title: string;
   description: string;
   assignee: string;
