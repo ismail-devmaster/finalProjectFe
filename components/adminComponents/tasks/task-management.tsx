@@ -151,7 +151,7 @@ export function TaskManagement() {
     // For now, we'll just remove it from the local state
     setTasks((prevTasks) => prevTasks.filter((t) => t.id !== task.id));
   };
-  const handleMarkComplete = (task: Task) => {
+  const handleMarkComplete = async (task: Task) => {
     // In a real app, this would update the task in the database
     const updatedTask = {
       ...task,
@@ -164,7 +164,7 @@ export function TaskManagement() {
       title: "Task Completed",
       description: `Task "${task.title}" has been marked as completedf`,
     });
-
+    await allTasks.updateTask(task.id, {status:"COMPLETED"});
     // If the task details dialog is open, close it
     if (isDialogOpen && selectedTask?.id === task.id) {
       setIsDialogOpen(false);
