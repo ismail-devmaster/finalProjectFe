@@ -11,7 +11,7 @@ export interface Task {
   description: string;
   assignee: Person;
   assignor: Person;
-  priority: "high" | "medium" | "low";
+  priority: "HIGH" | "MEDIUM" | "LOW";
   status: "PENDING" | "IN_PROGRESS" | "COMPLETED";
   dueDate: string;
   createdAt: string;

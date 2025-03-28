@@ -72,7 +72,7 @@ export function TaskDetailsDialog({ isOpen, setIsOpen, task, handleMarkComplete 
               <Badge
                 className="mt-1"
                 variant={
-                  task.priority === "high" ? "destructive" : task.priority === "medium" ? "secondary" : "outline"
+                  task.priority === "HIGH" ? "destructive" : task.priority === "MEDIUM" ? "secondary" : "outline"
                 }
               >
                 {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}

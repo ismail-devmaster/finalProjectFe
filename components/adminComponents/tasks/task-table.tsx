@@ -140,9 +140,9 @@ export function TaskTable({
                   <TableCell>
                     <Badge
                       variant={
-                        task.priority === "high"
+                        task.priority === "HIGH"
                           ? "destructive"
-                          : task.priority === "medium"
+                          : task.priority === "MEDIUM"
                           ? "secondary"
                           : "outline"
                       }
