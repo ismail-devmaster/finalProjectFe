@@ -160,13 +160,10 @@ export function TaskManagement() {
     setIsEditTaskDialogOpen(true);
   };
 
-  const handleDeleteTask = (task: Task) => {
-    // In a real app, this would delete the task from the database
-    // For now, we'll just remove it from the local state
-    setTasks((prevTasks) => prevTasks.filter((t) => t.id !== task.id));
+  const handleDeleteTask = async(task: Task) => {
+    await allTasks.deleteTask(task.id);
   };
   const handleMarkComplete = async (task: Task) => {
-    // In a real app, this would update the task in the database
     const updatedTask = {
       ...task,
       status: "COMPLETED",
