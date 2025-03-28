@@ -17,6 +17,8 @@ interface TaskFiltersProps {
   setPriorityFilter: (value: string) => void;
   statusFilter: string;
   setStatusFilter: (value: string) => void;
+  timeFilter: string;
+  setTimeFilter: (value: string) => void;
 }
 
 export function TaskFilters({
@@ -26,6 +28,8 @@ export function TaskFilters({
   setPriorityFilter,
   statusFilter,
   setStatusFilter,
+  timeFilter,
+  setTimeFilter,
 }: TaskFiltersProps) {
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -69,6 +73,19 @@ export function TaskFilters({
               <SelectItem value="PENDING">Pending</SelectItem>
               <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
               <SelectItem value="COMPLETED">Completed</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={timeFilter} onValueChange={setTimeFilter}>
+            <SelectTrigger className="w-[150px]">
+              <div className="flex items-center gap-2">
+                <Filter className="h-4 w-4" />
+                <SelectValue placeholder="Time" />
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Time</SelectItem>
+              <SelectItem value="week">Last Week</SelectItem>
+              <SelectItem value="month">Last Month</SelectItem>
             </SelectContent>
           </Select>
         </div>

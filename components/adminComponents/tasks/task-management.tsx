@@ -33,6 +33,7 @@ export function TaskManagement() {
   const [completedTasks, setCompletedTasks] = useState<Task[]>([]);
   const [staff, setStaff] = useState<IUser[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [timeFilter, setTimeFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -98,7 +99,6 @@ export function TaskManagement() {
     fetchMyCompletedTasks();
     fetchAllTasks();
   }, [tasks]);
-
   const filteredTasks = tasks.filter((task) => {
     const matchesSearch =
       task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -111,9 +111,22 @@ export function TaskManagement() {
     const matchesStatus =
       statusFilter === "all" || task.status === statusFilter;
 
-    return matchesSearch && matchesPriority && matchesStatus;
-  });
+    // New time filter logic
+    const matchesTime = (() => {
+      if (timeFilter === "all") return true;
+      if (!task.dueDate) return false;
 
+      const taskDate = new Date(task.dueDate);
+      const now = new Date();
+      const timeDiff = now.getTime() - taskDate.getTime();
+
+      if (timeFilter === "week") return timeDiff <= 7 * 24 * 60 * 60 * 1000;
+      if (timeFilter === "month") return timeDiff <= 30 * 24 * 60 * 60 * 1000;
+      return true;
+    })();
+
+    return matchesSearch && matchesPriority && matchesStatus && matchesTime;
+  });
   const handleEditTask = (task: Task) => {
     setEditingTask(task);
 
@@ -301,6 +314,8 @@ export function TaskManagement() {
                   setPriorityFilter={setPriorityFilter}
                   statusFilter={statusFilter}
                   setStatusFilter={setStatusFilter}
+                  timeFilter={timeFilter}
+                  setTimeFilter={setTimeFilter}
                 />
                 <TaskTable
                   tasks={filteredTasks}
