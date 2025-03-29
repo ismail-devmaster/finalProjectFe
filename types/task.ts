@@ -2,6 +2,7 @@ export interface Person {
   id: number;
   firstName: string;
   lastName: string;
+  email: string;
   avatar: string;
 }
 
@@ -10,6 +11,7 @@ export interface Task {
   title: string;
   description: string;
   assignee: Person;
+  assignees:[Person]
   assignor: Person;
   priority: "HIGH" | "MEDIUM" | "LOW";
   status: "PENDING" | "IN_PROGRESS" | "COMPLETED";

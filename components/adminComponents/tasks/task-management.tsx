@@ -65,6 +65,7 @@ export function TaskManagement() {
       try {
         const { tasks } = await allTasks.getAllTasks();
         setTasks(tasks);
+        // setTasks([]);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
@@ -73,6 +74,7 @@ export function TaskManagement() {
       try {
         const { tasks } = await allTasks.getMyTasks();
         setMyTasks(tasks);
+        setMyTasks([]);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
@@ -81,6 +83,7 @@ export function TaskManagement() {
       try {
         const { tasks } = await allTasks.getCompletedTasks();
         setCompletedTasks(tasks);
+        setCompletedTasks([]);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
@@ -98,13 +101,13 @@ export function TaskManagement() {
     fetchMyTasks();
     fetchMyCompletedTasks();
     fetchAllTasks();
-  }, [tasks]);
+  }, []);
   const filteredTasks = tasks.filter((task) => {
     const matchesSearch =
       task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       task.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      task.dueDate.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      task.assignee.firstName.toLowerCase().includes(searchTerm.toLowerCase());
+      task.dueDate.toLowerCase().includes(searchTerm.toLowerCase()) 
+      // task.assignee.firstName.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesPriority =
       priorityFilter === "all" || task.priority === priorityFilter;
@@ -160,7 +163,7 @@ export function TaskManagement() {
     setIsEditTaskDialogOpen(true);
   };
 
-  const handleDeleteTask = async(task: Task) => {
+  const handleDeleteTask = async (task: Task) => {
     await allTasks.deleteTask(task.id);
   };
   const handleMarkComplete = async (task: Task) => {

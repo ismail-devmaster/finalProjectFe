@@ -71,7 +71,7 @@ export function TaskTable({
             <TableRow>
               <TableHead className="w-[50px]"></TableHead>
               <TableHead>Task</TableHead>
-              <TableHead>Assignee</TableHead>
+              <TableHead>Assignees</TableHead>
               <TableHead>Assignor</TableHead>
               <TableHead>Priority</TableHead>
               <TableHead>Due Date</TableHead>
@@ -107,17 +107,38 @@ export function TaskTable({
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage
-                          src={task.assignee.avatar}
-                          alt={task.assignee.firstName}
-                        />
-                        <AvatarFallback>
-                          {task.assignee.firstName.charAt(0)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="font-medium">
-                        {task.assignee.firstName} {task.assignee.lastName}
+                      <div className="flex -space-x-2">
+                        {task.assignees.slice(0, 3).map((assignee) => (
+                          <Avatar
+                            key={assignee.id}
+                            className="h-8 w-8 border-2 border-background"
+                          >
+                            <AvatarImage
+                              src={assignee.avatar}
+                              alt={assignee.firstName}
+                            />
+                            <AvatarFallback>
+                              {assignee.firstName.charAt(0)}
+                              {assignee.lastName.charAt(0)}
+                            </AvatarFallback>
+                          </Avatar>
+                        ))}
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-sm">
+                          {task.assignees
+                            .slice(0, 2)
+                            .map(
+                              (a) =>
+                                `${a.firstName} ${a.lastName.substring(0, 1)}.`
+                            )
+                            .join(", ")}
+                        </span>
+                        {task.assignees.length > 2 && (
+                          <span className="text-xs text-muted-foreground">
+                            +{task.assignees.length - 2} more
+                          </span>
+                        )}
                       </div>
                     </div>
                   </TableCell>
@@ -130,6 +151,7 @@ export function TaskTable({
                         />
                         <AvatarFallback>
                           {task.assignor.firstName.charAt(0)}
+                          {task.assignor.lastName.charAt(0)}
                         </AvatarFallback>
                       </Avatar>
                       <div className="font-medium">
@@ -148,7 +170,7 @@ export function TaskTable({
                       }
                     >
                       {task.priority.charAt(0).toUpperCase() +
-                        task.priority.slice(1)}
+                        task.priority.slice(1).toLowerCase()}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -172,7 +194,7 @@ export function TaskTable({
                       {task.status === "IN_PROGRESS"
                         ? "In Progress"
                         : task.status.charAt(0).toUpperCase() +
-                          task.status.slice(1)}
+                          task.status.slice(1).toLowerCase()}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
