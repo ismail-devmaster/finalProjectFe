@@ -74,7 +74,6 @@ export function TaskManagement() {
       try {
         const { tasks } = await allTasks.getMyTasks();
         setMyTasks(tasks);
-        setMyTasks([]);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
@@ -106,8 +105,8 @@ export function TaskManagement() {
     const matchesSearch =
       task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       task.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      task.dueDate.toLowerCase().includes(searchTerm.toLowerCase()) 
-      // task.assignee.firstName.toLowerCase().includes(searchTerm.toLowerCase());
+      task.dueDate.toLowerCase().includes(searchTerm.toLowerCase());
+    // task.assignee.firstName.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesPriority =
       priorityFilter === "all" || task.priority === priorityFilter;
