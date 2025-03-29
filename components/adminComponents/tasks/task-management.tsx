@@ -160,10 +160,10 @@ export function TaskManagement() {
 
     setIsEditTaskDialogOpen(true);
   };
-  const handleMarkComplete = async (task: Task) => {
+  const handleMarkComplete = async (task: Task, status: string) => {
     try {
       await allTasks.updateTask(task.id, {
-        status: "COMPLETED",
+        status: status,
         completedAt: new Date().toISOString(),
       });
       await Promise.all([

@@ -35,7 +35,7 @@ import { useState } from "react";
 interface MyTasksTableProps {
   tasks: Task[];
   handleEditTask: (task: Task) => void;
-  handleMarkComplete: (task: Task) => void;
+  handleMarkComplete: (task: Task, status: "COMPLETED" | "IN_PROGRESS") => void;
   handleViewDetails: (task: Task) => void;
   handleDeleteTask: (task: Task) => void;
   handleBulkDeleteTasks?: (tasks: Task[]) => void;
@@ -149,7 +149,7 @@ export function MyTasksTable({
                     <div className="relative group">
                       <Checkbox
                         checked={task.status === "COMPLETED"}
-                        onCheckedChange={() => handleMarkComplete(task)}
+                        onCheckedChange={() => handleMarkComplete(task, "COMPLETED")}
                       />
                       <span className="absolute -top-6 left-1/2 -translate-x-1/2 bg-foreground text-background text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
                         Mark as completed
@@ -262,6 +262,25 @@ export function MyTasksTable({
                         <DropdownMenuItem onClick={() => handleEditTask(task)}>
                           Edit Task
                         </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        {task.status === "PENDING" && (
+                          <DropdownMenuItem
+                            onClick={() =>
+                              handleMarkComplete(task, "IN_PROGRESS")
+                            }
+                          >
+                            Mark as In Progress
+                          </DropdownMenuItem>
+                        )}
+                        {task.status !== "COMPLETED" && (
+                          <DropdownMenuItem
+                            onClick={() =>
+                              handleMarkComplete(task, "COMPLETED")
+                            }
+                          >
+                            Mark as Completed
+                          </DropdownMenuItem>
+                        )}
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                           onClick={() => handleDeleteTask(task)}
