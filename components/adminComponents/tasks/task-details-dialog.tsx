@@ -18,7 +18,7 @@ interface TaskDetailsDialogProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   task: Task | null;
-  handleMarkComplete: (task: Task) => void;
+  handleMarkComplete: (task: Task, status: string) => void;
 }
 
 export function TaskDetailsDialog({
@@ -174,7 +174,7 @@ export function TaskDetailsDialog({
           {task.status !== "COMPLETED" && (
             <Button
               onClick={() => {
-                handleMarkComplete(task);
+                handleMarkComplete(task, task.status);
                 setIsOpen(false);
               }}
             >
