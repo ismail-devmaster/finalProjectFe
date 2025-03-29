@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -10,16 +10,25 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Trash2 } from "lucide-react";
 import type { Task } from "@/types/task";
 
 interface CompletedTasksTableProps {
   tasks: Task[];
   handleViewDetails: (task: Task) => void;
+  handleDeleteTask: (task: Task) => void;
 }
 
 export function CompletedTasksTable({
   tasks,
   handleViewDetails,
+  handleDeleteTask,
 }: CompletedTasksTableProps) {
   const completedTasks = tasks;
 
@@ -29,7 +38,7 @@ export function CompletedTasksTable({
         <TableHeader>
           <TableRow>
             <TableHead>Task</TableHead>
-            <TableHead>Assignee</TableHead>
+            <TableHead>Assignees</TableHead>
             <TableHead>Completed Date</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
@@ -44,18 +53,43 @@ export function CompletedTasksTable({
                 </div>
               </TableCell>
               <TableCell>
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage
-                      src={task.assignee.avatar}
-                      alt={task.assignee.firstName}
-                    />
-                    <AvatarFallback>
-                      {task.assignee.firstName.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
+                <div className="flex items-center gap-1">
+                  {task.assignees.length > 0 && (
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback>
+                        {task.assignees[0].firstName.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                  )}
                   <div className="font-medium">
-                    {task.assignee.firstName} {task.assignee.lastName}
+                    {task.assignees.length > 0 ? (
+                      <>
+                        {task.assignees[0].firstName}{" "}
+                        {task.assignees[0].lastName}
+                        {task.assignees.length > 1 && (
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="ml-1 text-xs text-muted-foreground">
+                                  +{task.assignees.length - 1} more
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <div className="space-y-1">
+                                  {task.assignees.slice(1).map((assignee) => (
+                                    <div key={assignee.id}>
+                                      {assignee.firstName} {assignee.lastName}
+                                    </div>
+                                  ))}
+                                </div>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        )}
+                      </>
+                    ) : (
+                      "Unassigned"
+                    )}
                   </div>
                 </div>
               </TableCell>
@@ -69,13 +103,23 @@ export function CompletedTasksTable({
                   : "N/A"}
               </TableCell>
               <TableCell>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleViewDetails(task)}
-                >
-                  View
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleViewDetails(task)}
+                  >
+                    View
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    onClick={() => handleDeleteTask(task)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </TableCell>
             </TableRow>
           ))}

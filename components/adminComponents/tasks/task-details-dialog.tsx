@@ -30,7 +30,6 @@ export function TaskDetailsDialog({
   const [showAllAssignees, setShowAllAssignees] = useState(false);
 
   if (!task) return null;
-  console.log(task);
 
   const hasMoreAssignees = task.assignees.length > 4;
   const displayedAssignees = showAllAssignees

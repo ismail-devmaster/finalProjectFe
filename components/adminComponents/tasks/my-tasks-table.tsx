@@ -3,7 +3,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Table,
   TableBody,
@@ -12,12 +12,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { Task } from "@/types/task";
@@ -27,6 +28,7 @@ interface MyTasksTableProps {
   handleEditTask: (task: Task) => void;
   handleMarkComplete: (task: Task) => void;
   handleViewDetails: (task: Task) => void;
+  handleDeleteTask: (task: Task) => void;
 }
 
 export function MyTasksTable({
@@ -34,6 +36,7 @@ export function MyTasksTable({
   handleEditTask,
   handleMarkComplete,
   handleViewDetails,
+  handleDeleteTask,
 }: MyTasksTableProps) {
   const myTasks = tasks;
 
@@ -82,10 +85,6 @@ export function MyTasksTable({
                           key={assignee.id}
                           className="h-8 w-8 border-2 border-background"
                         >
-                          <AvatarImage
-                            src={assignee.avatar}
-                            alt={assignee.firstName}
-                          />
                           <AvatarFallback>
                             {assignee.firstName.charAt(0)}
                             {assignee.lastName.charAt(0)}
@@ -114,10 +113,6 @@ export function MyTasksTable({
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage
-                        src={task.assignor.avatar}
-                        alt={task.assignor.firstName}
-                      />
                       <AvatarFallback>
                         {task.assignor.firstName.charAt(0)}
                         {task.assignor.lastName.charAt(0)}
@@ -139,7 +134,7 @@ export function MyTasksTable({
                     }
                   >
                     {task.priority.charAt(0).toUpperCase() +
-                      task.priority.slice(1)}
+                      task.priority.slice(1).toLowerCase()}
                   </Badge>
                 </TableCell>
                 <TableCell>
@@ -161,7 +156,7 @@ export function MyTasksTable({
                     {task.status === "IN_PROGRESS"
                       ? "In Progress"
                       : task.status.charAt(0).toUpperCase() +
-                        task.status.slice(1)}
+                        task.status.slice(1).toLowerCase()}
                   </Badge>
                 </TableCell>
                 <TableCell>
@@ -179,6 +174,14 @@ export function MyTasksTable({
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => handleEditTask(task)}>
                         Edit Task
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => handleDeleteTask(task)}
+                        className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Delete Task
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

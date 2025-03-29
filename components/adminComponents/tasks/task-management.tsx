@@ -65,7 +65,6 @@ export function TaskManagement() {
       try {
         const { tasks } = await allTasks.getAllTasks();
         setTasks(tasks);
-        // setTasks([]);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
@@ -82,7 +81,7 @@ export function TaskManagement() {
       try {
         const { tasks } = await allTasks.getCompletedTasks();
         setCompletedTasks(tasks);
-        setCompletedTasks([]);
+        console.log("completed tasks", tasks);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
@@ -100,7 +99,7 @@ export function TaskManagement() {
     fetchMyTasks();
     fetchMyCompletedTasks();
     fetchAllTasks();
-  }, []);
+  }, [tasks]);
   const filteredTasks = tasks.filter((task) => {
     const matchesSearch =
       task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -339,6 +338,7 @@ export function TaskManagement() {
                 handleEditTask={handleEditTask}
                 handleMarkComplete={handleMarkComplete}
                 handleViewDetails={handleViewDetails}
+                handleDeleteTask={handleDeleteTask}
               />
             </CardContent>
           </Card>
@@ -353,6 +353,7 @@ export function TaskManagement() {
               <CompletedTasksTable
                 tasks={completedTasks}
                 handleViewDetails={handleViewDetails}
+                handleDeleteTask={handleDeleteTask}
               />
             </CardContent>
           </Card>
