@@ -164,6 +164,11 @@ export function TaskManagement() {
   const handleDeleteTask = async (task: Task) => {
     await allTasks.deleteTask(task.id);
   };
+  const handleBulkDeleteTasks = async (task: Task[]) => {
+    task.forEach(async (task) => {
+      await allTasks.deleteTask(task.id);
+    });
+  };
   const handleMarkComplete = async (task: Task) => {
     const updatedTask = {
       ...task,
@@ -321,6 +326,7 @@ export function TaskManagement() {
                   handleViewDetails={handleViewDetails}
                   handleEditTask={handleEditTask}
                   handleDeleteTask={handleDeleteTask}
+                  handleBulkDeleteTasks={handleBulkDeleteTasks}
                 />
               </div>
             </CardContent>
@@ -339,6 +345,7 @@ export function TaskManagement() {
                 handleMarkComplete={handleMarkComplete}
                 handleViewDetails={handleViewDetails}
                 handleDeleteTask={handleDeleteTask}
+                handleBulkDeleteTasks={handleBulkDeleteTasks}
               />
             </CardContent>
           </Card>
@@ -354,6 +361,7 @@ export function TaskManagement() {
                 tasks={completedTasks}
                 handleViewDetails={handleViewDetails}
                 handleDeleteTask={handleDeleteTask}
+                handleBulkDeleteTasks={handleBulkDeleteTasks}
               />
             </CardContent>
           </Card>
