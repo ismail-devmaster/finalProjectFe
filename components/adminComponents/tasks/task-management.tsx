@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -52,54 +52,65 @@ export function TaskManagement() {
   });
   const { toast } = useToast();
 
+  const fetchMyId = useCallback(async () => {
+    try {
+      const { user } = await auth.getUserId();
+      if (user) setMyId(user);
+    } catch (error) {
+      console.error("Error fetching user ID: ", error);
+    }
+  }, []);
+
+  const fetchAllTasks = useCallback(async () => {
+    try {
+      const { tasks } = await allTasks.getAllTasks();
+      setTasks(tasks);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
+  }, []);
+
+  const fetchMyTasks = useCallback(async () => {
+    try {
+      const { tasks } = await allTasks.getMyTasks();
+      setMyTasks(tasks);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
+  }, []);
+
+  const fetchMyCompletedTasks = useCallback(async () => {
+    try {
+      const { tasks } = await allTasks.getCompletedTasks();
+      setCompletedTasks(tasks);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
+  }, []);
+
+  const fetchStaff = useCallback(async () => {
+    try {
+      const staff = await user.getStaff();
+      setStaff(staff);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
+  }, []);
+
+  // 2. Modify useEffect to use the extracted functions
   useEffect(() => {
-    async function fetchMyId() {
-      try {
-        const { user } = await auth.getUserId();
-        if (user) setMyId(user);
-      } catch (error) {
-        console.error("Error fetching user ID: ", error);
-      }
-    }
-    async function fetchAllTasks() {
-      try {
-        const { tasks } = await allTasks.getAllTasks();
-        setTasks(tasks);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-      }
-    }
-    async function fetchMyTasks() {
-      try {
-        const { tasks } = await allTasks.getMyTasks();
-        setMyTasks(tasks);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-      }
-    }
-    async function fetchMyCompletedTasks() {
-      try {
-        const { tasks } = await allTasks.getCompletedTasks();
-        setCompletedTasks(tasks);
-        console.log("completed tasks", tasks);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-      }
-    }
-    async function fetchStaff() {
-      try {
-        const staff = await user.getStaff();
-        setStaff(staff);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-      }
-    }
     fetchMyId();
     fetchStaff();
     fetchMyTasks();
     fetchMyCompletedTasks();
     fetchAllTasks();
-  }, []);
+  }, [
+    fetchAllTasks,
+    fetchMyCompletedTasks,
+    fetchMyId,
+    fetchMyTasks,
+    fetchStaff,
+  ]);
   const filteredTasks = tasks.filter((task) => {
     const matchesSearch =
       task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -149,39 +160,61 @@ export function TaskManagement() {
 
     setIsEditTaskDialogOpen(true);
   };
-
-  const handleDeleteTask = async (task: Task) => {
-    await allTasks.deleteTask(task.id);
-  };
-  const handleBulkDeleteTasks = async (task: Task[]) => {
-    task.forEach(async (task) => {
-      await allTasks.deleteTask(task.id);
-    });
-  };
   const handleMarkComplete = async (task: Task) => {
-    const updatedTask = {
-      ...task,
-      status: "COMPLETED",
-      completedAt: new Date().toISOString(),
-    };
-
-    // Show success toast
-    toast({
-      title: "Task Completed",
-      description: `Task "${task.title}" has been marked as completedf`,
-    });
-    const today = new Date();
-    await allTasks.updateTask(task.id, {
-      status: "COMPLETED",
-      completedAt: `${today.toISOString().split("T")[0]}`,
-    });
-
-    // If the task details dialog is open, close it
-    if (isDialogOpen && selectedTask?.id === task.id) {
-      setIsDialogOpen(false);
+    try {
+      await allTasks.updateTask(task.id, {
+        status: "COMPLETED",
+        completedAt: new Date().toISOString(),
+      });
+      await Promise.all([
+        fetchAllTasks(),
+        fetchMyTasks(),
+        fetchMyCompletedTasks(),
+      ]);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to mark task as complete",
+        variant: "destructive",
+      });
     }
   };
 
+  const handleDeleteTask = async (task: Task) => {
+    try {
+      await allTasks.deleteTask(task.id);
+      await Promise.all([
+        fetchAllTasks(),
+        fetchMyTasks(),
+        fetchMyCompletedTasks(),
+      ]);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete task",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleBulkDeleteTasks = async (tasksToDelete: Task[]) => {
+    try {
+      await Promise.all(
+        tasksToDelete.map((task) => allTasks.deleteTask(task.id))
+      );
+      await Promise.all([
+        fetchAllTasks(),
+        fetchMyTasks(),
+        fetchMyCompletedTasks(),
+      ]);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete tasks",
+        variant: "destructive",
+      });
+    }
+  };
   const handleViewDetails = (task: Task) => {
     setSelectedTask(task);
     setIsDialogOpen(true);
@@ -233,40 +266,57 @@ export function TaskManagement() {
       });
       return;
     }
-
-    if (isEditTaskDialogOpen && editingTask) {
-      // Update existing task
+    try {
+      if (isEditTaskDialogOpen && editingTask) {
+        // Update existing task
+        toast({
+          title: "Task Updated",
+          description: `Task "${taskFormData.title}" has been updated successfully`,
+        });
+        const updatedTask = {
+          title: taskFormData.title,
+          description: taskFormData.description,
+          assigneeIds: taskFormData.assignees,
+          assignorId: myId?.id,
+          priority: taskFormData.priority.toUpperCase(),
+          dueDate: taskFormData.dueDate,
+        };
+        await allTasks.updateTask(taskFormData.id, updatedTask);
+        await Promise.all([
+          fetchAllTasks(),
+          fetchMyTasks(),
+          fetchMyCompletedTasks(),
+        ]);
+        setIsEditTaskDialogOpen(false);
+      } else {
+        // Create new task
+        toast({
+          title: "Task Created",
+          description: "New task has been created successfully",
+        });
+        const newTask = {
+          title: taskFormData.title,
+          description: taskFormData.description,
+          assigneeIds: taskFormData.assignees,
+          assignorId: myId?.id,
+          priority: taskFormData.priority.toUpperCase(),
+          status: "PENDING",
+          dueDate: taskFormData.dueDate,
+        };
+        await allTasks.createTask(newTask);
+        await Promise.all([
+          fetchAllTasks(),
+          fetchMyTasks(),
+          fetchMyCompletedTasks(),
+        ]);
+        setIsNewTaskDialogOpen(false);
+      }
+    } catch (error) {
       toast({
-        title: "Task Updated",
-        description: `Task "${taskFormData.title}" has been updated successfully`,
+        title: "Error",
+        description: "Failed to save task",
+        variant: "destructive",
       });
-      const updatedTask = {
-        title: taskFormData.title,
-        description: taskFormData.description,
-        assigneeIds: taskFormData.assignees,
-        assignorId: myId?.id,
-        priority: taskFormData.priority.toUpperCase(),
-        dueDate: taskFormData.dueDate,
-      };
-      await allTasks.updateTask(taskFormData.id, updatedTask);
-      setIsEditTaskDialogOpen(false);
-    } else {
-      // Create new task
-      toast({
-        title: "Task Created",
-        description: "New task has been created successfully",
-      });
-      const newTask = {
-        title: taskFormData.title,
-        description: taskFormData.description,
-        assigneeIds: taskFormData.assignees,
-        assignorId: myId?.id,
-        priority: taskFormData.priority.toUpperCase(),
-        status: "PENDING",
-        dueDate: taskFormData.dueDate,
-      };
-      await allTasks.createTask(newTask);
-      setIsNewTaskDialogOpen(false);
     }
 
     // Reset form data
