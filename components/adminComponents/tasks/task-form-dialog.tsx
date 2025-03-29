@@ -155,6 +155,7 @@ export function TaskFormDialog({
               className="col-span-3"
               value={formData.dueDate}
               onChange={(e) => handleFormChange("dueDate", e.target.value)}
+              min="2025-03-29T16:06"
             />
           </div>
         </div>
