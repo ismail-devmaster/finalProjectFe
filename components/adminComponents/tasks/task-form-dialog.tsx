@@ -29,7 +29,7 @@ interface TaskFormDialogProps {
   description: string;
   formData: TaskFormData;
   staff: IUser[];
-  handleFormChange: (field: string, value: string | number) => void;
+  handleFormChange: (field: string, value: string | number | number[]) => void;
   handleSave: () => void;
 }
 
@@ -80,25 +80,52 @@ export function TaskFormDialog({
               Assignee
             </Label>
             {/* Assignee Select */}
-            <Select
-              value={formData.assignee.toString()}
-              onValueChange={(value) =>
-                handleFormChange("assignee", Number(value))
-              }
-            >
-              <SelectTrigger id="assignee" className="col-span-3">
-                <SelectValue placeholder="Select assignee" />
-              </SelectTrigger>
-              <SelectContent>
+            <div className="col-span-3 space-y-2">
+              <div className="border rounded-md p-2 max-h-60 overflow-y-auto">
                 {staff.map((user) => (
-                  <SelectItem key={user.id} value={user.id.toString()}>
-                    {user.role === "DOCTOR"
-                      ? `Dr. ${user.firstName} ${user.lastName}`
-                      : `${user.firstName} ${user.lastName}`}
-                  </SelectItem>
+                  <div
+                    key={user.id}
+                    className="flex items-center space-x-2 p-2 hover:bg-gray-50 rounded"
+                  >
+                    <input
+                      type="checkbox"
+                      id={`user-${user.id}`}
+                      checked={formData.assignees?.includes(user.id) || false}
+                      onChange={(e) => {
+                        const isChecked = e.target.checked;
+                        const currentAssignees = formData.assignees || [];
+                        const newAssignees = isChecked
+                          ? [...currentAssignees, user.id]
+                          : currentAssignees.filter((id) => id !== user.id);
+                        handleFormChange("assignees", newAssignees);
+                      }}
+                      className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                    />
+                    <label
+                      htmlFor={`user-${user.id}`}
+                      className="text-sm font-medium text-gray-700"
+                    >
+                      {user.role === "DOCTOR"
+                        ? `Dr. ${user.firstName} ${user.lastName}`
+                        : `${user.firstName} ${user.lastName}`}
+                    </label>
+                  </div>
                 ))}
-              </SelectContent>
-            </Select>
+              </div>
+              {(formData.assignees?.length || 0) > 0 && (
+                <div className="text-xs text-gray-500">
+                  Selected:{" "}
+                  {(formData.assignees || [])
+                    .map((id) => {
+                      const user = staff.find(u => u.id === id);
+                      return user 
+                        ? `${user.role === "DOCTOR" ? "Dr. " : ""}${user.firstName} ${user.lastName}`
+                        : '';
+                    })
+                    .join(", ")}
+                </div>
+              )}
+            </div>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="priority" className="text-right">

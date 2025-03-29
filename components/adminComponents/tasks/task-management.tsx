@@ -99,7 +99,7 @@ export function TaskManagement() {
     fetchMyTasks();
     fetchMyCompletedTasks();
     fetchAllTasks();
-  }, [tasks]);
+  }, []);
   const filteredTasks = tasks.filter((task) => {
     const matchesSearch =
       task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -142,19 +142,8 @@ export function TaskManagement() {
       id: task.id,
       title: task.title,
       description: task.description,
-      assignee:
-        task.assignee.firstName === "Sarah Thompson"
-          ? "sarah"
-          : task.assignee.firstName === "Dr. Emma Wilson"
-          ? "emma"
-          : "michael",
-      assignor:
-        task.assignor.firstName === "Sarah Thompson"
-          ? "sarah"
-          : task.assignor.firstName === "Dr. Emma Wilson"
-          ? "emma"
-          : "michael",
-      priority: task.priority,
+      assignor: task.assignor.firstName,
+      priority: task.priority.toLowerCase(),
       dueDate: formattedDueDate,
     });
 
@@ -198,11 +187,22 @@ export function TaskManagement() {
     setIsDialogOpen(true);
   };
 
-  const handleTaskFormChange = (field: string, value: string | number) => {
-    setTaskFormData({
-      ...taskFormData,
-      [field]: value,
-    });
+  const handleTaskFormChange = (
+    field: string,
+    value: string | number | number[]
+  ) => {
+    if (field === "assignees" && Array.isArray(value)) {
+      setTaskFormData({
+        ...taskFormData,
+        assignees: value as number[],
+        assignee: value[0]?.toString() || "",
+      });
+    } else {
+      setTaskFormData({
+        ...taskFormData,
+        [field]: value,
+      });
+    }
   };
 
   const handleCreateTask = () => {
@@ -243,7 +243,7 @@ export function TaskManagement() {
       const updatedTask = {
         title: taskFormData.title,
         description: taskFormData.description,
-        assigneeId: taskFormData.assignee,
+        assigneeIds: taskFormData.assignees,
         assignorId: myId?.id,
         priority: taskFormData.priority.toUpperCase(),
         dueDate: taskFormData.dueDate,
@@ -259,7 +259,7 @@ export function TaskManagement() {
       const newTask = {
         title: taskFormData.title,
         description: taskFormData.description,
-        assigneeId: taskFormData.assignee,
+        assigneeIds: taskFormData.assignees,
         assignorId: myId?.id,
         priority: taskFormData.priority.toUpperCase(),
         status: "PENDING",

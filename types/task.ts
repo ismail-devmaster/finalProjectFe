@@ -1,3 +1,5 @@
+import { IUser } from "./user";
+
 export interface Person {
   id: number;
   firstName: string;
@@ -11,7 +13,7 @@ export interface Task {
   title: string;
   description: string;
   assignee: Person;
-  assignees:[Person]
+  assignees: [Person];
   assignor: Person;
   priority: "HIGH" | "MEDIUM" | "LOW";
   status: "PENDING" | "IN_PROGRESS" | "COMPLETED";
@@ -24,7 +26,8 @@ export interface TaskFormData {
   id: string;
   title: string;
   description: string;
-  assignee: string;
+  assignee?: string; // Keep for backward compatibility
+  assignees?: number[]; // Array of user IDs
   assignor: string;
   priority: string;
   dueDate: string;
