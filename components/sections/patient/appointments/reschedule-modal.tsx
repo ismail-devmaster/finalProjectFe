@@ -38,10 +38,20 @@ interface Doctor {
 
 interface Appointment {
   id: number;
-  doctorId: number;
-  additionalNotes: string;
   date: string;
   time: string;
+  doctor: Doctor;
+  action: Action;
+  doctorId: number;
+  additionalNotes: string;
+}
+
+interface Action {
+  appointmentType: AppointmentType;
+}
+
+interface AppointmentType {
+  type: string;
 }
 
 interface RescheduleModalProps {
@@ -59,18 +69,21 @@ interface AppointmentUpdateData {
   statusId: number;
 }
 
-export function RescheduleModal(
-  { isOpen, onClose, appointmentSelected, onReschedule }: RescheduleModalProps,
-) {
+export function RescheduleModal({
+  isOpen,
+  onClose,
+  appointmentSelected,
+  onReschedule,
+}: RescheduleModalProps) {
   const [date, setDate] = useState<string>(
-    new Date().toISOString().split("T")[0],
+    new Date().toISOString().split("T")[0]
   );
   const [time, setTime] = useState<string>("00:00");
   const [selectedDoctor, setSelectedDoctor] = useState<number>(
-    appointmentSelected ? appointmentSelected.doctorId : 1,
+    appointmentSelected ? appointmentSelected.doctorId : 1
   );
   const [notes, setNotes] = useState<string>(
-    appointmentSelected ? appointmentSelected.additionalNotes : "",
+    appointmentSelected ? appointmentSelected.additionalNotes : ""
   );
   const [doctors, setDoctors] = useState<Doctor[]>([]);
 
@@ -94,6 +107,8 @@ export function RescheduleModal(
         time: new Date(`1970-01-01T${time}:00.000Z`).toISOString(),
         doctorId: selectedDoctor,
         additionalNotes: notes,
+        doctor: appointmentSelected.doctor,
+        action: appointmentSelected.action,
       };
 
       onReschedule(updatedAppointment);
@@ -144,7 +159,8 @@ export function RescheduleModal(
               <Select
                 value={selectedDoctor.toString()}
                 onValueChange={(value) =>
-                  setSelectedDoctor(Number.parseInt(value))}
+                  setSelectedDoctor(Number.parseInt(value))
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a doctor" />

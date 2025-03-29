@@ -81,7 +81,7 @@ export function TaskFormDialog({
             </Label>
             {/* Assignee Select */}
             <Select
-              value={formData.assignee.toString()}
+              value={formData.assignee?.toString()}
               onValueChange={(value) =>
                 handleFormChange("assignee", Number(value))
               }

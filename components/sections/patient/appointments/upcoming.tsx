@@ -29,6 +29,7 @@ interface User {
 }
 
 interface Doctor {
+  userId: number;
   user: User;
 }
 
@@ -84,9 +85,14 @@ export function Upcoming() {
     setIsCancelDialogOpen(true);
   };
 
-  const confirmReschedule = () => {
-    const updatedAppointments = appointments.filter((appointment) =>
-      appointment.id !== selectedAppointment?.id
+  const confirmReschedule = (updatedAppointment: Appointment) => {
+    const updatedAppointments = appointments.map((appointment) =>
+      appointment.id === updatedAppointment.id
+        ? {
+            ...updatedAppointment,
+            time: formatTime(updatedAppointment.time),
+          }
+        : appointment
     );
     setAppointments(updatedAppointments);
     setIsRescheduleModalOpen(false);
