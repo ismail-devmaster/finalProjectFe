@@ -146,10 +146,15 @@ export function MyTasksTable({
                     />
                   </TableCell>
                   <TableCell>
-                    <Checkbox
-                      checked={task.status === "COMPLETED"}
-                      onCheckedChange={() => handleMarkComplete(task)}
-                    />
+                    <div className="relative group">
+                      <Checkbox
+                        checked={task.status === "COMPLETED"}
+                        onCheckedChange={() => handleMarkComplete(task)}
+                      />
+                      <span className="absolute -top-6 left-1/2 -translate-x-1/2 bg-foreground text-background text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+                        Mark as completed
+                      </span>
+                    </div>
                   </TableCell>
                   <TableCell>
                     <div className="font-medium">{task.title}</div>
