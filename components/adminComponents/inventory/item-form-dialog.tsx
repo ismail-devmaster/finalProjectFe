@@ -101,8 +101,12 @@ export function ItemFormDialog({
             <Input
               id="quantity"
               type="number"
+              min="0"
               value={Number(formData.quantity)}
-              onChange={(e) => onFormChange("quantity", e.target.value)}
+              onChange={(e) => {
+                const value = Math.max(0, Number(e.target.value));
+                onFormChange("quantity", value.toString());
+              }}
               className="col-span-3"
             />
           </div>

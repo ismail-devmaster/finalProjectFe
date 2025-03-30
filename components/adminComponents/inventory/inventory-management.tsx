@@ -89,6 +89,7 @@ export function InventoryManagement() {
       !formData.name ||
       !formData.category ||
       !formData.quantity ||
+      Number(formData.quantity) < 0 ||
       !formData.unit ||
       !formData.status
     ) {
