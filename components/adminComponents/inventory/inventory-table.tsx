@@ -95,8 +95,8 @@ export function InventoryTable({
                   <SelectContent>
                     <SelectItem value="all">All Categories</SelectItem>
                     {categories.map((category) => (
-                      <SelectItem key={category.id} value={category.name}>
-                        {category.name}
+                      <SelectItem key={category} value={category}>
+                        {category}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -146,7 +146,7 @@ export function InventoryTable({
                         <div className="font-medium">{item.name}</div>
                       </TableCell>
 
-                      <TableCell>{item.category.name}</TableCell>
+                      <TableCell>{item.category}</TableCell>
 
                       <TableCell>
                         {item.quantity} {item.unit}

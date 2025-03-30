@@ -35,7 +35,7 @@ export function LowStockTable({ items, onEditItem }: LowStockTableProps) {
                     <div className="font-medium">{item.name}</div>
                     <div className="text-xs text-muted-foreground">{item.id}</div>
                   </TableCell>
-                  <TableCell>{item.category.name}</TableCell>
+                  <TableCell>{item.category}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       {item.quantity} {item.unit}

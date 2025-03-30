@@ -25,7 +25,7 @@ interface ItemFormDialogProps {
   isEditing: boolean;
   formData: {
     name: string;
-    categoryId: string; // Changed from 'category' to 'categoryId'
+    // categoryId: string; // Changed from 'category' to 'categoryId'
     quantity: number;
     unit: string;
     status: string;
@@ -73,22 +73,22 @@ export function ItemFormDialog({
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="categoryId" className="text-right">
+            <Label htmlFor="category" className="text-right">
               Category
             </Label>
             <Select
-              value={formData.categoryId}
-              onValueChange={(value) => onFormChange("categoryId", value)} // Changed from 'category' to 'categoryId'
+              // value={formData.categoryId}
+              onValueChange={(value) => onFormChange("category", value)} // Changed from 'category' to 'categoryId'
             >
-              <SelectTrigger id="categoryId" className="col-span-3">
+              <SelectTrigger id="category" className="col-span-3">
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
                 {categories.map((category) => (
-                  <SelectItem key={category.id} value={category.id.toString()}>
+                  <SelectItem key={category} value={category}>
                     {" "}
                     {/* Ensure value is a string */}
-                    {category.name}
+                    {category}
                   </SelectItem>
                 ))}
               </SelectContent>

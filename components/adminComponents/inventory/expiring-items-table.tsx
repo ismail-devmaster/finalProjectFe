@@ -55,7 +55,7 @@ export function ExpiringItemsTable({
                       {item.id}
                     </div>
                   </TableCell>
-                  <TableCell>{item.category.name}</TableCell>
+                  <TableCell>{item.category}</TableCell>
                   <TableCell>
                     {item.expiryDate
                       ? new Date(item.expiryDate).toLocaleDateString("en-US", {

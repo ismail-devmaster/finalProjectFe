@@ -47,7 +47,7 @@ export function ItemDetailsDialog({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <h4 className="text-sm font-medium">Category</h4>
-              <p className="text-sm">{item.category.name}</p>
+              <p className="text-sm">{item.category}</p>
             </div>
             <div>
               <h4 className="text-sm font-medium">Quantity</h4>
