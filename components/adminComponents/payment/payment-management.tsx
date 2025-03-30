@@ -16,6 +16,7 @@ import { CashFlowTab } from "./cash-flow-tab";
 import { AuditTrailTab } from "./audit-trail-tab";
 import { ReceiptDialog } from "./receipt-dialog";
 import { DetailsDialog } from "./details-dialog";
+import { jsPDF } from "jspdf";
 import { payment } from "@/app/api"; // Replace with the appropriate path where your API functions are defined
 import type { Payment } from "@/types/payment";
 
@@ -87,10 +88,14 @@ export function PaymentManagement() {
 
         <div class="patient-info">
           <div class="avatar">
-            ${payment.patient.user.firstName.charAt(0)}${payment.patient.user.lastName.charAt(0)}
+            ${payment.patient.user.firstName.charAt(
+              0
+            )}${payment.patient.user.lastName.charAt(0)}
           </div>
           <div>
-            <h3>${payment.patient.user.firstName} ${payment.patient.user.lastName}</h3>
+            <h3>${payment.patient.user.firstName} ${
+        payment.patient.user.lastName
+      }</h3>
           </div>
         </div>
 
@@ -101,7 +106,9 @@ export function PaymentManagement() {
           </div>
           <div class="detail-item">
             <h4>Doctor</h4>
-            <p>${payment.doctor.user.firstName} ${payment.doctor.user.lastName}</p>
+            <p>${payment.doctor.user.firstName} ${
+        payment.doctor.user.lastName
+      }</p>
           </div>
           <div class="detail-item">
             <h4>Amount</h4>
@@ -110,11 +117,11 @@ export function PaymentManagement() {
           <div class="detail-item">
             <h4>Status</h4>
             <span class="badge ${
-              payment.status.status === "PAID" 
-                ? "badge-paid" 
-                : payment.status.status === "PENDING" 
-                  ? "badge-pending" 
-                  : "badge-cancelled"
+              payment.status.status === "PAID"
+                ? "badge-paid"
+                : payment.status.status === "PENDING"
+                ? "badge-pending"
+                : "badge-cancelled"
             }">${payment.status.status.toLowerCase()}</span>
           </div>
           <div class="detail-item">
@@ -155,9 +162,13 @@ export function PaymentManagement() {
             </thead>
             <tbody>
               ${payments
-                .filter(p => p.patientId === payment.patientId)
-                .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-                .map(p => `
+                .filter((p) => p.patientId === payment.patientId)
+                .sort(
+                  (a, b) =>
+                    new Date(b.date).getTime() - new Date(a.date).getTime()
+                )
+                .map(
+                  (p) => `
                   <tr>
                     <td>${new Date(p.date).toLocaleDateString("en-US", {
                       month: "short",
@@ -168,15 +179,17 @@ export function PaymentManagement() {
                     <td>${p.description}</td>
                     <td>
                       <span class="badge ${
-                        p.status.status === "PAID" 
-                          ? "badge-paid" 
-                          : p.status.status === "PENDING" 
-                            ? "badge-pending" 
-                            : "badge-cancelled"
+                        p.status.status === "PAID"
+                          ? "badge-paid"
+                          : p.status.status === "PENDING"
+                          ? "badge-pending"
+                          : "badge-cancelled"
                       }">${p.status.status.toLowerCase()}</span>
                     </td>
                   </tr>
-                `).join('')}
+                `
+                )
+                .join("")}
             </tbody>
           </table>
         </div>
@@ -199,6 +212,7 @@ export function PaymentManagement() {
   };
 
   const handleDownloadReceipt = (payment: Payment) => {
+    // Create receipt data object
     const receiptData = {
       clinicName: "DentalCare Clinic",
       clinicAddress: "123 Dental Street, Suite 100",
@@ -221,21 +235,77 @@ export function PaymentManagement() {
       status: payment.status.status.toLowerCase(),
     };
 
-    console.log("Downloading receipt with data:", receiptData);
+    // Create a new jsPDF document
+    const doc = new jsPDF();
 
+    // Set margins and starting coordinates
+    let x = 10;
+    let y = 20;
+
+    // Add header information
+    doc.setFontSize(16);
+    doc.text(receiptData.clinicName, x, y);
+    y += 10;
+    doc.setFontSize(12);
+    doc.text(receiptData.clinicAddress, x, y);
+    y += 8;
+    doc.text(`Phone: ${receiptData.clinicPhone}`, x, y);
+
+    // Draw a line as a separator
+    y += 10;
+    doc.setLineWidth(0.5);
+    doc.line(x, y, 200, y);
+
+    // Receipt title
+    y += 10;
+    doc.setFontSize(14);
+    doc.text(`Receipt No: ${receiptData.receiptNo}`, x, y);
+
+    // Patient information
+    y += 10;
+    doc.setFontSize(12);
+    doc.text(`Patient: ${receiptData.patient}`, x, y);
+
+    // Doctor information
+    y += 8;
+    doc.text(`Doctor: ${receiptData.doctor}`, x, y);
+
+    // Amount
+    y += 8;
+    doc.text(`Amount: ${receiptData.amount} DA`, x, y);
+
+    // Payment Status
+    y += 8;
+    doc.text(`Status: ${receiptData.status}`, x, y);
+
+    // Payment Method (new field)
+    y += 8;
+    doc.text(`Payment Method: ${receiptData.method}`, x, y);
+
+    // Date
+    y += 8;
+    doc.text(`Date: ${receiptData.date}`, x, y);
+
+    // Time
+    y += 8;
+    doc.text(`Time: ${receiptData.time}`, x, y);
+
+    // Service description
+    y += 10;
+    doc.setFontSize(12);
+    doc.text("Service Description:", x, y);
+    y += 8;
+    doc.text(receiptData.service, x, y, { maxWidth: 180 });
+
+    // Save the PDF
+    doc.save(`Receipt_${payment.id}.pdf`);
+
+    // Provide a toast notification for download status
     toast({
       title: "Downloading Receipt",
-      description: `Receipt for Patient ${payment.patientId} is being downloaded`,
+      description: `Receipt for ${receiptData.patient} is being downloaded`,
     });
-
-    setTimeout(() => {
-      toast({
-        title: "Download Complete",
-        description: `Receipt_${payment.id}.pdf has been downloaded`,
-      });
-    }, 1500);
   };
-
   const handleMarkAsPaid = (payment: Payment) => {
     toast({
       title: "Payment Status Updated",
