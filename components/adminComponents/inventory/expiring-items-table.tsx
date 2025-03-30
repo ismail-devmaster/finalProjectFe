@@ -51,9 +51,6 @@ export function ExpiringItemsTable({
                 <TableRow key={item.id}>
                   <TableCell>
                     <div className="font-medium">{item.name}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {item.id}
-                    </div>
                   </TableCell>
                   <TableCell>{item.category}</TableCell>
                   <TableCell>

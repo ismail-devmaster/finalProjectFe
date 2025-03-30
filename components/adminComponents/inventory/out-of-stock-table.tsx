@@ -5,17 +5,17 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
-interface LowStockTableProps {
+interface OutOfStockTableProps {
   items: any[]
   onEditItem: (item: any) => void
 }
 
-export function LowStockTable({ items, onEditItem }: LowStockTableProps) {
+export function OutOfStockTable({ items, onEditItem }: OutOfStockTableProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Low Stock Items</CardTitle>
-        <CardDescription>Items that need to be reordered soon.</CardDescription>
+        <CardTitle>Out of Stock Items</CardTitle>
+        <CardDescription>Items that are currently out of stock.</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="rounded-md border">
@@ -29,7 +29,7 @@ export function LowStockTable({ items, onEditItem }: LowStockTableProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {items.filter(item => item.status === "LOW_STOCK").map((item) => (
+              {items.filter(item => item.status === "OUT_OF_STOCK").map((item) => (
                 <TableRow key={item.id}>
                   <TableCell>
                     <div className="font-medium">{item.name}</div>
@@ -38,9 +38,8 @@ export function LowStockTable({ items, onEditItem }: LowStockTableProps) {
                   <TableCell>
                     <div className="flex items-center gap-2">
                       {item.quantity} {item.unit}
-                      {/* <Badge variant={item.status === "OUT_OF_STOCK" ? "destructive" : "secondary"}> */}
-                      <Badge variant="secondary">
-                        Low Stock
+                      <Badge variant="destructive">
+                        Out of Stock
                       </Badge>
                     </div>
                   </TableCell>
