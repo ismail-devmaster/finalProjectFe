@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
+import { useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,22 +12,46 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { ArrowUpDown, CalendarIcon, Download, Filter, Printer, Search } from "lucide-react"
-import { format } from "date-fns"
-import type { Payment } from "@/types/payment"
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  ArrowUpDown,
+  CalendarIcon,
+  Download,
+  Filter,
+  Printer,
+  Search,
+} from "lucide-react";
+import { format } from "date-fns";
+import type { Payment } from "@/types/payment";
 
 interface PaymentTableProps {
-  payments: Payment[]
-  onViewReceipt: (payment: Payment) => void
-  onPrintReceipt: (payment: Payment) => void
-  onDownloadReceipt: (payment: Payment) => void
-  onMarkAsPaid: (payment: Payment) => void
-  onViewDetails: (payment: Payment) => void
+  payments: Payment[];
+  onViewReceipt: (payment: Payment) => void;
+  onPrintReceipt: (payment: Payment) => void;
+  onDownloadReceipt: (payment: Payment) => void;
+  onMarkAsPaid: (payment: Payment) => void;
+  onViewDetails: (payment: Payment) => void;
 }
 
 export function PaymentTable({
@@ -38,28 +62,31 @@ export function PaymentTable({
   onMarkAsPaid,
   onViewDetails,
 }: PaymentTableProps) {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [date, setDate] = useState<Date | undefined>(undefined)
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [date, setDate] = useState<Date | undefined>(undefined);
 
   const filteredPayments = payments.filter((payment) => {
-    const patientName = `${payment.doctor.user.firstName} ${payment.doctor.user.lastName}`
+    const patientName = `${payment.patient.user.firstName} ${payment.patient.user.lastName}`;
     const matchesSearch =
       patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      payment.id.toString().includes(searchTerm.toLowerCase())
+      payment.date.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      payment.amount.toString().includes(searchTerm);
 
-    const matchesStatus = statusFilter === "all" || payment.status.status.toLowerCase() === statusFilter.toLowerCase()
-    const matchesDate = !date || isSameDay(new Date(payment.date), date)
+    const matchesStatus =
+      statusFilter === "all" ||
+      payment.status.status.toLowerCase() === statusFilter.toLowerCase();
+    const matchesDate = !date || isSameDay(new Date(payment.date), date);
 
-    return matchesSearch && matchesStatus && matchesDate
-  })
+    return matchesSearch && matchesStatus && matchesDate;
+  });
 
   function isSameDay(date1: Date, date2: Date) {
     return (
       date1.getDate() === date2.getDate() &&
       date1.getMonth() === date2.getMonth() &&
       date1.getFullYear() === date2.getFullYear()
-    )
+    );
   }
 
   return (
@@ -95,13 +122,21 @@ export function PaymentTable({
             </Select>
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="w-[150px] justify-start text-left font-normal">
+                <Button
+                  variant="outline"
+                  className="w-[150px] justify-start text-left font-normal"
+                >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {date ? format(date, "PPP") : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
-                <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  initialFocus
+                />
               </PopoverContent>
             </Popover>
           </div>
@@ -140,10 +175,15 @@ export function PaymentTable({
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Avatar className="h-8 w-8">
-                        <AvatarImage src={`/placeholder.svg?height=32&width=32`} alt={`Patient ${payment.patientId}`} />
-                        <AvatarFallback>{payment.patientId}</AvatarFallback>
+                        <AvatarImage
+                          src={`/placeholder.svg?height=32&width=32`}
+                          alt={`Patient ${payment.patientId}`}
+                        />
                       </Avatar>
-                      <div className="font-medium">{payment.patient.user.firstName} {payment.patient.user.lastName}</div>
+                      <div className="font-medium">
+                        {payment.patient.user.firstName}{" "}
+                        {payment.patient.user.lastName}
+                      </div>
                     </div>
                   </TableCell>
                   <TableCell>${payment.amount.toFixed(2)}</TableCell>
@@ -160,8 +200,8 @@ export function PaymentTable({
                         payment.status.status === "PAID"
                           ? "outline"
                           : payment.status.status === "PENDING"
-                            ? "secondary"
-                            : "destructive"
+                          ? "secondary"
+                          : "destructive"
                       }
                     >
                       {payment.status.status.toLowerCase()}
@@ -178,14 +218,34 @@ export function PaymentTable({
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => onViewReceipt(payment)}>View Receipt</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onPrintReceipt(payment)}>Print Receipt</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onDownloadReceipt(payment)}>Download Receipt</DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => onViewReceipt(payment)}
+                        >
+                          View Receipt
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => onPrintReceipt(payment)}
+                        >
+                          Print Receipt
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => onDownloadReceipt(payment)}
+                        >
+                          Download Receipt
+                        </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         {payment.status.status === "PENDING" && (
-                          <DropdownMenuItem onClick={() => onMarkAsPaid(payment)}>Mark as Paid</DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => onMarkAsPaid(payment)}
+                          >
+                            Mark as Paid
+                          </DropdownMenuItem>
                         )}
-                        <DropdownMenuItem onClick={() => onViewDetails(payment)}>View Details</DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => onViewDetails(payment)}
+                        >
+                          View Details
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -196,6 +256,5 @@ export function PaymentTable({
         </Table>
       </div>
     </div>
-  )
+  );
 }
-

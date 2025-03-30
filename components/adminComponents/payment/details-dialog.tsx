@@ -53,24 +53,26 @@ export function DetailsDialog({
             <Avatar className="h-16 w-16">
               <AvatarImage
                 src={`/placeholder.svg?height=64&width=64`}
-                alt={`Patient ${payment.patientId}`}
+                alt={`Patient ${payment.patient.user.firstName}`}
               />
-              <AvatarFallback>{payment.patientId}</AvatarFallback>
+              <AvatarFallback>
+                {payment.patient.user.firstName.charAt(0)}
+                {payment.patient.user.lastName.charAt(0)}
+              </AvatarFallback>
             </Avatar>
             <div>
               <h3 className="text-lg font-medium">
                 {payment.patient.user.firstName} {payment.patient.user.lastName}
               </h3>
-              <p className="text-sm text-muted-foreground">
-                {payment.patient.user.id}
-              </p>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <h4 className="text-sm font-medium">Payment ID</h4>
-              <p className="text-sm">{payment.id}</p>
+              <h4 className="text-sm font-medium">Total Payment</h4>
+              <p className="text-sm font-semibold">
+                {payment.action.totalPayment.toFixed(2)} DA
+              </p>
             </div>
             <div>
               <h4 className="text-sm font-medium">Doctor</h4>
@@ -81,7 +83,7 @@ export function DetailsDialog({
             <div>
               <h4 className="text-sm font-medium">Amount</h4>
               <p className="text-sm font-semibold">
-                ${payment.amount.toFixed(2)}
+                {payment.amount.toFixed(2)}DA
               </p>
             </div>
             <div>
