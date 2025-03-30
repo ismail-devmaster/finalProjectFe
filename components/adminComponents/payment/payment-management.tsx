@@ -60,16 +60,22 @@ export function PaymentManagement() {
       <head>
         <title>Receipt - ${payment.id}</title>
         <style>
-          body { font-family: Arial, sans-serif; max-width: 400px; margin: 0 auto; padding: 20px; }
+          body { font-family: Arial, sans-serif; max-width: 550px; margin: 0 auto; padding: 20px; }
           .header { text-align: center; border-bottom: 1px solid #ddd; padding-bottom: 15px; margin-bottom: 15px; }
-          .row { display: flex; justify-content: space-between; margin-bottom: 8px; }
-          .label { color: #666; }
-          .value { font-weight: 500; }
-          .section { border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; padding: 15px 0; margin: 15px 0; }
-          .footer { text-align: center; margin-top: 20px; color: #666; font-size: 0.9em; }
-          .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.8em; }
+          .patient-info { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+          .avatar { width: 64px; height: 64px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+          .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+          .detail-item h4 { font-size: 0.875rem; font-weight: 500; margin-bottom: 4px; color: #666; }
+          .detail-item p { margin: 0; }
+          .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; }
           .badge-paid { border: 1px solid #22c55e; color: #22c55e; }
           .badge-pending { background-color: #f59e0b; color: white; }
+          .badge-cancelled { background-color: #ef4444; color: white; }
+          .description { background: #f5f5f5; padding: 12px; border-radius: 6px; margin-bottom: 20px; }
+          table { width: 100%; border-collapse: collapse; }
+          th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid #ddd; }
+          th { font-weight: 500; color: #666; }
+          .footer { text-align: center; margin-top: 20px; color: #666; font-size: 0.9em; }
         </style>
       </head>
       <body>
@@ -78,65 +84,103 @@ export function PaymentManagement() {
           <p>123 Dental Street, Suite 100</p>
           <p>Phone: (555) 123-4567</p>
         </div>
-        
-        <div class="row">
-          <span class="label">Receipt No:</span>
-          <span class="value">${payment.id}</span>
+
+        <div class="patient-info">
+          <div class="avatar">
+            ${payment.patient.user.firstName.charAt(0)}${payment.patient.user.lastName.charAt(0)}
+          </div>
+          <div>
+            <h3>${payment.patient.user.firstName} ${payment.patient.user.lastName}</h3>
+          </div>
         </div>
-        <div class="row">
-          <span class="label">Date:</span>
-          <span class="value">${new Date(payment.date).toLocaleDateString(
-            "en-US",
-            {
+
+        <div class="details-grid">
+          <div class="detail-item">
+            <h4>Receipt No</h4>
+            <p>${payment.id}</p>
+          </div>
+          <div class="detail-item">
+            <h4>Doctor</h4>
+            <p>${payment.doctor.user.firstName} ${payment.doctor.user.lastName}</p>
+          </div>
+          <div class="detail-item">
+            <h4>Amount</h4>
+            <p>${payment.amount.toFixed(2)} DA</p>
+          </div>
+          <div class="detail-item">
+            <h4>Status</h4>
+            <span class="badge ${
+              payment.status.status === "PAID" 
+                ? "badge-paid" 
+                : payment.status.status === "PENDING" 
+                  ? "badge-pending" 
+                  : "badge-cancelled"
+            }">${payment.status.status.toLowerCase()}</span>
+          </div>
+          <div class="detail-item">
+            <h4>Date</h4>
+            <p>${new Date(payment.date).toLocaleDateString("en-US", {
+              weekday: "long",
               year: "numeric",
               month: "long",
               day: "numeric",
-            }
-          )}</span>
-        </div>
-        <div class="row">
-          <span class="label">Time:</span>
-          <span class="value">${new Date(payment.time).toLocaleTimeString(
-            "en-US",
-            {
+            })}</p>
+          </div>
+          <div class="detail-item">
+            <h4>Time</h4>
+            <p>${new Date(payment.time).toLocaleTimeString("en-US", {
               hour: "numeric",
               minute: "numeric",
-            }
-          )}</span>
-        </div>
-        
-        <div class="section">
-          <div class="row">
-            <span class="value">Patient:</span>
-            <span class="value">Patient ${payment.patientId}</span>
-          </div>
-          <div class="row">
-            <span class="label">Doctor:</span>
-            <span>${payment.doctor.user.firstName} ${
-        payment.doctor.user.lastName
-      }</span>
-          </div>
-          <div class="row">
-            <span class="label">Service:</span>
-            <span>${payment.action.description}</span>
+            })}</p>
           </div>
         </div>
-        
-        <div class="row">
-          <span class="label">Amount:</span>
-          <span class="value">$${payment.amount.toFixed(2)}</span>
+
+        <div>
+          <h4>Service Description</h4>
+          <div class="description">
+            ${payment.action.description}
+          </div>
         </div>
-        <div class="row">
-          <span class="label">Payment Method:</span>
-          <span>Cash</span>
+
+        <div>
+          <h4>Patient Payment History</h4>
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Description</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${payments
+                .filter(p => p.patientId === payment.patientId)
+                .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                .map(p => `
+                  <tr>
+                    <td>${new Date(p.date).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}</td>
+                    <td>$${p.amount.toFixed(2)}</td>
+                    <td>${p.description}</td>
+                    <td>
+                      <span class="badge ${
+                        p.status.status === "PAID" 
+                          ? "badge-paid" 
+                          : p.status.status === "PENDING" 
+                            ? "badge-pending" 
+                            : "badge-cancelled"
+                      }">${p.status.status.toLowerCase()}</span>
+                    </td>
+                  </tr>
+                `).join('')}
+            </tbody>
+          </table>
         </div>
-        <div class="row">
-          <span class="label">Status:</span>
-          <span class="badge ${
-            payment.status.status === "PAID" ? "badge-paid" : "badge-pending"
-          }">${payment.status.status.toLowerCase()}</span>
-        </div>
-        
+
         <div class="footer">
           <p>Thank you for choosing DentalCare Clinic!</p>
         </div>
