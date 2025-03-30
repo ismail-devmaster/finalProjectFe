@@ -2,6 +2,21 @@ import { ArrowDownUp, Receipt } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { Payment } from "@/types/payment"
 
+function formatCurrency(amount: number): string {
+  if (amount >= 1000000000) {
+    return `$${(amount / 1000000000).toFixed(2)}B`
+  }
+  if (amount >= 1000000) {
+    return `$${(amount / 1000000).toFixed(2)}M`
+  }
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(amount)
+}
+
 interface PaymentStatsProps {
   payments: Payment[]
 }
@@ -36,7 +51,7 @@ export function PaymentStats({ payments }: PaymentStatsProps) {
           <Receipt className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">${(totalPaid + totalPending).toFixed(2)}</div>
+          <div className="text-2xl font-bold">{formatCurrency(totalPaid + totalPending)}</div>
           <p className="text-xs text-muted-foreground">All time payments</p>
         </CardContent>
       </Card>
@@ -46,7 +61,7 @@ export function PaymentStats({ payments }: PaymentStatsProps) {
           <ArrowDownUp className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-green-600">${totalPaid.toFixed(2)}</div>
+          <div className="text-2xl font-bold text-green-600">{formatCurrency(totalPaid)}</div>
           <p className="text-xs text-muted-foreground">
             {payments.filter((p) => p.status.status === "PAID").length} payments
           </p>
@@ -58,7 +73,7 @@ export function PaymentStats({ payments }: PaymentStatsProps) {
           <ArrowDownUp className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-yellow-600">${totalPending.toFixed(2)}</div>
+          <div className="text-2xl font-bold text-yellow-600">{formatCurrency(totalPending)}</div>
           <p className="text-xs text-muted-foreground">
             {payments.filter((p) => p.status.status === "PENDING").length} payments
           </p>
@@ -70,11 +85,10 @@ export function PaymentStats({ payments }: PaymentStatsProps) {
           <ArrowDownUp className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">${todaysPayments.toFixed(2)}</div>
+          <div className="text-2xl font-bold">{formatCurrency(todaysPayments)}</div>
           <p className="text-xs text-muted-foreground">Today's transactions</p>
         </CardContent>
       </Card>
     </div>
   )
 }
-
