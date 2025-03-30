@@ -28,7 +28,6 @@ interface ItemFormDialogProps {
     category: string;
     quantity: number;
     unit: string;
-    status: string;
     expiryDate: string;
   };
   categories: any[];
@@ -127,24 +126,6 @@ export function ItemFormDialog({
                     {unit}
                   </SelectItem>
                 ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="status" className="text-right">
-              Status
-            </Label>
-            <Select
-              value={formData.status}
-              onValueChange={(value) => onFormChange("status", value)}
-            >
-              <SelectTrigger id="status" className="col-span-3">
-                <SelectValue placeholder="Select status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="IN_STOCK">In Stock</SelectItem>
-                <SelectItem value="LOW_STOCK">Low Stock</SelectItem>
-                <SelectItem value="OUT_OF_STOCK">Out of Stock</SelectItem>
               </SelectContent>
             </Select>
           </div>

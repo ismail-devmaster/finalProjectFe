@@ -90,8 +90,7 @@ export function InventoryManagement() {
       !formData.category ||
       !formData.quantity ||
       Number(formData.quantity) < 0 ||
-      !formData.unit ||
-      !formData.status
+      !formData.unit 
     ) {
       toast({
         title: "Error",
@@ -107,7 +106,6 @@ export function InventoryManagement() {
       category: formData.category,
       quantity: Number(formData.quantity),
       unit: formData.unit,
-      status: formData.status,
       expiryDate: formData.expiryDate 
         ? new Date(formData.expiryDate).toISOString() 
         : null
