@@ -67,7 +67,7 @@ export function InventoryManagement() {
     setFormData({
       name: item.name,
       category: item.category,
-      quantity: item.quantity.toString(),
+      quantity: item.quantity,
       unit: item.unit,
       status: item.status,
       expiryDate: formattedExpiryDate,
@@ -100,31 +100,46 @@ export function InventoryManagement() {
       return;
     }
 
+    // Prepare data for API
     const dataToSend = {
-      ...formData,
+      name: formData.name,
+      category: formData.category,
+      quantity: Number(formData.quantity),
+      unit: formData.unit,
+      status: formData.status,
+      expiryDate: formData.expiryDate 
+        ? new Date(formData.expiryDate).toISOString() 
+        : null
     };
 
-    if (isEditing && selectedItem) {
-      // Update existing item
-      await inventory.updateInventory(selectedItem.id, dataToSend);
-      const { inventories } = await inventory.getAllInventories();
-      setInventoryItems(inventories);
+    try {
+      if (isEditing && selectedItem) {
+        // Update existing item
+        await inventory.updateInventory(selectedItem.id, dataToSend);
+        const { inventories } = await inventory.getAllInventories();
+        setInventoryItems(inventories);
+        toast({
+          title: "Item Updated",
+          description: `${formData.name} has been updated successfully`,
+        });
+      } else {
+        // Add new item
+        await inventory.createInventory(dataToSend);
+        const { inventories } = await inventory.getAllInventories();
+        setInventoryItems(inventories);
+        toast({
+          title: "Item Added",
+          description: `${formData.name} has been added to inventory`,
+        });
+      }
+      setIsItemDialogOpen(false);
+    } catch (error) {
       toast({
-        title: "Item Updated",
-        description: `${formData.name} has been updated successfully`,
-      });
-    } else {
-      // Add new item
-      await inventory.createInventory(dataToSend);
-      const { inventories } = await inventory.getAllInventories();
-      setInventoryItems(inventories);
-      toast({
-        title: "Item Added",
-        description: `${formData.name} has been added to inventory`,
+        title: "Error",
+        description: "Failed to save item",
+        variant: "destructive",
       });
     }
-
-    setIsItemDialogOpen(false);
   };
 
   useEffect(() => {
