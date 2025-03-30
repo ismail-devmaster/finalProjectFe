@@ -6,6 +6,7 @@ import { InventoryTable } from "./inventory-table";
 import { LowStockTable } from "./low-stock-table";
 import { ExpiringItemsTable } from "./expiring-items-table";
 import { OutOfStockTable } from "./out-of-stock-table";
+import { InStockTable } from "./in-stock-table";
 
 interface InventoryTabsProps {
   inventoryItems: any[];
@@ -42,6 +43,7 @@ export function InventoryTabs({
     <Tabs defaultValue="all-items" className="space-y-4">
       <TabsList>
         <TabsTrigger value="all-items">All Items</TabsTrigger>
+        <TabsTrigger value="in-stock">IN STOCK</TabsTrigger>
         <TabsTrigger value="low-stock">Low Stock</TabsTrigger>
         <TabsTrigger value="out-of-stock">Out of Stock</TabsTrigger>
         <TabsTrigger value="expiring-soon">Expiring Soon</TabsTrigger>
@@ -63,6 +65,12 @@ export function InventoryTabs({
         />
       </TabsContent>
 
+      <TabsContent value="in-stock" className="space-y-4">
+        <InStockTable
+          items={inventoryItems.filter((item) => item.status === "IN_STOCK")}
+          onEditItem={onEditItem}
+        />
+      </TabsContent>
       <TabsContent value="low-stock" className="space-y-4">
         <LowStockTable
           items={inventoryItems.filter((item) => item.status === "LOW_STOCK")}
