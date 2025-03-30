@@ -172,6 +172,9 @@ export const category = {
 export const inventory = {
   createInventory: (data: any) => request("post", "/inventory", data),
   getAllInventories: () => request("get", "/inventory"),
+  getLowStockInventories: () => request("get", "/inventory/low-stock"),
+  getInStockInventories: () => request("get", "/inventory/in-stock"),
+  getOutOfStockInventories: () => request("get", "/inventory/out-of-stock"),
   getInventoryById: (id: number) => request("get", `/inventory/${id}`),
   updateInventory: (id: number, data: any) =>
     request("put", `/inventory/${id}`, data),

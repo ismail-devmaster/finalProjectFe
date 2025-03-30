@@ -16,6 +16,9 @@ export function InventoryManagement() {
   const [categories, setCategories] = useState<any[]>([]);
   const [inventoryItems, setInventoryItems] = useState<any[]>([]);
   const [units, setUnits] = useState<string[]>([]);
+  const [lowStockItems, setLowStockItems] = useState(0);
+  const [outOfStockItems, setOutOfStockItems] = useState(0);
+  const [inStockItems, setInStockItems] = useState(0);
   const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
   const [isItemDialogOpen, setIsItemDialogOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
@@ -131,9 +134,16 @@ export function InventoryManagement() {
         const { inventories } = await inventory.getAllInventories();
         const { categories } = await category.getAllCategories();
         const { units } = await unit.getInventoryUnits();
+        const { inventories: lowStock } = await inventory.getLowStockInventories();
+        const { inventories: outOfStock } = await inventory.getOutOfStockInventories();
+        const { inventories: inStock } = await inventory.getInStockInventories();
+        
         setInventoryItems(inventories);
         setCategories(categories);
         setUnits(units);
+        setLowStockItems(lowStock.length);
+        setOutOfStockItems(outOfStock.length);
+        setInStockItems(inStock.length);
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
@@ -141,20 +151,11 @@ export function InventoryManagement() {
     fetchData();
   }, []);
 
-  // Calculate inventory stats
+  // Calculate total items
   const totalItems = inventoryItems.reduce(
     (sum, item) => sum + item.quantity,
     0,
   );
-  const lowStockItems = inventoryItems.filter(
-    (item) => item.status === "LOW_STOCK",
-  ).length;
-  const outOfStockItems = inventoryItems.filter(
-    (item) => item.status === "OUT_OF_STOCK",
-  ).length;
-  const inStockItems = inventoryItems.filter(
-    (item) => item.status === "IN_STOCK",
-  ).length;
 
   return (
     <div className="flex flex-col gap-4">
