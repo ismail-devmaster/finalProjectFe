@@ -53,6 +53,33 @@ export function InventoryManagement() {
     setIsItemDialogOpen(true);
   };
 
+  const handleDeleteItem = async (item: any) => {
+    try {
+      await inventory.deleteInventory(item.id);
+      const { inventories } = await inventory.getAllInventories();
+      setInventoryItems(inventories);
+      
+      // Update stats
+      const { inventories: lowStock } = await inventory.getLowStockInventories();
+      const { inventories: outOfStock } = await inventory.getOutOfStockInventories();
+      const { inventories: inStock } = await inventory.getInStockInventories();
+      setLowStockItems(lowStock.length);
+      setOutOfStockItems(outOfStock.length);
+      setInStockItems(inStock.length);
+
+      toast({
+        title: "Item Deleted",
+        description: `${item.name} has been deleted from inventory`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete item",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleEditItem = (item: any) => {
     setIsEditing(true);
     setSelectedItem(item);
@@ -198,6 +225,7 @@ export function InventoryManagement() {
         categories={categories}
         onViewDetails={handleViewDetails}
         onEditItem={handleEditItem}
+        onDeleteItem={handleDeleteItem}
       />
 
       {selectedItem && (

@@ -11,9 +11,10 @@ interface InventoryTabsProps {
   categories: any[]
   onViewDetails: (item: any) => void
   onEditItem: (item: any) => void
+  onDeleteItem: (item: any) => void
 }
 
-export function InventoryTabs({ inventoryItems, categories, onViewDetails, onEditItem }: InventoryTabsProps) {
+export function InventoryTabs({ inventoryItems, categories, onViewDetails, onEditItem, onDeleteItem }: InventoryTabsProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [categoryFilter, setCategoryFilter] = useState("all")
   const [statusFilter, setStatusFilter] = useState("all")
@@ -48,6 +49,7 @@ export function InventoryTabs({ inventoryItems, categories, onViewDetails, onEdi
           onStatusFilterChange={setStatusFilter}
           onViewDetails={onViewDetails}
           onEditItem={onEditItem}
+          onDeleteItem={onDeleteItem}
         />
       </TabsContent>
 
@@ -73,4 +75,3 @@ export function InventoryTabs({ inventoryItems, categories, onViewDetails, onEdi
     </Tabs>
   )
 }
-
