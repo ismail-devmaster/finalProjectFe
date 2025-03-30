@@ -255,6 +255,7 @@ export function PaymentManagement() {
         open={isReceiptDialogOpen}
         onOpenChange={setIsReceiptDialogOpen}
         payment={selectedPayment}
+        payments={payments}
         onPrintReceipt={handlePrintReceipt}
         onDownloadReceipt={handleDownloadReceipt}
       />

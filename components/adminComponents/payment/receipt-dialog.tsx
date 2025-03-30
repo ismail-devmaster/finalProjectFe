@@ -1,7 +1,8 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,115 +10,196 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Download, Printer } from "lucide-react"
-import type { Payment } from "@/types/payment"
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Download, Printer } from "lucide-react";
+import type { Payment } from "@/types/payment";
 
 interface ReceiptDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  payment: Payment | null
-  onPrintReceipt: (payment: Payment) => void
-  onDownloadReceipt: (payment: Payment) => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  payment: Payment | null;
+  payments: Payment[];
+  onPrintReceipt: (payment: Payment) => void;
+  onDownloadReceipt: (payment: Payment) => void;
 }
 
-export function ReceiptDialog({ open, onOpenChange, payment, onPrintReceipt, onDownloadReceipt }: ReceiptDialogProps) {
-  if (!payment) return null
-
-  // Combine date and time for display
-  const paymentDateTime = new Date(payment.date)
-  const timeOnly = new Date(payment.time)
-  paymentDateTime.setHours(timeOnly.getHours())
-  paymentDateTime.setMinutes(timeOnly.getMinutes())
+export function ReceiptDialog({
+  open,
+  onOpenChange,
+  payment,
+  payments,
+  onPrintReceipt,
+  onDownloadReceipt,
+}: ReceiptDialogProps) {
+  if (!payment) return null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[550px]">
         <DialogHeader>
           <DialogTitle>Payment Receipt</DialogTitle>
-          <DialogDescription>Receipt for payment #{payment.id}</DialogDescription>
+          <DialogDescription>
+            Receipt for {payment.patient.user.firstName}{" "}
+            {payment.patient.user.lastName}
+          </DialogDescription>
         </DialogHeader>
-        <div className="space-y-6">
+        <div className="grid gap-4 py-4">
           <div className="text-center border-b pb-4">
             <h3 className="text-xl font-bold">DentalCare Clinic</h3>
-            <p className="text-sm text-muted-foreground">123 Dental Street, Suite 100</p>
-            <p className="text-sm text-muted-foreground">Phone: (555) 123-4567</p>
+            <p className="text-sm text-muted-foreground">
+              123 Dental Street, Suite 100
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Phone: (555) 123-4567
+            </p>
           </div>
 
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Receipt No:</span>
-              <span>{payment.id}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Date:</span>
-              <span>
-                {new Date(payment.date).toLocaleDateString("en-US", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Time:</span>
-              <span>
-                {new Date(payment.time).toLocaleTimeString("en-US", {
-                  hour: "numeric",
-                  minute: "numeric",
-                })}
-              </span>
+          <div className="flex items-center gap-4">
+            <Avatar className="h-16 w-16">
+              <AvatarImage
+                src={`/placeholder.svg?height=64&width=64`}
+                alt={`Patient ${payment.patient.user.firstName}`}
+              />
+              <AvatarFallback>
+                {payment.patient.user.firstName.charAt(0)}
+                {payment.patient.user.lastName.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <h3 className="text-lg font-medium">
+                {payment.patient.user.firstName} {payment.patient.user.lastName}
+              </h3>
             </div>
           </div>
 
-          <div className="border-t border-b py-4">
-            <div className="flex justify-between font-medium">
-              <span>Patient:</span>
-              <span>Patient {payment.patientId}</span>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <h4 className="text-sm font-medium">Total Payment</h4>
+              <p className="text-sm font-semibold">{payment.action.totalPayment.toFixed(2)}DA</p>
             </div>
-            <div className="flex justify-between mt-2">
-              <span className="text-muted-foreground">Doctor:</span>
-              <span>
+            <div>
+              <h4 className="text-sm font-medium">Doctor</h4>
+              <p className="text-sm">
                 {payment.doctor.user.firstName} {payment.doctor.user.lastName}
-              </span>
+              </p>
             </div>
-            <div className="flex justify-between mt-2">
-              <span className="text-muted-foreground">Service:</span>
-              <span>{payment.action.description}</span>
+            <div>
+              <h4 className="text-sm font-medium">Amount</h4>
+              <p className="text-sm font-semibold">
+                {payment.amount.toFixed(2)} DA
+              </p>
             </div>
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Amount:</span>
-              <span className="font-medium">${payment.amount.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Payment Method:</span>
-              <span>Cash</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Status:</span>
+            <div>
+              <h4 className="text-sm font-medium">Status</h4>
               <Badge
                 variant={
                   payment.status.status === "PAID"
                     ? "outline"
                     : payment.status.status === "PENDING"
-                      ? "secondary"
-                      : "destructive"
+                    ? "secondary"
+                    : "destructive"
                 }
               >
                 {payment.status.status.toLowerCase()}
               </Badge>
             </div>
+            <div>
+              <h4 className="text-sm font-medium">Date</h4>
+              <p className="text-sm">
+                {new Date(payment.date).toLocaleDateString("en-US", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
+            </div>
+            <div>
+              <h4 className="text-sm font-medium">Time</h4>
+              <p className="text-sm">
+                {new Date(payment.time).toLocaleTimeString("en-US", {
+                  hour: "numeric",
+                  minute: "numeric",
+                })}
+              </p>
+            </div>
           </div>
 
-          <div className="border-t pt-4 text-center">
-            <p className="text-sm text-muted-foreground">Thank you for choosing DentalCare Clinic!</p>
+          <div>
+            <h4 className="text-sm font-medium">Service Description</h4>
+            <p className="text-sm mt-1 p-3 bg-muted rounded-md">
+              {payment.action.description}
+            </p>
+          </div>
+
+          <div>
+            <h4 className="text-sm font-medium mb-2">
+              Patient Payment History
+            </h4>
+            <div className="border rounded-md overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Amount</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {payments
+                    .filter((pay) => pay.patientId === payment.patientId)
+                    .sort(
+                      (a, b) =>
+                        new Date(b.date).getTime() - new Date(a.date).getTime()
+                    )
+                    .map((pay) => (
+                      <TableRow key={pay.id}>
+                        <TableCell>
+                          {new Date(pay.date).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </TableCell>
+                        <TableCell>${pay.amount.toFixed(2)}</TableCell>
+                        <TableCell>{pay.description}</TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              pay.status.status === "PAID"
+                                ? "outline"
+                                : pay.status.status === "PENDING"
+                                ? "secondary"
+                                : "destructive"
+                            }
+                          >
+                            {pay.status.status.toLowerCase()}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
         </div>
         <DialogFooter className="flex gap-2">
-          <Button variant="outline" onClick={() => payment && onPrintReceipt(payment)}>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Close
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => payment && onPrintReceipt(payment)}
+          >
             <Printer className="mr-2 h-4 w-4" />
             Print
           </Button>
@@ -128,6 +210,5 @@ export function ReceiptDialog({ open, onOpenChange, payment, onPrintReceipt, onD
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
-
