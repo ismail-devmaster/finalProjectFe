@@ -28,7 +28,7 @@ export function InventoryManagement() {
   // Form state for adding/editing items
   const [formData, setFormData] = useState({
     name: "",
-    categoryId: "", // Changed from 'category' to 'categoryId'
+    category: "",
     quantity: 0,
     unit: "",
     status: "",
@@ -44,7 +44,7 @@ export function InventoryManagement() {
     setIsEditing(false);
     setFormData({
       name: "",
-      categoryId: "",
+      category: "",
       quantity: 0,
       unit: "",
       status: "",
@@ -66,7 +66,7 @@ export function InventoryManagement() {
 
     setFormData({
       name: item.name,
-      categoryId: item.categoryId, // Changed from 'category' to 'categoryId'
+      category: item.category,
       quantity: item.quantity.toString(),
       unit: item.unit,
       status: item.status,
@@ -87,7 +87,7 @@ export function InventoryManagement() {
     // Validate form
     if (
       !formData.name ||
-      !formData.categoryId || // Changed from 'category' to 'categoryId'
+      !formData.category ||
       !formData.quantity ||
       !formData.unit ||
       !formData.status
@@ -102,7 +102,6 @@ export function InventoryManagement() {
 
     const dataToSend = {
       ...formData,
-      category: formData.categoryId,
     };
 
     if (isEditing && selectedItem) {
@@ -134,10 +133,13 @@ export function InventoryManagement() {
         const { inventories } = await inventory.getAllInventories();
         const { categories } = await category.getAllCategories();
         const { units } = await unit.getInventoryUnits();
-        const { inventories: lowStock } = await inventory.getLowStockInventories();
-        const { inventories: outOfStock } = await inventory.getOutOfStockInventories();
-        const { inventories: inStock } = await inventory.getInStockInventories();
-        
+        const { inventories: lowStock } =
+          await inventory.getLowStockInventories();
+        const { inventories: outOfStock } =
+          await inventory.getOutOfStockInventories();
+        const { inventories: inStock } =
+          await inventory.getInStockInventories();
+
         setInventoryItems(inventories);
         setCategories(categories);
         setUnits(units);
@@ -154,7 +156,7 @@ export function InventoryManagement() {
   // Calculate total items
   const totalItems = inventoryItems.reduce(
     (sum, item) => sum + item.quantity,
-    0,
+    0
   );
 
   return (

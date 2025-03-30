@@ -25,7 +25,7 @@ interface ItemFormDialogProps {
   isEditing: boolean;
   formData: {
     name: string;
-    // categoryId: string; // Changed from 'category' to 'categoryId'
+    category: string;
     quantity: number;
     unit: string;
     status: string;
@@ -77,8 +77,8 @@ export function ItemFormDialog({
               Category
             </Label>
             <Select
-              // value={formData.categoryId}
-              onValueChange={(value) => onFormChange("category", value)} // Changed from 'category' to 'categoryId'
+              value={formData.category}
+              onValueChange={(value) => onFormChange("category", value)}
             >
               <SelectTrigger id="category" className="col-span-3">
                 <SelectValue placeholder="Select category" />
