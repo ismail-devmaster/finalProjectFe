@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { doctor, appointmentType } from "@/app/api";
 import { ChevronLeft, ChevronRight, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,24 +38,6 @@ interface VisitReason {
   requiredSpecialty: string;
 }
 
-const mockDoctors: Doctor[] = [
-  {
-    id: "d1",
-    firstName: "John",
-    lastName: "Smith",
-    specialty: "SPECIALIST",
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-];
-
-const mockReasons: VisitReason[] = [
-  {
-    id: "1",
-    type: "SPECIALIST",
-    requiredSpecialty: "SPECIALIST",
-  },
-];
-
 export default function BookNew() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
@@ -63,6 +46,24 @@ export default function BookNew() {
   const [additionalNotes, setAdditionalNotes] = useState<string>("");
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [reasons, setReasons] = useState<VisitReason[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [doctorsRes, reasonsRes] = await Promise.all([
+          doctor.getAllDoctors(),
+          appointmentType.getAllAppointmentTypes(),
+        ]);
+        setDoctors(doctorsRes.doctors);
+        setReasons(reasonsRes.appointmentTypes);
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const months = [
     "January",
@@ -145,17 +146,22 @@ export default function BookNew() {
 
   useEffect(() => {
     if (selectedReason) {
-      const reason = mockReasons.find((r) => r.id === selectedReason);
+      const reason = reasons.find((r) => r.id === selectedReason);
       if (reason) {
-        const matchingDoctor = mockDoctors.find(
-          (d) => d.specialty === reason.requiredSpecialty
+        // Find first doctor with matching specialty
+        const matchingDoctor = doctors.find(
+          (d) =>
+            d.specialty.toLowerCase() === reason.requiredSpecialty.toLowerCase()
         );
+
         if (matchingDoctor) {
-          setSelectedDoctor(matchingDoctor.id);
+          setSelectedDoctor(matchingDoctor.userId);
+        } else {
+          setSelectedDoctor(null);
         }
       }
     }
-  }, [selectedReason]);
+  }, [selectedReason, reasons, doctors]);
 
   const handleConfirmAppointment = () => {
     console.log("Appointment confirmed:", {
@@ -178,7 +184,7 @@ export default function BookNew() {
   };
 
   const currentDoctor = selectedDoctor
-    ? mockDoctors.find((doctor) => doctor.id === selectedDoctor)
+    ? doctors.find((doctor) => doctor.userId === selectedDoctor)
     : null;
 
   return (
@@ -262,7 +268,7 @@ export default function BookNew() {
                 <SelectValue placeholder="Select reason" />
               </SelectTrigger>
               <SelectContent>
-                {mockReasons.map((reason) => (
+                {reasons.map((reason) => (
                   <SelectItem key={reason.id} value={reason.id}>
                     {reason.type}
                   </SelectItem>
@@ -288,7 +294,7 @@ export default function BookNew() {
                     alt={`${currentDoctor.firstName} ${currentDoctor.lastName}`}
                   />
                   <AvatarFallback>
-                    {`${currentDoctor.firstName[0]}${currentDoctor.lastName[0]}`}
+                    {`${currentDoctor.firstName}${currentDoctor.lastName}`}
                   </AvatarFallback>
                 </Avatar>
                 <div>
