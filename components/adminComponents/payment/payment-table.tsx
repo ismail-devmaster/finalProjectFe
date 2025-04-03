@@ -64,7 +64,6 @@ export function PaymentTable({
 }: PaymentTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [date, setDate] = useState<Date | undefined>(undefined);
 
   const filteredPayments = payments.filter((payment) => {
     const patientName = `${payment.patient.user.firstName} ${payment.patient.user.lastName}`;
@@ -76,18 +75,9 @@ export function PaymentTable({
     const matchesStatus =
       statusFilter === "all" ||
       payment.status.status.toLowerCase() === statusFilter.toLowerCase();
-    const matchesDate = !date || isSameDay(new Date(payment.date), date);
 
-    return matchesSearch && matchesStatus && matchesDate;
+    return matchesSearch && matchesStatus;
   });
-
-  function isSameDay(date1: Date, date2: Date) {
-    return (
-      date1.getDate() === date2.getDate() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getFullYear() === date2.getFullYear()
-    );
-  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -120,34 +110,7 @@ export function PaymentTable({
                 <SelectItem value="cancelled">Cancelled</SelectItem>
               </SelectContent>
             </Select>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-[150px] justify-start text-left font-normal"
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "PPP") : <span>Pick a date</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={setDate}
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
           </div>
-          <Button variant="outline" size="icon">
-            <Printer className="h-4 w-4" />
-            <span className="sr-only">Print</span>
-          </Button>
-          <Button variant="outline" size="icon">
-            <Download className="h-4 w-4" />
-            <span className="sr-only">Download</span>
-          </Button>
         </div>
       </div>
       <div className="rounded-md border">
