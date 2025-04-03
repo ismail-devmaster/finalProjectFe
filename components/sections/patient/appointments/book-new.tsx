@@ -25,9 +25,11 @@ import { cn } from "@/lib/utils";
 import { TimePicker } from "@/components/ui/time-picker";
 
 interface Doctor {
-  id: string;
-  firstName: string;
-  lastName: string;
+  userId: string;
+  user: {
+    firstName: string;
+    lastName: string;
+  };
   specialty: string;
   avatar: string;
 }
@@ -291,14 +293,19 @@ export default function BookNew() {
                 <Avatar className="h-10 w-10 mr-3">
                   <AvatarImage
                     src={currentDoctor.avatar}
-                    alt={`${currentDoctor.firstName} ${currentDoctor.lastName}`}
+                    alt={`${currentDoctor.user.firstName.charAt(
+                      0
+                    )}${currentDoctor.user.lastName.charAt(0)}`}
                   />
                   <AvatarFallback>
-                    {`${currentDoctor.firstName}${currentDoctor.lastName}`}
+                    {`${currentDoctor.user.firstName.charAt(
+                      0
+                    )}${currentDoctor.user.lastName.charAt(0)}`}
                   </AvatarFallback>
                 </Avatar>
+
                 <div>
-                  <div className="font-medium">{`Dr. ${currentDoctor.firstName} ${currentDoctor.lastName}`}</div>
+                  <div className="font-medium">{`Dr. ${currentDoctor.user.firstName} ${currentDoctor.user.lastName}`}</div>
                   <div className="text-sm text-muted-foreground">
                     {currentDoctor.specialty}
                   </div>
