@@ -1,12 +1,13 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookNew } from "@/components/sections/patient/appointments/book-new";
+// import { BookNew } from "@/components/sections/patient/appointments/book-new";
 import { Waiting } from "@/components/sections/patient/appointments/waiting";
 import { Upcoming } from "@/components/sections/patient/appointments/upcoming";
 import { History } from "@/components/sections/patient/appointments/history";
 import { CalendarClock, CalendarPlus, Clock, HistoryIcon } from "lucide-react";
 import { useAppointments } from "@/hooks/pages/useAppointments";
+import BookNew from "@/components/sections/patient/appointments/book-new";
 
 export interface UseAppointmentsReturn {
   activeTab: string;
@@ -61,7 +62,8 @@ function AppointmentTabs(
     >
       <TabsListComponent />
       <TabsContent value="book-new">
-        <BookNew patientId={patientId} />
+        {/* <BookNew patientId={patientId} /> */}
+        <BookNew />
       </TabsContent>
       <TabsContent value="waiting">
         <Waiting />
