@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { TimePicker } from "@/components/ui/time-picker";
 
@@ -28,17 +27,14 @@ interface Doctor {
   id: string;
   firstName: string;
   lastName: string;
-  specialty: {
-    id: string;
-    name: string;
-  };
+  specialty: string;
   avatar: string;
 }
 
 interface VisitReason {
   id: string;
   type: string;
-  specialtyId: string;
+  requiredSpecialty: string;
 }
 
 const mockDoctors: Doctor[] = [
@@ -46,18 +42,17 @@ const mockDoctors: Doctor[] = [
     id: "d1",
     firstName: "John",
     lastName: "Smith",
-    specialty: {
-      id: "s1",
-      name: "Cardiology",
-    },
+    specialty: "SPECIALIST",
     avatar: "/placeholder.svg?height=40&width=40",
   },
-  // ... keep other mock doctors data
 ];
 
 const mockReasons: VisitReason[] = [
-  { id: "r1", type: "Heart Checkup", specialtyId: "s1" },
-  // ... keep other mock reasons data
+  {
+    id: "1",
+    type: "SPECIALIST",
+    requiredSpecialty: "SPECIALIST",
+  },
 ];
 
 export default function BookNew() {
@@ -68,8 +63,6 @@ export default function BookNew() {
   const [additionalNotes, setAdditionalNotes] = useState<string>("");
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
-
-  const router = useRouter();
 
   const months = [
     "January",
@@ -84,17 +77,6 @@ export default function BookNew() {
     "October",
     "November",
     "December",
-  ];
-
-  const timeSlots = [
-    "8:00 AM",
-    "9:00 AM",
-    "10:00 AM",
-    "11:00 AM",
-    "1:00 PM",
-    "2:00 PM",
-    "3:00 PM",
-    "4:00 PM",
   ];
 
   const getDaysInMonth = (month: number, year: number) => {
@@ -166,7 +148,7 @@ export default function BookNew() {
       const reason = mockReasons.find((r) => r.id === selectedReason);
       if (reason) {
         const matchingDoctor = mockDoctors.find(
-          (d) => d.specialty.id === reason.specialtyId
+          (d) => d.specialty === reason.requiredSpecialty
         );
         if (matchingDoctor) {
           setSelectedDoctor(matchingDoctor.id);
@@ -312,7 +294,7 @@ export default function BookNew() {
                 <div>
                   <div className="font-medium">{`Dr. ${currentDoctor.firstName} ${currentDoctor.lastName}`}</div>
                   <div className="text-sm text-muted-foreground">
-                    {currentDoctor.specialty.name}
+                    {currentDoctor.specialty}
                   </div>
                 </div>
               </div>
