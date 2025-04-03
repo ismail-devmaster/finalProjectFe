@@ -10,6 +10,8 @@ interface TimePickerProps {
   value: string
   onChange: (time: string) => void
   className?: string
+  minTime?: string
+  maxTime?: string
 }
 
 export function TimePicker({ value, onChange, className }: TimePickerProps) {
@@ -21,6 +23,12 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
   const hoursOptions = Array.from({ length: 12 }, (_, i) => {
     const hour = i + 1
     return hour < 10 ? `0${hour}` : `${hour}`
+  }).filter(hour => {
+    if (period === 'AM') {
+      return parseInt(hour) >= 8 // Only allow 8AM-11AM
+    } else {
+      return parseInt(hour) <= 7 || hour === '12' // Only allow 12PM-7PM
+    }
   })
 
   const minutesOptions = Array.from({ length: 12 }, (_, i) => {
@@ -32,6 +40,14 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
     const formattedTime = `${hours}:${minutes} ${period}`
     onChange(formattedTime)
     setOpen(false)
+  }
+
+  // Reset hours if current selection is invalid
+  if (period === 'AM' && parseInt(hours) < 8 && hours !== '12') {
+    setHours('08')
+  }
+  if (period === 'PM' && parseInt(hours) > 7 && hours !== '12') {
+    setHours('12')
   }
 
   return (
@@ -99,4 +115,3 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
     </Popover>
   )
 }
-

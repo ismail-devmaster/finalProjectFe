@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Calendar } from "@/components/ui/calendar";
+import { ChevronLeft, ChevronRight, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -20,11 +20,10 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { TimePicker } from "@/components/ui/time-picker";
-import { Info } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { TimePicker } from "@/components/ui/time-picker";
 
-// Define types
 interface Doctor {
   id: string;
   firstName: string;
@@ -39,10 +38,9 @@ interface Doctor {
 interface VisitReason {
   id: string;
   type: string;
-  specialtyId: string; // To link reasons with doctor specialties
+  specialtyId: string;
 }
 
-// Mock data
 const mockDoctors: Doctor[] = [
   {
     id: "d1",
@@ -54,102 +52,115 @@ const mockDoctors: Doctor[] = [
     },
     avatar: "/placeholder.svg?height=40&width=40",
   },
-  {
-    id: "d2",
-    firstName: "Sarah",
-    lastName: "Johnson",
-    specialty: {
-      id: "s2",
-      name: "Dermatology",
-    },
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "d3",
-    firstName: "Michael",
-    lastName: "Chen",
-    specialty: {
-      id: "s3",
-      name: "Neurology",
-    },
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "d4",
-    firstName: "Emily",
-    lastName: "Wilson",
-    specialty: {
-      id: "s4",
-      name: "Pediatrics",
-    },
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
-  {
-    id: "d5",
-    firstName: "David",
-    lastName: "Garcia",
-    specialty: {
-      id: "s5",
-      name: "Orthopedics",
-    },
-    avatar: "/placeholder.svg?height=40&width=40",
-  },
+  // ... keep other mock doctors data
 ];
 
 const mockReasons: VisitReason[] = [
   { id: "r1", type: "Heart Checkup", specialtyId: "s1" },
-  { id: "r2", type: "Chest Pain", specialtyId: "s1" },
-  { id: "r3", type: "Skin Rash", specialtyId: "s2" },
-  { id: "r4", type: "Acne Treatment", specialtyId: "s2" },
-  { id: "r5", type: "Headache Consultation", specialtyId: "s3" },
-  { id: "r6", type: "Neurological Assessment", specialtyId: "s3" },
-  { id: "r7", type: "Child Wellness Visit", specialtyId: "s4" },
-  { id: "r8", type: "Vaccination", specialtyId: "s4" },
-  { id: "r9", type: "Joint Pain", specialtyId: "s5" },
-  { id: "r10", type: "Fracture Follow-up", specialtyId: "s5" },
+  // ... keep other mock reasons data
 ];
 
 export default function BookNew() {
-  // Create all state variables internally
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
   const [selectedReason, setSelectedReason] = useState<string | null>(null);
   const [additionalNotes, setAdditionalNotes] = useState<string>("");
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
   const router = useRouter();
 
-  // Handler functions
-  const handleSelectDate = (newDate: Date) => {
-    setDate(newDate);
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const timeSlots = [
+    "8:00 AM",
+    "9:00 AM",
+    "10:00 AM",
+    "11:00 AM",
+    "1:00 PM",
+    "2:00 PM",
+    "3:00 PM",
+    "4:00 PM",
+  ];
+
+  const getDaysInMonth = (month: number, year: number) => {
+    return new Date(year, month + 1, 0).getDate();
   };
 
-  const handleConfirmAppointment = () => {
-    // Mock implementation - in a real app, this would save the appointment
-    console.log("Appointment confirmed:", {
-      date,
-      time: selectedTime,
-      doctorId: selectedDoctor,
-      reasonId: selectedReason,
-      notes: additionalNotes,
+  const getFirstDayOfMonth = (month: number, year: number) => {
+    return new Date(year, month, 1).getDay();
+  };
+
+  const renderCalendar = () => {
+    const firstDayOfMonth = getFirstDayOfMonth(currentMonth, currentYear);
+    const daysInMonth = getDaysInMonth(currentMonth, currentYear);
+    const calendarDays = [];
+
+    for (let i = 0; i < firstDayOfMonth; i++) {
+      calendarDays.push(<div key={`empty-${i}`} className="calendar-day" />);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(currentYear, currentMonth, day);
+      const isToday = date.toDateString() === new Date().toDateString();
+      const isPast = date < new Date();
+      const isSelected = selectedDate?.toDateString() === date.toDateString();
+
+      calendarDays.push(
+        <div
+          key={date.toISOString()}
+          className={cn(
+            "flex items-center justify-center rounded-md",
+            "text-center cursor-pointer p-2 transition-colors",
+            isToday && "bg-muted font-bold",
+            isPast && "text-muted-foreground cursor-not-allowed",
+            isSelected &&
+              "bg-primary text-primary-foreground hover:bg-primary/90",
+            !isPast && !isSelected && "hover:bg-muted"
+          )}
+          onClick={() => !isPast && setSelectedDate(date)}
+        >
+          {day}
+        </div>
+      );
+    }
+    return calendarDays;
+  };
+
+  const handlePrevMonth = () => {
+    setCurrentMonth((prev) => {
+      if (prev === 0) {
+        setCurrentYear((y) => y - 1);
+        return 11;
+      }
+      return prev - 1;
     });
   };
 
-  const handleCancelBooking = () => {
-    // Mock implementation - in a real app, this would cancel and redirect
-    if (confirm("Are you sure you want to cancel this booking?")) {
-      // Reset form or redirect
-      setDate(new Date());
-      setSelectedTime(null);
-      setSelectedDoctor(null);
-      setSelectedReason(null);
-      setAdditionalNotes("");
-
-      // router.push("/appointments")
-    }
+  const handleNextMonth = () => {
+    setCurrentMonth((prev) => {
+      if (prev === 11) {
+        setCurrentYear((y) => y + 1);
+        return 0;
+      }
+      return prev + 1;
+    });
   };
 
-  // Auto-select doctor based on reason
   useEffect(() => {
     if (selectedReason) {
       const reason = mockReasons.find((r) => r.id === selectedReason);
@@ -164,7 +175,26 @@ export default function BookNew() {
     }
   }, [selectedReason]);
 
-  // Find the currently selected doctor
+  const handleConfirmAppointment = () => {
+    console.log("Appointment confirmed:", {
+      date: selectedDate,
+      time: selectedTime,
+      doctorId: selectedDoctor,
+      reasonId: selectedReason,
+      notes: additionalNotes,
+    });
+  };
+
+  const handleCancelBooking = () => {
+    if (confirm("Are you sure you want to cancel this booking?")) {
+      setSelectedDate(new Date());
+      setSelectedTime(null);
+      setSelectedDoctor(null);
+      setSelectedReason(null);
+      setAdditionalNotes("");
+    }
+  };
+
   const currentDoctor = selectedDoctor
     ? mockDoctors.find((doctor) => doctor.id === selectedDoctor)
     : null;
@@ -179,47 +209,45 @@ export default function BookNew() {
           <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
             <div className="flex-1">
               <div className="border rounded-lg p-4 shadow-sm">
-                <div className="text-center mb-4">
+                <div className="flex items-center justify-between mb-4">
                   <h3 className="font-medium">
-                    {date
-                      ? date.toLocaleDateString("en-US", {
-                          month: "long",
-                          year: "numeric",
-                        })
-                      : "Select a date"}
+                    {months[currentMonth]} {currentYear}
                   </h3>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={handlePrevMonth}
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={handleNextMonth}
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
                 <div className="grid grid-cols-7 gap-1 text-center mb-2">
-                  <div className="text-sm font-medium">Su</div>
-                  <div className="text-sm font-medium">Mo</div>
-                  <div className="text-sm font-medium">Tu</div>
-                  <div className="text-sm font-medium">We</div>
-                  <div className="text-sm font-medium">Th</div>
-                  <div className="text-sm font-medium">Fr</div>
-                  <div className="text-sm font-medium">Sa</div>
+                  {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
+                    (day) => (
+                      <div
+                        key={day}
+                        className="text-xs font-medium text-muted-foreground"
+                      >
+                        {day}
+                      </div>
+                    )
+                  )}
                 </div>
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={(newDate: Date | undefined) => {
-                    if (newDate) {
-                      handleSelectDate(newDate);
-                    }
-                  }}
-                  fromDate={new Date()}
-                  className="rounded-md"
-                  classNames={{
-                    day_today: "bg-muted font-bold",
-                    day_selected:
-                      "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
-                    day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-muted rounded-md",
-                  }}
-                />
+                <div className="grid grid-cols-7 gap-1">{renderCalendar()}</div>
               </div>
             </div>
             <div className="flex-1 flex flex-col justify-center space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="time-picker">Select Time</Label>
+                <Label>Select Time</Label>
                 <TimePicker
                   value={selectedTime || ""}
                   onChange={setSelectedTime}
@@ -236,6 +264,7 @@ export default function BookNew() {
           </div>
         </CardContent>
       </Card>
+
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">Appointment Details</CardTitle>
@@ -276,7 +305,9 @@ export default function BookNew() {
                     src={currentDoctor.avatar}
                     alt={`${currentDoctor.firstName} ${currentDoctor.lastName}`}
                   />
-                  <AvatarFallback>{`${currentDoctor.firstName[0]}${currentDoctor.lastName[0]}`}</AvatarFallback>
+                  <AvatarFallback>
+                    {`${currentDoctor.firstName[0]}${currentDoctor.lastName[0]}`}
+                  </AvatarFallback>
                 </Avatar>
                 <div>
                   <div className="font-medium">{`Dr. ${currentDoctor.firstName} ${currentDoctor.lastName}`}</div>
@@ -299,16 +330,12 @@ export default function BookNew() {
               placeholder="Any additional information for your visit"
               value={additionalNotes}
               onChange={(e) => setAdditionalNotes(e.target.value)}
-              className="min-h-[100px] resize-none border-gray-200 dark:border-gray-700"
+              className="min-h-[100px] resize-none"
             />
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button
-            variant="outline"
-            className="border-gray-200 dark:border-gray-700"
-            onClick={handleCancelBooking}
-          >
+          <Button variant="outline" onClick={handleCancelBooking}>
             Cancel
           </Button>
           <Button onClick={handleConfirmAppointment}>
