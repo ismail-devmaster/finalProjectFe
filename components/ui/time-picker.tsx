@@ -1,59 +1,78 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Clock } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useState } from "react";
+import { Clock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface TimePickerProps {
-  value: string
-  onChange: (time: string) => void
-  className?: string
-  minTime?: string
-  maxTime?: string
+  value: string;
+  onChange: (time: string) => void;
+  className?: string;
+  minTime?: string;
+  maxTime?: string;
 }
 
 export function TimePicker({ value, onChange, className }: TimePickerProps) {
-  const [open, setOpen] = useState(false)
-  const [hours, setHours] = useState<string>(value ? value.split(":")[0] : "09")
-  const [minutes, setMinutes] = useState<string>(value ? value.split(":")[1]?.split(" ")[0] : "00")
-  const [period, setPeriod] = useState<string>(value ? (value.includes("PM") ? "PM" : "AM") : "AM")
+  const [open, setOpen] = useState(false);
+  const [hours, setHours] = useState<string>(
+    value ? value.split(":")[0] : "09"
+  );
+  const [minutes, setMinutes] = useState<string>(
+    value ? value.split(":")[1]?.split(" ")[0] : "00"
+  );
+  const [period, setPeriod] = useState<string>(
+    value ? (value.includes("PM") ? "PM" : "AM") : "AM"
+  );
 
   const hoursOptions = Array.from({ length: 12 }, (_, i) => {
-    const hour = i + 1
-    return hour < 10 ? `0${hour}` : `${hour}`
-  }).filter(hour => {
-    if (period === 'AM') {
-      return parseInt(hour) >= 8 // Only allow 8AM-11AM
+    const hour = i + 1;
+    return hour < 10 ? `0${hour}` : `${hour}`;
+  }).filter((hour) => {
+    if (period === "AM") {
+      return parseInt(hour) >= 8 && parseInt(hour) <= 11; // Only allow 8AM-11AM
     } else {
-      return parseInt(hour) <= 7 || hour === '12' // Only allow 12PM-7PM
+      return parseInt(hour) <= 6 || hour === "12"; // Allow 12PM-6PM
     }
-  })
+  });
 
   const minutesOptions = Array.from({ length: 12 }, (_, i) => {
-    const minute = i * 5
-    return minute < 10 ? `0${minute}` : `${minute}`
-  })
+    const minute = i * 5;
+    return minute < 10 ? `0${minute}` : `${minute}`;
+  });
 
   const handleTimeChange = () => {
-    const formattedTime = `${hours}:${minutes} ${period}`
-    onChange(formattedTime)
-    setOpen(false)
-  }
+    const formattedTime = `${hours}:${minutes} ${period}`;
+    onChange(formattedTime);
+    setOpen(false);
+  };
 
   // Reset hours if current selection is invalid
-  if (period === 'AM' && parseInt(hours) < 8 && hours !== '12') {
-    setHours('08')
+  if (period === "AM" && (parseInt(hours) < 8 || parseInt(hours) > 11)) {
+    setHours("08");
   }
-  if (period === 'PM' && parseInt(hours) > 7 && hours !== '12') {
-    setHours('12')
+  if (period === "PM" && (parseInt(hours) > 6 && hours !== "12")) {
+    setHours("12");
   }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" className={`w-full justify-start text-left font-normal ${className}`}>
+        <Button
+          variant="outline"
+          className={`w-full justify-start text-left font-normal ${className}`}
+        >
           <Clock className="mr-2 h-4 w-4" />
           {value || "Select time"}
         </Button>
@@ -113,5 +132,5 @@ export function TimePicker({ value, onChange, className }: TimePickerProps) {
         </div>
       </PopoverContent>
     </Popover>
-  )
+  );
 }
