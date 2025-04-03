@@ -212,90 +212,160 @@ export function PaymentManagement() {
   };
 
   const handleDownloadReceipt = (payment: Payment) => {
-    // Create receipt data object
-    const receiptData = {
-      clinicName: "DentalCare Clinic",
-      clinicAddress: "123 Dental Street, Suite 100",
-      clinicPhone: "(555) 123-4567",
-      receiptNo: payment.id,
-      date: new Date(payment.date).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-      time: new Date(payment.time).toLocaleTimeString("en-US", {
-        hour: "numeric",
-        minute: "numeric",
-      }),
-      patient: `Patient ${payment.patientId}`,
-      doctor: `${payment.doctor.user.firstName} ${payment.doctor.user.lastName}`,
-      service: payment.action.description,
-      amount: payment.amount.toFixed(2),
-      method: "Cash",
-      status: payment.status.status.toLowerCase(),
-    };
-
     // Create a new jsPDF document
     const doc = new jsPDF();
 
     // Set margins and starting coordinates
-    let x = 10;
+    let x = 15;
     let y = 20;
 
     // Add header information
-    doc.setFontSize(16);
-    doc.text(receiptData.clinicName, x, y);
-    y += 10;
-    doc.setFontSize(12);
-    doc.text(receiptData.clinicAddress, x, y);
+    doc.setFontSize(18);
+    doc.setTextColor(40, 40, 40);
+    doc.text("DentalCare Clinic", x, y, { align: "center" });
     y += 8;
-    doc.text(`Phone: ${receiptData.clinicPhone}`, x, y);
+    doc.setFontSize(12);
+    doc.text("123 Dental Street, Suite 100", x, y, { align: "center" });
+    y += 6;
+    doc.text("Phone: (555) 123-4567", x, y, { align: "center" });
 
-    // Draw a line as a separator
+    // Draw a line separator
     y += 10;
-    doc.setLineWidth(0.5);
-    doc.line(x, y, 200, y);
+    doc.setDrawColor(200, 200, 200);
+    doc.line(x, y, 195, y);
 
-    // Receipt title
-    y += 10;
+    // Patient info section
+    y += 15;
     doc.setFontSize(14);
-    doc.text(`Receipt No: ${receiptData.receiptNo}`, x, y);
+    doc.text(`Receipt No: ${payment.id}`, x, y);
 
-    // Patient information
+    // Patient avatar and name
     y += 10;
+    doc.setFillColor(240, 240, 240);
+    doc.circle(x + 10, y + 10, 10, "F");
     doc.setFontSize(12);
-    doc.text(`Patient: ${receiptData.patient}`, x, y);
+    doc.text(
+      `${payment.patient.user.firstName.charAt(
+        0
+      )}${payment.patient.user.lastName.charAt(0)}`,
+      x + 10,
+      y + 12,
+      { align: "center" }
+    );
+    doc.text(
+      `${payment.patient.user.firstName} ${payment.patient.user.lastName}`,
+      x + 30,
+      y + 12
+    );
 
-    // Doctor information
-    y += 8;
-    doc.text(`Doctor: ${receiptData.doctor}`, x, y);
+    // Details grid
+    y += 25;
+    const detailItems = [
+      { label: "Amount", value: `${payment.amount.toFixed(2)} DA` },
+      { label: "Status", value: payment.status.status.toLowerCase() },
+      {
+        label: "Date",
+        value: new Date(payment.date).toLocaleDateString("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }),
+      },
+      {
+        label: "Time",
+        value: new Date(payment.time).toLocaleTimeString("en-US", {
+          hour: "numeric",
+          minute: "numeric",
+        }),
+      },
+      {
+        label: "Doctor",
+        value: `${payment.doctor.user.firstName} ${payment.doctor.user.lastName}`,
+      },
+    ];
 
-    // Amount
-    y += 8;
-    doc.text(`Amount: ${receiptData.amount} DA`, x, y);
-
-    // Payment Status
-    y += 8;
-    doc.text(`Status: ${receiptData.status}`, x, y);
-
-    // Payment Method (new field)
-    y += 8;
-    doc.text(`Payment Method: ${receiptData.method}`, x, y);
-
-    // Date
-    y += 8;
-    doc.text(`Date: ${receiptData.date}`, x, y);
-
-    // Time
-    y += 8;
-    doc.text(`Time: ${receiptData.time}`, x, y);
+    detailItems.forEach((item, i) => {
+      doc.setFontSize(10);
+      doc.setTextColor(100, 100, 100);
+      doc.text(item.label, x + (i % 2 === 0 ? 0 : 100), y);
+      doc.setFontSize(12);
+      doc.setTextColor(40, 40, 40);
+      doc.text(item.value, x + (i % 2 === 0 ? 0 : 100), y + 5);
+      if (i % 2 === 1) y += 10;
+    });
 
     // Service description
-    y += 10;
+    y += 15;
     doc.setFontSize(12);
     doc.text("Service Description:", x, y);
-    y += 8;
-    doc.text(receiptData.service, x, y, { maxWidth: 180 });
+    y += 7;
+    doc.setFillColor(245, 245, 245);
+    doc.roundedRect(x, y, 180, 20, 3, 3, "F");
+    doc.setTextColor(40, 40, 40);
+    doc.text(payment.action.description, x + 5, y + 7, { maxWidth: 170 });
+
+    // Payment history table
+    y += 30;
+    doc.setFontSize(12);
+    doc.text("Patient Payment History", x, y);
+    y += 7;
+
+    // Table headers
+    doc.setFillColor(240, 240, 240);
+    doc.rect(x, y, 180, 10, "F");
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    ["Date", "Amount", "Description", "Status"].forEach((header, i) => {
+      doc.text(header, x + i * 45, y + 7);
+    });
+
+    // Table rows
+    doc.setFontSize(10);
+    payments
+      .filter((p) => p.patientId === payment.patientId)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .forEach((p, i) => {
+        y += 10;
+        if (i % 2 === 0) {
+          doc.setFillColor(250, 250, 250);
+          doc.rect(x, y, 180, 10, "F");
+        }
+        doc.setTextColor(40, 40, 40);
+        doc.text(
+          new Date(p.date).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+          x,
+          y + 7
+        );
+        doc.text(`$${p.amount.toFixed(2)}`, x + 45, y + 7);
+        doc.text(p.description, x + 90, y + 7, { maxWidth: 45 });
+
+        // Status badge
+        const statusColor =
+          p.status.status === "PAID"
+            ? [34, 197, 94]
+            : p.status.status === "PENDING"
+            ? [245, 158, 11]
+            : [239, 68, 68];
+        doc.setFillColor(statusColor[0], statusColor[1], statusColor[2]);
+        doc.roundedRect(x + 135, y + 2, 40, 6, 2, 2, "F");
+        doc.setTextColor(255, 255, 255);
+        doc.text(p.status.status.toLowerCase(), x + 155, y + 7, {
+          align: "center",
+        });
+      });
+
+    // Footer
+    y += 20;
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text("Thank you for choosing DentalCare Clinic!", x, y, {
+      align: "center",
+    });
 
     // Save the PDF
     doc.save(`Receipt_${payment.id}.pdf`);
@@ -303,7 +373,7 @@ export function PaymentManagement() {
     // Provide a toast notification for download status
     toast({
       title: "Downloading Receipt",
-      description: `Receipt for ${receiptData.patient} is being downloaded`,
+      description: `Receipt for ${payment.patient.user.firstName} ${payment.patient.user.lastName} is being downloaded`,
     });
   };
   const handleMarkAsPaid = (payment: Payment) => {
