@@ -11,7 +11,7 @@ interface UseAppointmentsReturn {
 }
 
 export function useAppointments(): UseAppointmentsReturn {
-  const [activeTab, setActiveTab] = useState<string>("upcoming");
+  const [activeTab, setActiveTab] = useState<string>("book-new");
   const [patientId, setPatientId] = useState<number | undefined>(undefined);
 
   useEffect(() => {

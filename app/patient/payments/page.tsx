@@ -68,12 +68,13 @@ const getAppointmentTypeColor = (type: string) => {
       return "bg-gray-100 text-gray-800";
   }
 };
-const ActionsTable = (
-  { actions, handleViewDetails }: {
-    actions: any[];
-    handleViewDetails: (id: number) => void;
-  },
-) => (
+const ActionsTable = ({
+  actions,
+  handleViewDetails,
+}: {
+  actions: any[];
+  handleViewDetails: (id: number) => void;
+}) => (
   <Card>
     <CardHeader>
       <CardTitle>Actions</CardTitle>
@@ -94,35 +95,37 @@ const ActionsTable = (
             </TableRow>
           </TableHeader>
           <TableBody>
-            {actions.map((action) => (
-              <TableRow key={action.id}>
-                <TableCell>
-                  {format(new Date(action.startDate), "MMM dd, yyyy")}
-                </TableCell>
-                <TableCell>
-                  <Badge
-                    className={getAppointmentTypeColor(
-                      action.appointmentType.type,
-                    )}
-                  >
-                    {action.appointmentType.type.replace("_", " ")}
-                  </Badge>
-                </TableCell>
-                <TableCell>{action.description || "—"}</TableCell>
-                <TableCell>
-                  ${action.totalPayment?.toFixed(2) || "0.00"}
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleViewDetails(action.id)}
-                  >
-                    View Details
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {actions
+              .filter((action) => action.payments?.length)
+              .map((action) => (
+                <TableRow key={action.id}>
+                  <TableCell>
+                    {format(new Date(action.startDate), "MMM dd, yyyy")}
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      className={getAppointmentTypeColor(
+                        action.appointmentType.type
+                      )}
+                    >
+                      {action.appointmentType.type.replace("_", " ")}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{action.description || "—"}</TableCell>
+                  <TableCell>
+                    ${action.totalPayment?.toFixed(2) || "0.00"}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleViewDetails(action.id)}
+                    >
+                      View Details
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </div>
@@ -151,7 +154,7 @@ const PaymentDialog = ({ isOpen, setIsOpen, actionDetails, payments }: any) => (
               <div className="flex items-center gap-2">
                 <Badge
                   className={getAppointmentTypeColor(
-                    actionDetails.appointmentType.type,
+                    actionDetails.appointmentType.type
                   )}
                 >
                   {actionDetails.appointmentType.type.replace("_", " ")}
@@ -161,6 +164,46 @@ const PaymentDialog = ({ isOpen, setIsOpen, actionDetails, payments }: any) => (
           )}
         </DialogDescription>
       </DialogHeader>
+      {payments?.length > 0 && (
+        <div className="mt-6">
+          <h3 className="text-lg font-medium mb-2">Payment History</h3>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Date & Time</TableHead>
+                <TableHead>Amount</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead>Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {payments.map((payment: any) => (
+                <TableRow key={payment.id}>
+                  <TableCell>
+                    <div>
+                      {format(new Date(payment.date), "MMM dd, yyyy")}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {format(new Date(payment.time), "h:mm a")}
+                    </div>
+                  </TableCell>
+                  <TableCell>${payment.amount?.toFixed(2)}</TableCell>
+                  <TableCell>{payment.description || "—"}</TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={
+                        payment.statusId === 2 ? "default" : "secondary"
+                      }
+                    >
+                      {payment.statusId === 2 ? "COMPLETED" : "PENDING"}
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
     </DialogContent>
   </Dialog>
 );
