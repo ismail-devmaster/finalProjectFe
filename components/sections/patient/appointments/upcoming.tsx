@@ -76,7 +76,6 @@ export function Upcoming({ patientId }: HistoryProps) {
             (app: Appointment) => app.status.status === "UPCOMING"
           )
         );
-        console.log("upcomingapppointments", upcomingAppointments);
       } catch (error) {
         console.error("Failed to fetch appointments:", error);
       }

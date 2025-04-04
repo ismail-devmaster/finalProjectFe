@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { TimePicker } from "./time-picker";
+import { TimePicker } from "@/components/ui/time-picker";
 import { appointment } from "@/app/api";
 
 interface User {
@@ -76,14 +76,28 @@ export function RescheduleModal({
   const [notes, setNotes] = useState<string>(
     appointmentSelected ? appointmentSelected.additionalNotes : ""
   );
+  const convertTo24HourFormat = (timeStr: string | null) => {
+    if (!timeStr) return "00:00";
 
+    const [time, period] = timeStr.split(" ");
+    const [hours, minutes] = time.split(":");
+
+    let hourNum = parseInt(hours);
+    if (period === "PM" && hourNum < 12) {
+      hourNum += 12;
+    } else if (period === "AM" && hourNum === 12) {
+      hourNum = 0;
+    }
+
+    return `${hourNum.toString().padStart(2, "0")}:${minutes}`;
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     try {
       e.preventDefault();
       if (!appointmentSelected) return;
       const updateData: AppointmentUpdateData = {
         date: date,
-        time: time,
+        time: convertTo24HourFormat(time),
         additionalNotes: notes,
         statusId: 1, // Assuming 1 is for "WAITING" status
       };
@@ -92,7 +106,7 @@ export function RescheduleModal({
       const updatedAppointment = {
         ...appointmentSelected,
         date: date,
-        time: new Date(`1970-01-01T${time}:00.000Z`).toISOString(),
+        time: convertTo24HourFormat(time),
         additionalNotes: notes,
         doctor: appointmentSelected.doctor,
         action: appointmentSelected.action,
