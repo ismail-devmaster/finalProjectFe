@@ -288,6 +288,7 @@ const ActionsTable = ({
                 <TableHead className="hidden md:table-cell">
                   Description
                 </TableHead>
+                <TableHead>Status</TableHead>
                 <TableHead>
                   <button
                     onClick={() => handleSort("amount")}
@@ -329,6 +330,18 @@ const ActionsTable = ({
                     </TableCell>
                     <TableCell className="hidden md:table-cell max-w-[200px] truncate">
                       {action.description || "No description available"}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant="secondary"
+                        className={
+                          action.isCompleted
+                            ? "bg-green-100 text-green-800 hover:bg-green-100"
+                            : "bg-amber-100 text-amber-800 hover:bg-amber-100"
+                        }
+                      >
+                        {action.isCompleted ? "COMPLETED" : "PENDING"}
+                      </Badge>
                     </TableCell>
                     <TableCell>
                       <div className="font-medium text-emerald-600">
