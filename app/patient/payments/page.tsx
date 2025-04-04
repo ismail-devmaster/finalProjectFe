@@ -25,11 +25,13 @@ import {
   CreditCard,
   DollarSign,
   FileText,
-  Filter,
   Receipt,
-  Search,
+  ArrowDown,
+  ArrowUp,
 } from "lucide-react";
 import { usePatientPayments } from "@/hooks/pages/usePatientPayments";
+import type { Action, Payment } from "@/types/payment";
+import { useState } from "react";
 
 export default function PaymentsHistory() {
   const {
@@ -68,20 +70,6 @@ export default function PaymentsHistory() {
             View and manage your payment records
           </p>
         </div>
-
-        <div className="flex items-center gap-2">
-          <div className="relative">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <input
-              type="search"
-              placeholder="Search payments..."
-              className="pl-9 h-10 w-full md:w-[200px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            />
-          </div>
-          <Button variant="outline" size="icon">
-            <Filter className="h-4 w-4" />
-          </Button>
-        </div>
       </div>
 
       <Tabs defaultValue="all" className="mb-8">
@@ -107,23 +95,23 @@ export default function PaymentsHistory() {
   );
 }
 
-const PaymentsSummaryCards = ({ actions }: { actions: any[] }) => {
+const PaymentsSummaryCards = ({ actions }: { actions: Action[] }) => {
   const filteredActions = actions.filter((action) => action.payments?.length);
 
   // Calculate total paid amount
-  const totalPaid = filteredActions.reduce((sum, action) => {
+  const totalPaid = filteredActions.reduce((sum: number, action: Action) => {
     const completedPayments =
-      action.payments?.filter((p) => p.statusId === 3) || [];
+      action.payments?.filter((p: Payment) => p.statusId === 3) || [];
     return (
-      sum + completedPayments.reduce((pSum, p) => pSum + (p.amount || 0), 0)
+      sum + completedPayments.reduce((pSum: number, p: Payment) => pSum + (p.amount || 0), 0)
     );
   }, 0);
 
   // Calculate pending amount
-  const pendingAmount = filteredActions.reduce((sum, action) => {
+  const pendingAmount = filteredActions.reduce((sum: number, action: Action) => {
     const pendingPayments =
-      action.payments?.filter((p) => p.statusId !== 2) || [];
-    return sum + pendingPayments.reduce((pSum, p) => pSum + (p.amount || 0), 0);
+      action.payments?.filter((p: Payment) => p.statusId !== 2) || [];
+    return sum + pendingPayments.reduce((pSum: number, p: Payment) => pSum + (p.amount || 0), 0);
   }, 0);
 
   return (
@@ -202,10 +190,38 @@ const ActionsTable = ({
   actions,
   handleViewDetails,
 }: {
-  actions: any[];
+  actions: Action[];
   handleViewDetails: (id: number) => void;
 }) => {
+  const [sortField, setSortField] = useState<"date" | "amount">("date");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc"); // newest first by default
+
+  const handleSort = (field: "date" | "amount") => {
+    if (sortField === field) {
+      // Toggle direction if clicking the same field
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      // Set new field and default direction
+      setSortField(field);
+      setSortDirection(field === "date" ? "desc" : "asc"); // dates newest first, amounts lowest first
+    }
+  };
+
   const filteredActions = actions.filter((action) => action.payments?.length);
+
+  // Sort the actions based on current sort criteria
+  const sortedActions = [...filteredActions].sort((a, b) => {
+    if (sortField === "date") {
+      const dateA = new Date(a.startDate).getTime();
+      const dateB = new Date(b.startDate).getTime();
+      return sortDirection === "asc" ? dateA - dateB : dateB - dateA;
+    } else {
+      // amount
+      const amountA = a.totalPayment || 0;
+      const amountB = b.totalPayment || 0;
+      return sortDirection === "asc" ? amountA - amountB : amountB - amountA;
+    }
+  });
 
   return (
     <Card className="shadow-sm">
@@ -220,18 +236,44 @@ const ActionsTable = ({
           <Table>
             <TableHeader>
               <TableRow className="bg-slate-50/50">
-                <TableHead>Date</TableHead>
+                <TableHead>
+                  <button
+                    onClick={() => handleSort("date")}
+                    className="flex items-center gap-1 hover:text-primary transition-colors"
+                  >
+                    Date
+                    {sortField === "date" &&
+                      (sortDirection === "asc" ? (
+                        <ArrowUp className="h-3 w-3" />
+                      ) : (
+                        <ArrowDown className="h-3 w-3" />
+                      ))}
+                  </button>
+                </TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead className="hidden md:table-cell">
                   Description
                 </TableHead>
-                <TableHead>Amount</TableHead>
+                <TableHead>
+                  <button
+                    onClick={() => handleSort("amount")}
+                    className="flex items-center gap-1 hover:text-primary transition-colors"
+                  >
+                    Amount
+                    {sortField === "amount" &&
+                      (sortDirection === "asc" ? (
+                        <ArrowUp className="h-3 w-3" />
+                      ) : (
+                        <ArrowDown className="h-3 w-3" />
+                      ))}
+                  </button>
+                </TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredActions.length > 0 ? (
-                filteredActions.map((action) => (
+              {sortedActions.length > 0 ? (
+                sortedActions.map((action) => (
                   <TableRow key={action.id} className="hover:bg-slate-50">
                     <TableCell>
                       <div className="font-medium">
@@ -302,8 +344,8 @@ const PaymentDialog = ({
 }: {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-  actionDetails: any;
-  payments: any[];
+  actionDetails: Action;
+  payments: Payment[];
 }) => (
   <Dialog open={isOpen} onOpenChange={setIsOpen}>
     <DialogContent className="max-w-3xl p-0 overflow-hidden rounded-xl">
@@ -389,7 +431,7 @@ const PaymentDialog = ({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {payments.map((payment: any) => (
+                    {payments.map((payment: Payment) => (
                       <TableRow key={payment.id} className="hover:bg-slate-50">
                         <TableCell>
                           <div className="font-medium">

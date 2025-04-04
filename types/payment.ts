@@ -23,9 +23,14 @@ export interface Status {
   status: PaymentStatus;
 }
 
+export interface AppointmentType {
+  type: string;
+}
+
 export interface Action {
   id: number;
   appointmentTypeId: number;
+  appointmentType: AppointmentType;
   patientId: number;
   description: string;
   totalPayment: number;
@@ -33,6 +38,7 @@ export interface Action {
   endDate: string | null;
   isCompleted: boolean;
   completedAt: string | null;
+  payments?: Payment[];
 }
 
 export interface Payment {
