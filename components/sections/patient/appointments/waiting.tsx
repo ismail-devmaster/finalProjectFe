@@ -89,15 +89,11 @@ export function Waiting({ patientId }: HistoryProps) {
   };
 
   const confirmReschedule = (updatedAppointment: Appointment) => {
-    const updatedAppointments = appointments.map((appointment) =>
-      appointment.id === updatedAppointment.id
-        ? {
-            ...updatedAppointment,
-            time: formatTime(updatedAppointment.time), // Ensure time is properly formatted
-          }
-        : appointment
+    setAppointments(prevAppointments =>
+      prevAppointments.map(app => 
+        app.id === updatedAppointment.id ? updatedAppointment : app
+      )
     );
-    setAppointments(updatedAppointments);
     setIsRescheduleModalOpen(false);
     setSelectedAppointment(null);
   };

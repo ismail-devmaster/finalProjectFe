@@ -101,7 +101,6 @@ export function RescheduleModal({
         additionalNotes: notes,
         statusId: 1, // Assuming 1 is for "WAITING" status
       };
-
       await appointment.updateAppointment(appointmentSelected.id, updateData);
       // Create a new appointment object with updated values
       const updatedAppointment = {

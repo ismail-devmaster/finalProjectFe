@@ -95,13 +95,8 @@ export function Upcoming({ patientId }: HistoryProps) {
   };
 
   const confirmReschedule = (updatedAppointment: Appointment) => {
-    const updatedAppointments = appointments.map((appointment) =>
-      appointment.id === updatedAppointment.id
-        ? {
-            ...updatedAppointment,
-            time: formatTime(updatedAppointment.time),
-          }
-        : appointment
+    const updatedAppointments = appointments.filter(
+      (appointment) => appointment.id !== updatedAppointment.id
     );
     setAppointments(updatedAppointments);
     setIsRescheduleModalOpen(false);
