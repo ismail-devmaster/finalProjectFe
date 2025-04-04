@@ -87,39 +87,11 @@ export default function PaymentsHistory() {
       <Tabs defaultValue="all" className="mb-8">
         <TabsList>
           <TabsTrigger value="all">All Payments</TabsTrigger>
-          <TabsTrigger value="completed">Completed</TabsTrigger>
-          <TabsTrigger value="pending">Pending</TabsTrigger>
         </TabsList>
         <TabsContent value="all" className="mt-4">
           <PaymentsSummaryCards actions={actions} />
           <ActionsTable
             actions={actions}
-            handleViewDetails={handleViewDetails}
-          />
-        </TabsContent>
-        <TabsContent value="completed" className="mt-4">
-          <PaymentsSummaryCards
-            actions={actions.filter((a) =>
-              a.payments?.some((p) => p.statusId === 2)
-            )}
-          />
-          <ActionsTable
-            actions={actions.filter((a) =>
-              a.payments?.some((p) => p.statusId === 2)
-            )}
-            handleViewDetails={handleViewDetails}
-          />
-        </TabsContent>
-        <TabsContent value="pending" className="mt-4">
-          <PaymentsSummaryCards
-            actions={actions.filter((a) =>
-              a.payments?.some((p) => p.statusId !== 2)
-            )}
-          />
-          <ActionsTable
-            actions={actions.filter((a) =>
-              a.payments?.some((p) => p.statusId !== 2)
-            )}
             handleViewDetails={handleViewDetails}
           />
         </TabsContent>
