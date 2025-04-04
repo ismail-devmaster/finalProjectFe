@@ -17,7 +17,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, Calendar, CheckCircle, Tag, User } from "lucide-react";
+import {
+  AlertCircle,
+  Calendar,
+  CheckCircle,
+  FileText,
+  Tag,
+  User,
+} from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { ActionDetailsModal } from "./action-details-modal";
 import { action } from "@/app/api";
@@ -76,7 +83,7 @@ export function History({ patientId }: HistoryProps) {
     setSelectedAction(actionItem);
     try {
       const appointmentData = await appointment.getAppointmentsByActionId(
-        actionItem.id,
+        actionItem.id
       );
       setAppointments(appointmentData.appointments);
       console.log(actionItem);
@@ -93,7 +100,7 @@ export function History({ patientId }: HistoryProps) {
           A record of all your past appointments.
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      {/* <CardContent>
         {actions.length === 0
           ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -161,8 +168,85 @@ export function History({ patientId }: HistoryProps) {
               </TableBody>
             </Table>
           )}
-      </CardContent>
+      </CardContent> */}
 
+      <CardContent>
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableRow>
+                  <TableHead>Started Date</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead>description</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {actions.filter((action) => action.appointments?.length).length >
+              0 ? (
+                actions.map((action) => (
+                  <TableRow key={action.id}>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                        {formatDate(action.startDate)}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Tag className="h-4 w-4 text-muted-foreground" />
+                        {action.appointmentType.type.replace("_", " ")}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <User className="h-4 w-4 text-muted-foreground" />
+                        {action.description}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4 text-muted-foreground" />
+                        {status}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleViewDetails(action)}
+                      >
+                        View Details
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} className="h-32 text-center">
+                    <div className="flex flex-col items-center justify-center space-y-3">
+                      <div className="rounded-full bg-gray-100 p-3 dark:bg-gray-800">
+                        <FileText className="h-6 w-6 text-gray-500 dark:text-gray-400" />
+                      </div>
+                      <div className="text-lg font-medium">
+                        No appointment records found
+                      </div>
+                      <div className="text-sm text-muted-foreground max-w-sm">
+                        There are no appointment records matching your criteria.
+                        Appointments will appear here once they've been
+                        processed.
+                      </div>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
       {selectedAction && (
         <ActionDetailsModal
           isOpen={isModalOpen}

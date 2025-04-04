@@ -49,9 +49,11 @@ function Description() {
   );
 }
 
-function AppointmentTabs(
-  { activeTab, setActiveTab, patientId }: UseAppointmentsReturn,
-) {
+function AppointmentTabs({
+  activeTab,
+  setActiveTab,
+  patientId,
+}: UseAppointmentsReturn) {
   return (
     <Tabs
       defaultValue="upcoming"
@@ -61,13 +63,13 @@ function AppointmentTabs(
     >
       <TabsListComponent />
       <TabsContent value="book-new">
-        <BookNew patientId={patientId}/>
+        <BookNew patientId={patientId} />
       </TabsContent>
       <TabsContent value="waiting">
-        <Waiting />
+        <Waiting patientId={patientId} />
       </TabsContent>
       <TabsContent value="upcoming">
-        <Upcoming />
+        <Upcoming patientId={patientId} />
       </TabsContent>
       <TabsContent value="history">
         <History patientId={patientId} />

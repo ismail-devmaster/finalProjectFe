@@ -42,6 +42,9 @@ interface Appointment {
   time: string;
   doctor: Doctor;
   action: Action;
+  status: {
+    status: string;
+  };
   doctorId: number;
   additionalNotes: string;
 }

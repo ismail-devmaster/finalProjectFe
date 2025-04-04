@@ -47,11 +47,17 @@ interface Appointment {
   time: string;
   doctor: Doctor;
   action: Action;
+  status: {
+    status:string;
+  };
   doctorId: number;
   additionalNotes: string;
 }
+interface HistoryProps {
+  patientId: number | undefined;
+}
 
-export function Waiting() {
+export function Waiting({ patientId }: HistoryProps) {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
@@ -62,9 +68,9 @@ export function Waiting() {
     async function fetchAppointments() {
       try {
         const appointmentData =
-          await appointment.getAppointmentsWithWaitingStatus();
+          await appointment.getAppointmentsByPatientId(patientId!)
         const waitingAppointments = appointmentData.appointments;
-        setAppointments(waitingAppointments);
+        setAppointments(waitingAppointments.filter((app:Appointment)=> app.status.status==="WAITING"));
       } catch (error) {
         console.error("Failed to fetch appointments:", error);
       }

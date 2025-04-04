@@ -95,37 +95,56 @@ const ActionsTable = ({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {actions
-              .filter((action) => action.payments?.length)
-              .map((action) => (
-                <TableRow key={action.id}>
-                  <TableCell>
-                    {format(new Date(action.startDate), "MMM dd, yyyy")}
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      className={getAppointmentTypeColor(
-                        action.appointmentType.type
-                      )}
-                    >
-                      {action.appointmentType.type.replace("_", " ")}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{action.description || "—"}</TableCell>
-                  <TableCell>
-                    ${action.totalPayment?.toFixed(2) || "0.00"}
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleViewDetails(action.id)}
-                    >
-                      View Details
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+            {actions.filter((action) => action.payments?.length).length > 0 ? (
+              actions
+                .filter((action) => action.payments?.length)
+                .map((action) => (
+                  <TableRow key={action.id}>
+                    <TableCell>
+                      {format(new Date(action.startDate), "MMM dd, yyyy")}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        className={getAppointmentTypeColor(
+                          action.appointmentType.type
+                        )}
+                      >
+                        {action.appointmentType.type.replace("_", " ")}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>{action.description || "—"}</TableCell>
+                    <TableCell>
+                      ${action.totalPayment?.toFixed(2) || "0.00"}
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleViewDetails(action.id)}
+                      >
+                        View Details
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} className="h-32 text-center">
+                  <div className="flex flex-col items-center justify-center space-y-3">
+                    <div className="rounded-full bg-gray-100 p-3 dark:bg-gray-800">
+                      <FileText className="h-6 w-6 text-gray-500 dark:text-gray-400" />
+                    </div>
+                    <div className="text-lg font-medium">
+                      No payment records found
+                    </div>
+                    <div className="text-sm text-muted-foreground max-w-sm">
+                      There are no payment records matching your criteria.
+                      Payments will appear here once they've been processed.
+                    </div>
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </div>
@@ -180,9 +199,7 @@ const PaymentDialog = ({ isOpen, setIsOpen, actionDetails, payments }: any) => (
               {payments.map((payment: any) => (
                 <TableRow key={payment.id}>
                   <TableCell>
-                    <div>
-                      {format(new Date(payment.date), "MMM dd, yyyy")}
-                    </div>
+                    <div>{format(new Date(payment.date), "MMM dd, yyyy")}</div>
                     <div className="text-sm text-muted-foreground">
                       {format(new Date(payment.time), "h:mm a")}
                     </div>
@@ -191,9 +208,7 @@ const PaymentDialog = ({ isOpen, setIsOpen, actionDetails, payments }: any) => (
                   <TableCell>{payment.description || "—"}</TableCell>
                   <TableCell>
                     <Badge
-                      variant={
-                        payment.statusId === 2 ? "default" : "secondary"
-                      }
+                      variant={payment.statusId === 2 ? "default" : "secondary"}
                     >
                       {payment.statusId === 2 ? "COMPLETED" : "PENDING"}
                     </Badge>

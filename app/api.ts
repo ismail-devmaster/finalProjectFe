@@ -65,6 +65,8 @@ export const appointment = {
     request("get", "/appointments/upcoming"),
   getAppointmentsByDoctorId: (doctorId: number) =>
     request("get", `/appointments/doctor/${doctorId}`),
+  getAppointmentsByPatientId: (patientId: number) =>
+    request("get", `/appointments/patient/${patientId}`),
 };
 
 export const appointmentType = {
