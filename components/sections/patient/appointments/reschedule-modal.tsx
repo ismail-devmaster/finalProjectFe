@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import {
   Dialog,
@@ -15,16 +15,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { TimePicker } from "./time-picker";
 import { appointment } from "@/app/api";
-import { doctor } from "@/app/api";
 
 interface User {
   firstName: string;
@@ -67,7 +59,6 @@ interface RescheduleModalProps {
 interface AppointmentUpdateData {
   date: string;
   time: string;
-  doctorId: number;
   additionalNotes: string;
   statusId: number;
 }
@@ -82,13 +73,9 @@ export function RescheduleModal({
     new Date().toISOString().split("T")[0]
   );
   const [time, setTime] = useState<string>("00:00");
-  const [selectedDoctor, setSelectedDoctor] = useState<number>(
-    appointmentSelected ? appointmentSelected.doctorId : 1
-  );
   const [notes, setNotes] = useState<string>(
     appointmentSelected ? appointmentSelected.additionalNotes : ""
   );
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     try {
@@ -97,7 +84,6 @@ export function RescheduleModal({
       const updateData: AppointmentUpdateData = {
         date: date,
         time: time,
-        doctorId: selectedDoctor,
         additionalNotes: notes,
         statusId: 1, // Assuming 1 is for "WAITING" status
       };
@@ -107,7 +93,6 @@ export function RescheduleModal({
         ...appointmentSelected,
         date: date,
         time: new Date(`1970-01-01T${time}:00.000Z`).toISOString(),
-        doctorId: selectedDoctor,
         additionalNotes: notes,
         doctor: appointmentSelected.doctor,
         action: appointmentSelected.action,
@@ -119,17 +104,7 @@ export function RescheduleModal({
       console.error("Error rescheduling appointment:", error);
     }
   };
-  useEffect(() => {
-    async function fetchDoctors() {
-      try {
-        const doctorsData = await doctor.getAllDoctors();
-        setDoctors(doctorsData.doctors);
-      } catch (error) {
-        console.error("Error fetching doctors:", error);
-      }
-    }
-    fetchDoctors();
-  }, []);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
@@ -155,26 +130,6 @@ export function RescheduleModal({
             <div className="space-y-2">
               <Label htmlFor="time">Time</Label>
               <TimePicker value={time} onChange={setTime} />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="doctor">Doctor</Label>
-              <Select
-                value={selectedDoctor.toString()}
-                onValueChange={(value) =>
-                  setSelectedDoctor(Number.parseInt(value))
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a doctor" />
-                </SelectTrigger>
-                <SelectContent>
-                  {doctors.map((doc) => (
-                    <SelectItem key={doc.userId} value={doc.userId.toString()}>
-                      Dr. {doc.user.firstName} {doc.user.lastName}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
 
             <div className="grid gap-2">
