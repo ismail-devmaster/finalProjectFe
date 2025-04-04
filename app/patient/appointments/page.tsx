@@ -1,7 +1,6 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// import { BookNew } from "@/components/sections/patient/appointments/book-new";
 import { Waiting } from "@/components/sections/patient/appointments/waiting";
 import { Upcoming } from "@/components/sections/patient/appointments/upcoming";
 import { History } from "@/components/sections/patient/appointments/history";
@@ -62,8 +61,7 @@ function AppointmentTabs(
     >
       <TabsListComponent />
       <TabsContent value="book-new">
-        {/* <BookNew patientId={patientId} /> */}
-        <BookNew />
+        <BookNew patientId={patientId}/>
       </TabsContent>
       <TabsContent value="waiting">
         <Waiting />

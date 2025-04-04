@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { doctor, appointmentType } from "@/app/api";
+import { doctor, appointmentType, action, appointment } from "@/app/api";
 import { ChevronLeft, ChevronRight, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -39,8 +39,11 @@ interface VisitReason {
   type: string;
   requiredSpecialty: string;
 }
+interface BookNewProps {
+  patientId: number | undefined;
+}
 
-export default function BookNew() {
+export default function BookNew({ patientId }: BookNewProps) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
@@ -167,28 +170,42 @@ export default function BookNew() {
 
   const convertTo24HourFormat = (timeStr: string | null) => {
     if (!timeStr) return null;
-    
-    const [time, period] = timeStr.split(' ');
-    const [hours, minutes] = time.split(':');
-    
+
+    const [time, period] = timeStr.split(" ");
+    const [hours, minutes] = time.split(":");
+
     let hourNum = parseInt(hours);
-    if (period === 'PM' && hourNum < 12) {
+    if (period === "PM" && hourNum < 12) {
       hourNum += 12;
-    } else if (period === 'AM' && hourNum === 12) {
+    } else if (period === "AM" && hourNum === 12) {
       hourNum = 0;
     }
-    
-    return `${hourNum.toString().padStart(2, '0')}:${minutes}`;
+
+    return `${hourNum.toString().padStart(2, "0")}:${minutes}`;
   };
 
-  const handleConfirmAppointment = () => {
-    console.log("Appointment confirmed:", {
-      date: selectedDate.toISOString().split('T')[0],
+  const handleConfirmAppointment = async () => {
+    await action.createAction({
+      patientId,
+      appointmentTypeId: selectedReason,
+      description: additionalNotes,
+    });
+    const allAction = await action.getActionsByPatientId(patientId!);
+    const lastAction = allAction.actions[allAction.actions.length - 1];
+    await appointment.createAppointment({
+      actionId: lastAction.id,
+      patientId,
+      date: selectedDate.toISOString().split("T")[0],
       time: convertTo24HourFormat(selectedTime),
       doctorId: selectedDoctor,
-      reasonId: selectedReason,
-      notes: additionalNotes,
+      statusId: 1, // Assuming 1 is for "WAITING" status
+      additionalNotes,
     });
+    setSelectedDate(new Date());
+    setSelectedTime(null);
+    setSelectedDoctor(null);
+    setSelectedReason(null);
+    setAdditionalNotes("");
   };
 
   const handleCancelBooking = () => {
