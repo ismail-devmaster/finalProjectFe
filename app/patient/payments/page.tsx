@@ -28,7 +28,14 @@ import {
   Receipt,
   ArrowDown,
   ArrowUp,
+  Info,
 } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { usePatientPayments } from "@/hooks/pages/usePatientPayments";
 import type { Action, Payment } from "@/types/payment";
 import { useState } from "react";
@@ -60,37 +67,38 @@ export default function PaymentsHistory() {
   const hasPayments = actions.some((action) => action.payments?.length);
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-7xl">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">
-            Payments History
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            View and manage your payment records
+    // <div className="container mx-auto py-8 px-4 max-w-7xl">
+    <div className="w-full max-w-6xl mx-auto">
+      <div className="container mx-auto py-6 space-y-6">
+        <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center dark:text-white">
+          Payments History
+        </h1>
+        <div className="flex flex-col space-y-2">
+          <p className="text-muted-foreground text-center">
+            View and manage your payment records.
           </p>
         </div>
+
+        <Tabs defaultValue="all" className="mb-8">
+          <TabsList>
+            <TabsTrigger value="all">All Payments</TabsTrigger>
+          </TabsList>
+          <TabsContent value="all" className="mt-4">
+            <PaymentsSummaryCards actions={actions} />
+            <ActionsTable
+              actions={actions}
+              handleViewDetails={handleViewDetails}
+            />
+          </TabsContent>
+        </Tabs>
+
+        <PaymentDialog
+          isOpen={isDialogOpen}
+          setIsOpen={setIsDialogOpen}
+          actionDetails={actionDetails}
+          payments={payments}
+        />
       </div>
-
-      <Tabs defaultValue="all" className="mb-8">
-        <TabsList>
-          <TabsTrigger value="all">All Payments</TabsTrigger>
-        </TabsList>
-        <TabsContent value="all" className="mt-4">
-          <PaymentsSummaryCards actions={actions} />
-          <ActionsTable
-            actions={actions}
-            handleViewDetails={handleViewDetails}
-          />
-        </TabsContent>
-      </Tabs>
-
-      <PaymentDialog
-        isOpen={isDialogOpen}
-        setIsOpen={setIsDialogOpen}
-        actionDetails={actionDetails}
-        payments={payments}
-      />
     </div>
   );
 }
@@ -103,16 +111,29 @@ const PaymentsSummaryCards = ({ actions }: { actions: Action[] }) => {
     const completedPayments =
       action.payments?.filter((p: Payment) => p.statusId === 3) || [];
     return (
-      sum + completedPayments.reduce((pSum: number, p: Payment) => pSum + (p.amount || 0), 0)
+      sum +
+      completedPayments.reduce(
+        (pSum: number, p: Payment) => pSum + (p.amount || 0),
+        0
+      )
     );
   }, 0);
 
   // Calculate pending amount
-  const pendingAmount = filteredActions.reduce((sum: number, action: Action) => {
-    const pendingPayments =
-      action.payments?.filter((p: Payment) => p.statusId !== 2) || [];
-    return sum + pendingPayments.reduce((pSum: number, p: Payment) => pSum + (p.amount || 0), 0);
-  }, 0);
+  const pendingAmount = filteredActions.reduce(
+    (sum: number, action: Action) => {
+      const pendingPayments =
+        action.payments?.filter((p: Payment) => p.statusId !== 2) || [];
+      return (
+        sum +
+        pendingPayments.reduce(
+          (pSum: number, p: Payment) => pSum + (p.amount || 0),
+          0
+        )
+      );
+    },
+    0
+  );
 
   return (
     <div className="grid gap-4 md:grid-cols-3 mb-6">
@@ -229,6 +250,16 @@ const ActionsTable = ({
         <CardTitle className="text-lg flex items-center gap-2">
           <CreditCard className="h-5 w-5 text-slate-500" />
           Payment Records
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <Info className="h-4 w-4 text-slate-400" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Click on Date or Amount headers to sort</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
@@ -239,15 +270,18 @@ const ActionsTable = ({
                 <TableHead>
                   <button
                     onClick={() => handleSort("date")}
-                    className="flex items-center gap-1 hover:text-primary transition-colors"
+                    className="flex items-center gap-1 hover:text-primary transition-colors font-medium"
                   >
                     Date
-                    {sortField === "date" &&
-                      (sortDirection === "asc" ? (
-                        <ArrowUp className="h-3 w-3" />
+                    {sortField === "date" ? (
+                      sortDirection === "asc" ? (
+                        <ArrowUp className="h-4 w-4 text-primary" />
                       ) : (
-                        <ArrowDown className="h-3 w-3" />
-                      ))}
+                        <ArrowDown className="h-4 w-4 text-primary" />
+                      )
+                    ) : (
+                      <span className="w-4 h-4" />
+                    )}
                   </button>
                 </TableHead>
                 <TableHead>Type</TableHead>
@@ -257,15 +291,18 @@ const ActionsTable = ({
                 <TableHead>
                   <button
                     onClick={() => handleSort("amount")}
-                    className="flex items-center gap-1 hover:text-primary transition-colors"
+                    className="flex items-center gap-1 hover:text-primary transition-colors font-medium"
                   >
                     Amount
-                    {sortField === "amount" &&
-                      (sortDirection === "asc" ? (
-                        <ArrowUp className="h-3 w-3" />
+                    {sortField === "amount" ? (
+                      sortDirection === "asc" ? (
+                        <ArrowUp className="h-4 w-4 text-primary" />
                       ) : (
-                        <ArrowDown className="h-3 w-3" />
-                      ))}
+                        <ArrowDown className="h-4 w-4 text-primary" />
+                      )
+                    ) : (
+                      <span className="w-4 h-4" />
+                    )}
                   </button>
                 </TableHead>
                 <TableHead className="text-right">Actions</TableHead>
