@@ -112,7 +112,9 @@ const ActionsTable = ({
                         {action.appointmentType.type.replace("_", " ")}
                       </Badge>
                     </TableCell>
-                    <TableCell>{action.description || "—"}</TableCell>
+                    <TableCell>
+                      {action.description || "No description available"}
+                    </TableCell>
                     <TableCell>
                       ${action.totalPayment?.toFixed(2) || "0.00"}
                     </TableCell>
@@ -168,7 +170,9 @@ const PaymentDialog = ({ isOpen, setIsOpen, actionDetails, payments }: any) => (
               </div>
               <div className="flex items-center gap-2">
                 <FileText className="h-4 w-4 text-muted-foreground" />
-                <span>{actionDetails.description || "No description"}</span>
+                <span>
+                  {actionDetails.description || "No description available"}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <Badge
@@ -205,7 +209,9 @@ const PaymentDialog = ({ isOpen, setIsOpen, actionDetails, payments }: any) => (
                     </div>
                   </TableCell>
                   <TableCell>${payment.amount?.toFixed(2)}</TableCell>
-                  <TableCell>{payment.description || "—"}</TableCell>
+                  <TableCell>
+                    {payment.description || "No description available"}
+                  </TableCell>
                   <TableCell>
                     <Badge
                       variant={payment.statusId === 2 ? "default" : "secondary"}
