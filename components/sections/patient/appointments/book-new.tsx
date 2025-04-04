@@ -165,10 +165,26 @@ export default function BookNew() {
     }
   }, [selectedReason, reasons, doctors]);
 
+  const convertTo24HourFormat = (timeStr: string | null) => {
+    if (!timeStr) return null;
+    
+    const [time, period] = timeStr.split(' ');
+    const [hours, minutes] = time.split(':');
+    
+    let hourNum = parseInt(hours);
+    if (period === 'PM' && hourNum < 12) {
+      hourNum += 12;
+    } else if (period === 'AM' && hourNum === 12) {
+      hourNum = 0;
+    }
+    
+    return `${hourNum.toString().padStart(2, '0')}:${minutes}`;
+  };
+
   const handleConfirmAppointment = () => {
     console.log("Appointment confirmed:", {
-      date: selectedDate,
-      time: selectedTime,
+      date: selectedDate.toISOString().split('T')[0],
+      time: convertTo24HourFormat(selectedTime),
       doctorId: selectedDoctor,
       reasonId: selectedReason,
       notes: additionalNotes,
