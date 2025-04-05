@@ -2,6 +2,7 @@
 
 import { format } from "date-fns";
 import { Edit } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -64,6 +65,7 @@ export function AppointmentTable({
                     appointment={appointment}
                     doctors={doctors}
                     onSubmit={onEdit}
+                    onClose={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))}
                   />
                 </Dialog>
                 <Button

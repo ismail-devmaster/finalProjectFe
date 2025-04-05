@@ -193,9 +193,6 @@ const PatientDashboardComponent = ({
             >
               Dark
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme("system")}>
-              System
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
         <Button variant="outline" size="icon" onClick={handleLogout}>
@@ -219,7 +216,7 @@ const PatientDashboardComponent = ({
                   }`}
                 >
                   <item.icon className="h-4 w-4" />
-                  {item.title}
+                  {item.title} 
                 </Link>
               );
             })}
