@@ -8,7 +8,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { TimePicker } from "@/components/ui/time-picker";
 import { Label } from "@/components/ui/label";
 import {
@@ -20,7 +19,9 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import type { Appointment, Doctor } from "../types";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface EditAppointmentDialogProps {
   appointment: Appointment;
@@ -41,18 +42,106 @@ export function EditAppointmentDialog({
     appointment.time.split("T")[1].slice(0, 5)
   );
 
+  const [selectedDate, setSelectedDate] = useState<Date>(
+    new Date(appointment.date.split("T")[0])
+  );
+  const [currentMonth, setCurrentMonth] = useState(selectedDate.getMonth());
+  const [currentYear, setCurrentYear] = useState(selectedDate.getFullYear());
+
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const getDaysInMonth = (month: number, year: number) => {
+    return new Date(year, month + 1, 0).getDate();
+  };
+
+  const getFirstDayOfMonth = (month: number, year: number) => {
+    return new Date(year, month, 1).getDay();
+  };
+
+  const renderCalendar = () => {
+    const firstDayOfMonth = getFirstDayOfMonth(currentMonth, currentYear);
+    const daysInMonth = getDaysInMonth(currentMonth, currentYear);
+    const calendarDays = [];
+
+    for (let i = 0; i < firstDayOfMonth; i++) {
+      calendarDays.push(<div key={`empty-${i}`} className="calendar-day" />);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(currentYear, currentMonth, day);
+      const isToday = date.toDateString() === new Date().toDateString();
+      const isPast = date < new Date();
+      const isWeekend = date.getDay() === 5 || date.getDay() === 6; // 5=Friday, 6=Saturday
+      const isSelectable = !isPast && !isWeekend;
+      const isSelected = selectedDate?.toDateString() === date.toDateString();
+
+      calendarDays.push(
+        <div
+          key={date.toISOString()}
+          className={cn(
+            "flex items-center justify-center rounded-md",
+            "text-center cursor-pointer p-2 transition-colors",
+            isToday && "bg-muted font-bold",
+            isPast && "text-muted-foreground cursor-not-allowed",
+            isWeekend && "text-muted-foreground cursor-not-allowed",
+            isSelected &&
+              "bg-primary text-primary-foreground hover:bg-primary/90",
+            isSelectable && !isSelected && "hover:bg-muted"
+          )}
+          onClick={() => isSelectable && setSelectedDate(date)}
+        >
+          {day}
+        </div>
+      );
+    }
+    return calendarDays;
+  };
+
+  const handlePrevMonth = () => {
+    setCurrentMonth((prev) => {
+      if (prev === 0) {
+        setCurrentYear((y) => y - 1);
+        return 11;
+      }
+      return prev - 1;
+    });
+  };
+
+  const handleNextMonth = () => {
+    setCurrentMonth((prev) => {
+      if (prev === 11) {
+        setCurrentYear((y) => y + 1);
+        return 0;
+      }
+      return prev + 1;
+    });
+  };
+
   const convertTimeTo24Hour = (timeStr: string) => {
-    const [time, modifier] = timeStr.split(' ');
-    let [hours, minutes] = time.split(':');
-    
-    if (hours === '12') {
-      hours = '00';
+    const [time, modifier] = timeStr.split(" ");
+    let [hours, minutes] = time.split(":");
+
+    if (hours === "12") {
+      hours = "00";
     }
-    
-    if (modifier === 'PM') {
-      hours = (parseInt(hours, 10) + 12).toString();
+
+    if (modifier === "PM") {
+      hours = (Number.parseInt(hours, 10) + 12).toString();
     }
-    
+
     return `${hours}:${minutes}`;
   };
 
@@ -125,18 +214,54 @@ export function EditAppointmentDialog({
               </SelectContent>
             </Select>
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="edit-date" className="text-right">
+          <div className="grid grid-cols-4 items-start gap-4">
+            <Label htmlFor="edit-date" className="text-right pt-2">
               Date
             </Label>
-            <Input
-              id="edit-date"
-              name="date"
-              type="date"
-              defaultValue={appointment.date.split("T")[0]}
-              className="col-span-3"
-              required
-            />
+            <div className="col-span-3 border rounded-lg p-4 shadow-sm">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-medium">
+                  {months[currentMonth]} {currentYear}
+                </h3>
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handlePrevMonth}
+                    type="button"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleNextMonth}
+                    type="button"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+              <div className="grid grid-cols-7 gap-1 text-center mb-2">
+                {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
+                  (day) => (
+                    <div
+                      key={day}
+                      className="text-xs font-medium text-muted-foreground"
+                    >
+                      {day}
+                    </div>
+                  )
+                )}
+              </div>
+              <div className="grid grid-cols-7 gap-1">{renderCalendar()}</div>
+              <input
+                type="hidden"
+                name="date"
+                value={selectedDate.toISOString().split("T")[0]}
+                required
+              />
+            </div>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="edit-time" className="text-right">
@@ -154,7 +279,12 @@ export function EditAppointmentDialog({
                   if (input) input.value = time24;
                 }}
               />
-              <input type="hidden" name="time" value={convertTimeTo24Hour(timeValue)} required />
+              <input
+                type="hidden"
+                name="time"
+                value={convertTimeTo24Hour(timeValue)}
+                required
+              />
             </div>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
