@@ -106,6 +106,8 @@ export default function BookNew({ patientId }: BookNewProps) {
       const date = new Date(currentYear, currentMonth, day);
       const isToday = date.toDateString() === new Date().toDateString();
       const isPast = date < new Date();
+      const isWeekend = date.getDay() === 5 || date.getDay() === 6; // 5=Friday, 6=Saturday
+      const isSelectable = !isPast && !isWeekend;
       const isSelected = selectedDate?.toDateString() === date.toDateString();
 
       calendarDays.push(
@@ -116,11 +118,12 @@ export default function BookNew({ patientId }: BookNewProps) {
             "text-center cursor-pointer p-2 transition-colors",
             isToday && "bg-muted font-bold",
             isPast && "text-muted-foreground cursor-not-allowed",
+            isWeekend && "text-muted-foreground cursor-not-allowed",
             isSelected &&
               "bg-primary text-primary-foreground hover:bg-primary/90",
-            !isPast && !isSelected && "hover:bg-muted"
+            isSelectable && !isSelected && "hover:bg-muted"
           )}
-          onClick={() => !isPast && setSelectedDate(date)}
+          onClick={() => isSelectable && setSelectedDate(date)}
         >
           {day}
         </div>
