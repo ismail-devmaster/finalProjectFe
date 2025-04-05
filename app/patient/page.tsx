@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Calendar } from "@/components/ui/calendar";
 import { Separator } from "@/components/ui/separator";
 import {
   Bell,
@@ -36,16 +35,23 @@ export default function Dashboard() {
   const [waitingCount, setWaitingCount] = useState(0);
   const [upcomingCount, setUpcomingCount] = useState(0);
   const [recentAppointments, setRecentAppointments] = useState<any[]>([]);
-  const [paymentInfo, setPaymentInfo] = useState({
+  interface Payment {
+    amount: number;
+    date: string;
+    appointmentType: string;
+    description?: string;
+  }
+
+  const [paymentInfo, setPaymentInfo] = useState<{
+    totalPaid: number;
+    pendingBalance: number;
+    recentPayments: Payment[];
+  }>({
     totalPaid: 0,
     pendingBalance: 0,
     recentPayments: [],
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
-    new Date()
-  );
-  const [appointmentDates, setAppointmentDates] = useState<Date[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,7 +60,7 @@ export default function Dashboard() {
         const patientId = 1; // Example patient ID
 
         // Fetch patient data
-        const patientResponse = await patient.getPatientById(patientId);
+        const patientResponse = await patient.getPatientDataById(patientId);
         setPatientData({
           ...patientResponse.patient,
           patientId: patientId.toString(),
@@ -101,10 +107,6 @@ export default function Dashboard() {
           )
           .slice(0, 3);
         setRecentAppointments(sortedRecent);
-
-        // Get appointment dates for calendar
-        const dates = allAppointments.map((app: any) => new Date(app.date));
-        setAppointmentDates(dates);
 
         // Fetch payment information
         const actionsResponse = await action.getActionsByPatientId(patientId);
@@ -176,12 +178,6 @@ export default function Dashboard() {
             Here's an overview of your health appointments and records
           </p>
         </div>
-        <Button size="lg" className="gap-2" asChild>
-          <Link href="/appointments/new">
-            <CalendarIcon className="h-5 w-5" />
-            Book New Appointment
-          </Link>
-        </Button>
       </div>
 
       {/* At-a-Glance Summary Cards */}
@@ -297,35 +293,6 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column - Calendar & Profile */}
         <div className="space-y-8">
-          {/* Calendar Snapshot */}
-          <Card id="calendar" className="border shadow-md">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CalendarIcon className="h-5 w-5 text-primary" />
-                Calendar
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Calendar
-                mode="single"
-                selected={selectedDate}
-                onSelect={setSelectedDate}
-                className="rounded-md border"
-                highlightedDays={appointmentDates.map((date) => date.getDate())}
-              />
-              <div className="mt-4 flex items-center justify-center gap-4 text-sm text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <div className="h-3 w-3 rounded-full bg-primary"></div>
-                  <span>Appointment</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="h-3 w-3 rounded-full bg-muted"></div>
-                  <span>Today</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
           {/* Profile Snapshot */}
           <Card className="border shadow-md">
             <CardHeader>
@@ -373,45 +340,6 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          {/* Notifications & Reminders */}
-          <Card className="border shadow-md bg-amber-50 dark:bg-amber-950/20">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-amber-700 dark:text-amber-400">
-                <Bell className="h-5 w-5" />
-                Reminders
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {nextAppointment && (
-                  <div className="rounded-lg bg-white dark:bg-gray-800 p-3 shadow-sm">
-                    <div className="font-medium">Upcoming Appointment</div>
-                    <p className="text-sm text-muted-foreground">
-                      You have an appointment on{" "}
-                      {formatDate(nextAppointment.date)} at{" "}
-                      {formatTime(nextAppointment.time)}
-                    </p>
-                  </div>
-                )}
-
-                {paymentInfo.pendingBalance > 0 && (
-                  <div className="rounded-lg bg-white dark:bg-gray-800 p-3 shadow-sm">
-                    <div className="font-medium">Payment Due</div>
-                    <p className="text-sm text-muted-foreground">
-                      You have a pending balance of $
-                      {paymentInfo.pendingBalance.toFixed(2)}
-                    </p>
-                  </div>
-                )}
-
-                {!nextAppointment && paymentInfo.pendingBalance === 0 && (
-                  <div className="text-sm text-muted-foreground">
-                    No active reminders at this time.
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Right Column - Appointments & Activity */}

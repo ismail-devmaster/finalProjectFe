@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import {
   Calendar,
   CreditCard,
+  Home,
   LogOut,
   Menu,
   Moon,
@@ -91,6 +92,7 @@ const PatientDashboardComponent = ({
   }, []);
 
   const navItems: NavItem[] = [
+    { title: "Dashboard", href: "/patient", icon: Home },
     { title: "My Profile", href: "/patient/profile", icon: User },
     { title: "Appointments", href: "/patient/appointments", icon: Calendar },
     { title: "Payments", href: "/patient/payments", icon: CreditCard },
