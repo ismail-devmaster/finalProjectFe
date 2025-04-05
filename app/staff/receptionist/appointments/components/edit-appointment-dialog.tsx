@@ -93,7 +93,7 @@ export function EditAppointmentDialog({
           key={date.toISOString()}
           className={cn(
             "flex items-center justify-center rounded-md",
-            "text-center cursor-pointer p-2 transition-colors",
+            "text-center cursor-pointer p-1 text-sm transition-colors",
             isToday && "bg-muted font-bold",
             isPast && "text-muted-foreground cursor-not-allowed",
             isWeekend && "text-muted-foreground cursor-not-allowed",
@@ -189,7 +189,7 @@ export function EditAppointmentDialog({
           }
         }}
       >
-        <div className="grid gap-4 py-4">
+        <div className="grid gap-3 py-2">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="edit-doctorId" className="text-right">
               Doctor
@@ -218,38 +218,40 @@ export function EditAppointmentDialog({
             <Label htmlFor="edit-date" className="text-right pt-2">
               Date
             </Label>
-            <div className="col-span-3 border rounded-lg p-4 shadow-sm">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-medium">
+            <div className="col-span-3 border rounded-lg p-2 shadow-sm">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="font-medium text-sm">
                   {months[currentMonth]} {currentYear}
                 </h3>
-                <div className="flex gap-2">
+                <div className="flex gap-1">
                   <Button
                     variant="ghost"
-                    size="icon"
+                    size="sm"
                     onClick={handlePrevMonth}
                     type="button"
+                    className="h-7 w-7 p-0"
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
                   <Button
                     variant="ghost"
-                    size="icon"
+                    size="sm"
                     onClick={handleNextMonth}
                     type="button"
+                    className="h-7 w-7 p-0"
                   >
                     <ChevronRight className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
-              <div className="grid grid-cols-7 gap-1 text-center mb-2">
+              <div className="grid grid-cols-7 gap-1 text-center mb-1">
                 {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
                   (day) => (
                     <div
                       key={day}
                       className="text-xs font-medium text-muted-foreground"
                     >
-                      {day}
+                      {day.slice(0, 1)}
                     </div>
                   )
                 )}
