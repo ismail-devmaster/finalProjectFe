@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { TimePicker } from "@/components/ui/time-picker";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -19,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import type { Appointment, Doctor } from "../types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface EditAppointmentDialogProps {
   appointment: Appointment;
@@ -36,6 +37,24 @@ export function EditAppointmentDialog({
 }: EditAppointmentDialogProps) {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [timeValue, setTimeValue] = useState(
+    appointment.time.split("T")[1].slice(0, 5)
+  );
+
+  const convertTimeTo24Hour = (timeStr: string) => {
+    const [time, modifier] = timeStr.split(' ');
+    let [hours, minutes] = time.split(':');
+    
+    if (hours === '12') {
+      hours = '00';
+    }
+    
+    if (modifier === 'PM') {
+      hours = (parseInt(hours, 10) + 12).toString();
+    }
+    
+    return `${hours}:${minutes}`;
+  };
 
   return (
     <DialogContent>
@@ -60,7 +79,6 @@ export function EditAppointmentDialog({
               time: formData.get("time") as string,
               additionalNotes: formData.get("additionalNotes") as string,
             };
-
             await onSubmit(updatedAppointment);
             setSuccessMessage("Appointment updated successfully!");
 
@@ -124,14 +142,20 @@ export function EditAppointmentDialog({
             <Label htmlFor="edit-time" className="text-right">
               Time
             </Label>
-            <Input
-              id="edit-time"
-              name="time"
-              type="time"
-              defaultValue={appointment.time.split("T")[1].slice(0, 5)}
-              className="col-span-3"
-              required
-            />
+            <div className="col-span-3">
+              <TimePicker
+                value={timeValue}
+                onChange={(value) => {
+                  const time24 = convertTimeTo24Hour(value);
+                  setTimeValue(value);
+                  const input = document.querySelector(
+                    'input[name="time"]'
+                  ) as HTMLInputElement;
+                  if (input) input.value = time24;
+                }}
+              />
+              <input type="hidden" name="time" value={convertTimeTo24Hour(timeValue)} required />
+            </div>
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="edit-notes" className="text-right">
