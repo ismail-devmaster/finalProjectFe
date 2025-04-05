@@ -283,7 +283,7 @@ export default function BookNew({ patientId }: BookNewProps) {
               <div className="text-sm text-muted-foreground">
                 <p>Choose any time that works for you.</p>
                 <p className="mt-2">
-                  Our doctors are available from 8:00 AM to 6:00 PM.
+                  Our doctors are available from 8:00 AM to 8:00 PM.
                 </p>
               </div>
             </div>
