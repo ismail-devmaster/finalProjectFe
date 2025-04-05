@@ -92,26 +92,32 @@ export default function AppointmentsPage() {
 
     const appointmentDate = new Date(appointment.date);
     const today = new Date();
-    const oneWeekLater = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
-    const oneMonthLater = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay()); // Sunday
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6); // Saturday
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
     switch (filterPeriod) {
       case "today":
         return (
           matchesSearch &&
-          appointmentDate.toDateString() === today.toDateString()
+          appointmentDate.getDate() === today.getDate() &&
+          appointmentDate.getMonth() === today.getMonth() &&
+          appointmentDate.getFullYear() === today.getFullYear()
         );
       case "this-week":
         return (
           matchesSearch &&
-          appointmentDate >= today &&
-          appointmentDate < oneWeekLater
+          appointmentDate >= startOfWeek &&
+          appointmentDate <= endOfWeek
         );
       case "this-month":
         return (
           matchesSearch &&
-          appointmentDate >= today &&
-          appointmentDate < oneMonthLater
+          appointmentDate >= startOfMonth &&
+          appointmentDate <= endOfMonth
         );
       default:
         return matchesSearch;
