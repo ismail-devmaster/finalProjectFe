@@ -30,6 +30,7 @@ import { appointment, patient, action } from "@/app/api";
 
 export default function Dashboard() {
   const [patientData, setPatientData] = useState<any>(null);
+  const [patientId, setPatientId] = useState<any>(null);
   const [appointments, setAppointments] = useState<any[]>([]);
   const [nextAppointment, setNextAppointment] = useState<any>(null);
   const [waitingCount, setWaitingCount] = useState(0);
@@ -56,24 +57,23 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // In a real app, you would get the patient ID from authentication
-        const patientId = 1; // Example patient ID
+        const { patientId } = await patient.getPatientId();
+        setPatientId(patientId);
 
         // Fetch patient data
-        const patientResponse = await patient.getPatientDataById(patientId);
-        setPatientData({
-          ...patientResponse.patient,
-          patientId: patientId.toString(),
-          medicalHistory:
-            "Patient has a history of hypertension and mild asthma. Regular check-ups recommended every 6 months. No known allergies to medications.",
-        });
+        // const patientResponse = await patient.getPatientDataById(patientId);
+        // setPatientData({
+        //   ...patientResponse.patient,
+        //   patientId: patientId.toString(),
+        //   medicalHistory:
+        //     "Patient has a history of hypertension and mild asthma. Regular check-ups recommended every 6 months. No known allergies to medications.",
+        // });
 
         // Fetch appointments
         const appointmentResponse =
           await appointment.getAppointmentsByPatientId(patientId);
-        const allAppointments = appointmentResponse.appointments || [];
+        const allAppointments = appointmentResponse.appointments;
         setAppointments(allAppointments);
-
         // Filter appointments by status
         const waiting = allAppointments.filter(
           (app: any) => app.status.status === "WAITING"
@@ -207,7 +207,7 @@ export default function Dashboard() {
                   {nextAppointment.doctor.user.lastName}
                 </div>
                 <Button variant="link" className="p-0 h-auto" asChild>
-                  <Link href="/appointments">View Details</Link>
+                  <Link href="/patient/appointments">View Details</Link>
                 </Button>
               </div>
             ) : (
@@ -232,7 +232,9 @@ export default function Dashboard() {
                 Pending confirmation
               </div>
               <Button variant="link" className="p-0 h-auto" asChild>
-                <Link href="/appointments?status=waiting">Manage</Link>
+                <Link href="/patient/appointments?status=waiting">
+                  View Details
+                </Link>
               </Button>
             </div>
           </CardContent>
@@ -252,7 +254,9 @@ export default function Dashboard() {
                 Scheduled visits
               </div>
               <Button variant="link" className="p-0 h-auto" asChild>
-                <Link href="/appointments?status=upcoming">View Calendar</Link>
+                <Link href="/patient/appointments?status=upcoming">
+                  View Details
+                </Link>
               </Button>
             </div>
           </CardContent>
@@ -282,7 +286,7 @@ export default function Dashboard() {
                 </span>
               </div>
               <Button variant="link" className="p-0 h-auto" asChild>
-                <Link href="/payments">View All</Link>
+                <Link href="/patient/payments">View All</Link>
               </Button>
             </div>
           </CardContent>
@@ -339,7 +343,6 @@ export default function Dashboard() {
               </div>
             </CardContent>
           </Card>
-
         </div>
 
         {/* Right Column - Appointments & Activity */}

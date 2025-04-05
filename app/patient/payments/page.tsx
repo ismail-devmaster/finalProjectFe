@@ -123,7 +123,7 @@ const PaymentsSummaryCards = ({ actions }: { actions: Action[] }) => {
   const pendingAmount = filteredActions.reduce(
     (sum: number, action: Action) => {
       const pendingPayments =
-        action.payments?.filter((p: Payment) => p.statusId !== 2) || [];
+        action.payments?.filter((p: Payment) => p.statusId === 1) || [];
       return (
         sum +
         pendingPayments.reduce(
@@ -503,12 +503,13 @@ const PaymentDialog = ({
                           <Badge
                             variant="secondary"
                             className={
-                              payment.statusId === 2
+                              // payment.statusId === 3 PAID
+                              payment.statusId === 3
                                 ? "bg-green-100 text-green-800 hover:bg-green-100"
                                 : "bg-amber-100 text-amber-800 hover:bg-amber-100"
                             }
                           >
-                            {payment.statusId === 2 ? "COMPLETED" : "PENDING"}
+                            {payment.status.status}
                           </Badge>
                         </TableCell>
                       </TableRow>
