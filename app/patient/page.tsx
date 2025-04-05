@@ -27,6 +27,7 @@ import {
 import Link from "next/link";
 import { formatDate, formatTime } from "@/lib/utils";
 import { appointment, patient, action } from "@/app/api";
+import type { Action, Payment as PaymentType } from "@/types/payment";
 
 export default function Dashboard() {
   const [patientData, setPatientData] = useState<any>(null);
@@ -117,23 +118,25 @@ export default function Dashboard() {
         let pendingBalance = 0;
         let recentPayments: any[] = [];
 
-        actions.forEach((action: any) => {
-          if (action.payments) {
-            action.payments.forEach((payment: any) => {
-              if (payment.statusId === 2) {
-                // Completed payment
-                totalPaid += payment.amount || 0;
-                recentPayments.push({
-                  ...payment,
-                  date: payment.date,
-                  appointmentType: action.appointmentType.type,
-                });
-              } else {
-                // Pending payment
-                pendingBalance += payment.amount || 0;
-              }
-            });
-          }
+        const filteredActions = actions.filter(
+          (action: Action) => action.payments?.length
+        );
+
+        filteredActions.forEach((action: Action) => {
+          (action.payments as PaymentType[]).forEach((payment: PaymentType) => {
+            if (payment.statusId === 3) {
+              // Completed payment
+              totalPaid += payment.amount || 0;
+              recentPayments.push({
+                ...payment,
+                date: payment.date,
+                appointmentType: action.appointmentType.type,
+              });
+            } else {
+              // Pending payment
+              pendingBalance += payment.amount || 0;
+            }
+          });
         });
 
         // Sort recent payments by date and take the 3 most recent
@@ -355,7 +358,7 @@ export default function Dashboard() {
                 Recent Appointments
               </CardTitle>
               <Button variant="ghost" size="sm" className="gap-1" asChild>
-                <Link href="/appointments">
+                <Link href="/patient/appointments">
                   View All <ChevronRight className="h-4 w-4" />
                 </Link>
               </Button>
@@ -429,7 +432,7 @@ export default function Dashboard() {
                 Recent Payments
               </CardTitle>
               <Button variant="ghost" size="sm" className="gap-1" asChild>
-                <Link href="/payments">
+                <Link href="/patient/payments">
                   View All <ChevronRight className="h-4 w-4" />
                 </Link>
               </Button>
