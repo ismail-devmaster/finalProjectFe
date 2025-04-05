@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { Edit } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Pagination } from "@/components/ui/pagination";
 import {
   Table,
   TableBody,
@@ -12,7 +13,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import type { Appointment, Doctor } from "../types";
 import { EditAppointmentDialog } from "./edit-appointment-dialog";
@@ -30,8 +30,18 @@ export function AppointmentTable({
   onEdit,
   onRemove,
 }: AppointmentTableProps) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const totalPages = Math.ceil(appointments.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentAppointments = appointments.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
+
   return (
-    <ScrollArea className="h-[400px]">
+    <>
       <Table>
         <TableHeader>
           <TableRow>
@@ -43,7 +53,7 @@ export function AppointmentTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {appointments.map((appointment) => (
+          {currentAppointments.map((appointment) => (
             <TableRow key={appointment.id}>
               <TableCell>{`${appointment.patient.user.firstName} ${appointment.patient.user.lastName}`}</TableCell>
               <TableCell>{`${appointment.doctor.user.firstName} ${appointment.doctor.user.lastName}`}</TableCell>
@@ -65,7 +75,11 @@ export function AppointmentTable({
                     appointment={appointment}
                     doctors={doctors}
                     onSubmit={onEdit}
-                    onClose={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))}
+                    onClose={() =>
+                      document.dispatchEvent(
+                        new KeyboardEvent("keydown", { key: "Escape" })
+                      )
+                    }
                   />
                 </Dialog>
                 <Button
@@ -80,6 +94,27 @@ export function AppointmentTable({
           ))}
         </TableBody>
       </Table>
-    </ScrollArea>
+      <div className="mt-4 flex items-center justify-center gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </Button>
+        <span className="text-sm">
+          Page {currentPage} of {totalPages}
+        </span>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </Button>
+      </div>
+    </>
   );
 }
