@@ -13,7 +13,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
-  Bell,
   CalendarIcon,
   Clock,
   CreditCard,
@@ -62,13 +61,8 @@ export default function Dashboard() {
         setPatientId(patientId);
 
         // Fetch patient data
-        // const patientResponse = await patient.getPatientDataById(patientId);
-        // setPatientData({
-        //   ...patientResponse.patient,
-        //   patientId: patientId.toString(),
-        //   medicalHistory:
-        //     "Patient has a history of hypertension and mild asthma. Regular check-ups recommended every 6 months. No known allergies to medications.",
-        // });
+        const { patientData } = await patient.getPatientData();
+        setPatientData(patientData);
 
         // Fetch appointments
         const appointmentResponse =
@@ -323,9 +317,6 @@ export default function Dashboard() {
                 <h3 className="text-xl font-bold">
                   {patientData?.user?.firstName} {patientData?.user?.lastName}
                 </h3>
-                <p className="text-sm text-muted-foreground">
-                  Patient ID: {patientData?.id}
-                </p>
               </div>
 
               <div className="space-y-2">
@@ -341,8 +332,50 @@ export default function Dashboard() {
 
               <div className="mt-4">
                 <Button variant="outline" className="w-full" asChild>
-                  <Link href="/profile">Edit Profile</Link>
+                  <Link href="/patient/profile">Edit Profile</Link>
                 </Button>
+              </div>
+            </CardContent>
+          </Card>
+          {/* Clinic Information */}
+          <Card className="border shadow-md">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Clock className="h-5 w-5 text-primary" />
+                Clinic Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {/* Hours */}
+                <div>
+                  <h4 className="font-medium mb-2">Clinic Hours</h4>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div>Sunday - Thursday</div>
+                    <div>8:00 AM - 8:00 PM</div>
+                    <div>Friday - Saturday</div>
+                    <div className="text-muted-foreground">Closed</div>
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Location */}
+                <div>
+                  <h4 className="font-medium mb-2">Location</h4>
+                  <p className="text-sm">Blida Ouledi Yaich</p>
+                </div>
+
+                <Separator />
+
+                {/* Contact */}
+                <div>
+                  <h4 className="font-medium mb-2">Contact</h4>
+                  <div className="flex items-center gap-2 text-sm">
+                    <Phone className="h-4 w-4 text-muted-foreground" />
+                    <span>0541930917</span>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -546,52 +579,6 @@ export default function Dashboard() {
               </div>
             </CardContent>
           </Card>
-        </div>
-      </div>
-
-      {/* Footer / Help */}
-      <div className="mt-12 pt-6 border-t">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <h3 className="text-lg font-medium mb-2">Support</h3>
-            <div className="space-y-2">
-              <Button variant="link" className="p-0 h-auto">
-                Contact Support
-              </Button>
-              <Button variant="link" className="p-0 h-auto">
-                FAQs
-              </Button>
-              <Button variant="link" className="p-0 h-auto">
-                Privacy Policy
-              </Button>
-            </div>
-          </div>
-
-          <div>
-            <h3 className="text-lg font-medium mb-2">Clinic Hours</h3>
-            <div className="text-sm text-muted-foreground space-y-1">
-              <p>Monday - Friday: 8:00 AM - 6:00 PM</p>
-              <p>Saturday: 9:00 AM - 1:00 PM</p>
-              <p>Sunday: Closed</p>
-            </div>
-          </div>
-
-          <div>
-            <h3 className="text-lg font-medium mb-2">Emergency Contact</h3>
-            <div className="text-sm space-y-1">
-              <p className="font-medium">For emergencies, please call:</p>
-              <p className="text-lg font-bold text-primary">1-800-HEALTH</p>
-              <p className="text-muted-foreground">Available 24/7</p>
-            </div>
-          </div>
-        </div>
-
-        <Separator className="my-6" />
-
-        <div className="text-center text-sm text-muted-foreground">
-          <p>
-            © {new Date().getFullYear()} Health Clinic. All rights reserved.
-          </p>
         </div>
       </div>
     </div>

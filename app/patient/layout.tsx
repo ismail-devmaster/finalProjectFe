@@ -136,7 +136,7 @@ const PatientDashboardComponent = ({
                 <AvatarFallback>{PFP}</AvatarFallback>
               </Avatar>
               <span className="text-lg font-semibold">
-                {userInfo?.firstName} {userInfo?.lastName}
+                RAMDANI DENTAL CENTER
               </span>
             </div>
             <nav className="grid gap-2 text-lg font-medium">
@@ -162,13 +162,7 @@ const PatientDashboardComponent = ({
           </SheetContent>
         </Sheet>
         <div className="flex items-center gap-2">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src="/placeholder.svg" alt="Patient" />
-            <AvatarFallback>{PFP}</AvatarFallback>
-          </Avatar>
-          <span className="text-lg font-semibold">
-            {userInfo?.firstName} {userInfo?.lastName}
-          </span>
+          <span className="text-lg font-semibold">RAMDANI DENTAL CENTER</span>
         </div>
         <div className="flex-1" />
         <DropdownMenu>
