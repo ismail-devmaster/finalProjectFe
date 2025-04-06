@@ -1,140 +1,178 @@
 "use client";
 
-import React, { useState } from "react";
-import { Calendar, Menu, Armchair, Users, Sun, Moon } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Calendar, Menu, Users, Sun, Moon, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useTheme } from "next-themes";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { auth } from "@/app/api";
+
+interface NavItem {
+  title: string;
+  href: string;
+  icon: React.ElementType;
+}
 
 const ReceptionistDashboardComponent = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  const [activeContent, setActiveContent] = React.useState("");
-  const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
-  const [darkMode, setDarkMode] = useState(false);
+  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const { setTheme, theme } = useTheme();
+  const router = useRouter();
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
+  const handleLogout = async () => {
+    try {
+      await auth.logout();
+      router.push("/");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
 
+  const navItems: NavItem[] = [
+    {
+      title: "Appointments",
+      href: "/staff/receptionist/appointments",
+      icon: Calendar,
+    },
+    { title: "Patients", href: "/staff/receptionist/patients", icon: Users },
+    {
+      title: "New Appointments",
+      href: "/staff/receptionist/newAppointments",
+      icon: Calendar,
+    },
+  ];
+
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [theme]);
+
   return (
-    <div className="flex h-screen overflow-hidden">
-      {/* Sidebar */}
-      <aside
-        className={`${
-          isSidebarOpen ? "w-64" : "w-20"
-        } overflow-y-auto transition-all duration-300 ease-in-out flex flex-col`}
-      >
-        <div className="h-full px-3 py-4 overflow-y-auto bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
-          <Button
-            variant="ghost"
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="mb-5"
-          >
-            <Menu className="h-6 w-6" />
-          </Button>
-
-          <Link href="/staff/receptionist" className="flex items-center mb-5">
-            <Avatar className="h-10 w-10">
-              <AvatarImage
-                src="/placeholder.svg?height=40&width=40"
-                alt="Receptionist"
-              />
-              <AvatarFallback>RC</AvatarFallback>
-            </Avatar>
-            {isSidebarOpen && (
-              <span className="ml-3 text-xl font-semibold text-gray-800 dark:text-white">
-                RamdaniClinic
+    <div
+      className={`flex min-h-screen flex-col ${theme === "dark" ? "dark" : ""}`}
+    >
+      <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <Button variant="outline" size="icon" className="md:hidden">
+              <Menu className="h-5 w-5" />
+              <span className="sr-only">Toggle Menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-72">
+            <div className="flex items-center gap-2 pb-4">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src="/placeholder.svg" alt="Receptionist" />
+                <AvatarFallback>RC</AvatarFallback>
+              </Avatar>
+              <span className="text-lg font-semibold">
+                RAMDANI DENTAL CENTER
               </span>
-            )}
-          </Link>
-
-          <nav className="space-y-2">
-            <Link
-              className={`flex items-center px-4 py-2 ${
-                activeContent === "appointments"
-                  ? "text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-700"
-                  : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white"
-              }`}
-              href="/staff/receptionist/appointments"
-              onClick={() => setActiveContent("appointments")}
-            >
-              <Calendar className="w-4 h-4" />
-              {isSidebarOpen && <span className="ml-3">Appointments</span>}
-            </Link>
-            
-            <Link
-              className={`flex items-center px-4 py-2 ${
-                activeContent === "patients"
-                  ? "text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-700"
-                  : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white"
-              }`}
-              href="/staff/receptionist/patients"
-              onClick={() => setActiveContent("patients")}
-            >
-              <Users className="w-4 h-4" />
-              {isSidebarOpen && <span className="ml-3">Patients</span>}
-            </Link>
-
-            <Link
-              className={`flex items-center px-4 py-2 ${
-                activeContent === "newAppointments"
-                  ? "text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-700"
-                  : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white"
-              }`}
-              href="/staff/receptionist/newAppointments"
-              onClick={() => setActiveContent("newAppointments")}
-            >
-              <Calendar className="w-4 h-4" />
-              {isSidebarOpen && <span className="ml-3">New Appointments</span>}
-            </Link>
-          </nav>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100">
-        <header className="bg-white dark:bg-gray-800 shadow-md rounded-lg mb-0 mx-10 my-4">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <div className="flex items-center space-x-4">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={toggleDarkMode}
-                    >
-                      {darkMode ? (
-                        <Sun className="h-5 w-5" />
-                      ) : (
-                        <Moon className="h-5 w-5" />
-                      )}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>
-                      {darkMode
-                        ? "Switch to Light Mode"
-                        : "Switch to Dark Mode"}
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
             </div>
-          </div>
-        </header>
-        <div className="container px-6 py-8 mx-auto">{children}</div>
-      </main>
+            <nav className="grid gap-2 text-lg font-medium">
+              {navItems.map((item, index) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={index}
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className={`flex items-center gap-2 rounded-lg px-3 py-2 ${
+                      isActive
+                        ? "bg-primary text-primary-foreground"
+                        : "hover:bg-accent"
+                    }`}
+                  >
+                    <item.icon className="h-5 w-5" />
+                    {item.title}
+                  </Link>
+                );
+              })}
+            </nav>
+          </SheetContent>
+        </Sheet>
+        <div className="flex items-center gap-2">
+          <span className="text-lg font-semibold">RAMDANI DENTAL CENTER</span>
+        </div>
+        <div className="flex-1" />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="icon">
+              {theme === "dark" ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
+              <span className="sr-only">Toggle theme</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              onClick={() => {
+                setTheme("light");
+                document.documentElement.classList.remove("dark");
+              }}
+            >
+              Light
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => {
+                setTheme("dark");
+                document.documentElement.classList.add("dark");
+              }}
+            >
+              Dark
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <Button variant="outline" size="icon" onClick={handleLogout}>
+          <LogOut className="h-5 w-5" />
+          <span className="sr-only">Logout</span>
+        </Button>
+      </header>
+      <div className="flex flex-1">
+        <aside className="hidden w-64 border-r bg-background md:block">
+          <nav className="grid gap-2 p-4 text-sm font-medium">
+            {navItems.map((item, index) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={index}
+                  href={item.href}
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-colors ${
+                    isActive
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                  }`}
+                >
+                  <item.icon className="h-4 w-4" />
+                  {item.title}
+                </Link>
+              );
+            })}
+          </nav>
+        </aside>
+        <main className="flex-1 overflow-auto p-4 md:p-6">{children}</main>
+      </div>
     </div>
   );
 };
+
 export default ReceptionistDashboardComponent;
