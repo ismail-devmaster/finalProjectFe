@@ -86,7 +86,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           <SheetContent side="left" className="w-72">
             <div className="flex items-center gap-2 pb-4">
               <Tooth className="h-6 w-6 text-primary" />
-              <span className="text-lg font-semibold">DentalCare</span>
+              <span className="text-lg font-semibold">Remdani Dental Care</span>
             </div>
             <nav className="grid gap-2 text-lg font-medium">
               {navItems.map((item, index) => {
@@ -111,8 +111,9 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           </SheetContent>
         </Sheet>
         <div className="flex items-center gap-2">
-          <Tooth className="h-6 w-6 text-primary md:h-8 md:w-8" />
-          <span className="text-lg font-semibold md:text-xl">DentalCare</span>
+          <span className="text-lg font-semibold md:text-xl">
+            Remdani Dental Care
+          </span>
         </div>
         <div className="flex-1" />
         <DropdownMenu>

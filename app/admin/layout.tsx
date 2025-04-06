@@ -8,7 +8,7 @@ import { Toaster } from "@/components/ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "DentalCare Admin Dashboard",
+  title: "Remdani Dental Center Admin Dashboard",
   description: "Admin dashboard for dental patient management system",
 };
 
