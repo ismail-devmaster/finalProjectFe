@@ -47,7 +47,10 @@ import {
   Filter,
   Plus,
   FileText,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Appointment {
   doctorId: number;
@@ -119,7 +122,7 @@ export default function Appointments({ appointments }: AppointmentsProps) {
   const [patientPayments, setPatientPayments] = React.useState<Payment[]>([]);
 
   const [newAppointment, setNewAppointment] = React.useState({
-    date: "",
+    date: new Date().toISOString().split("T")[0],
     time: "",
     additionalNotes: "",
     statusId: 2,
@@ -673,25 +676,123 @@ export default function Appointments({ appointments }: AppointmentsProps) {
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="date" className="text-right">
-                Date
-              </Label>
-              <div className="col-span-3">
-                <div className="flex items-center">
-                  <Calendar className="mr-2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="date"
-                    type="date"
-                    className="flex-1"
-                    value={newAppointment.date}
-                    onChange={(e) =>
-                      setNewAppointment({
-                        ...newAppointment,
-                        date: e.target.value,
-                      })
+            <div className="space-y-2">
+              <Label>Select Date</Label>
+              <div className="border rounded-lg p-4 shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-medium">
+                    {new Intl.DateTimeFormat("en-US", {
+                      month: "long",
+                      year: "numeric",
+                    }).format(new Date(newAppointment.date || new Date()))}
+                  </h3>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        const date = new Date(
+                          newAppointment.date || new Date()
+                        );
+                        date.setMonth(date.getMonth() - 1);
+                        setNewAppointment({
+                          ...newAppointment,
+                          date: date.toISOString().split("T")[0],
+                        });
+                      }}
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        const date = new Date(
+                          newAppointment.date || new Date()
+                        );
+                        date.setMonth(date.getMonth() + 1);
+                        setNewAppointment({
+                          ...newAppointment,
+                          date: date.toISOString().split("T")[0],
+                        });
+                      }}
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                <div className="grid grid-cols-7 gap-1 text-center mb-2">
+                  {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
+                    (day) => (
+                      <div
+                        key={day}
+                        className="text-xs font-medium text-muted-foreground"
+                      >
+                        {day}
+                      </div>
+                    )
+                  )}
+                </div>
+                <div className="grid grid-cols-7 gap-1">
+                  {(() => {
+                    const date = new Date(newAppointment.date || new Date());
+                    const month = date.getMonth();
+                    const year = date.getFullYear();
+                    const firstDay = new Date(year, month, 1).getDay();
+                    const daysInMonth = new Date(year, month + 1, 0).getDate();
+                    const days = [];
+
+                    // Empty cells for days before the first of the month
+                    for (let i = 0; i < firstDay; i++) {
+                      days.push(<div key={`empty-${i}`} className="h-8" />);
                     }
-                  />
+
+                    // Days of the month
+                    for (let day = 1; day <= daysInMonth; day++) {
+                      const dayDate = new Date(year, month, day);
+                      const isToday =
+                        dayDate.toDateString() === new Date().toDateString();
+                      const isPast = dayDate < new Date();
+                      const isWeekend =
+                        dayDate.getDay() === 5 || dayDate.getDay() === 6;
+                      const isSelected =
+                        newAppointment.date ===
+                        dayDate.toISOString().split("T")[0];
+
+                      days.push(
+                        <div
+                          key={day}
+                          className={cn(
+                            "flex items-center justify-center rounded-md h-8",
+                            "text-center cursor-pointer transition-colors",
+                            isToday && "bg-muted font-bold",
+                            isPast &&
+                              "text-muted-foreground cursor-not-allowed",
+                            isWeekend &&
+                              "text-muted-foreground cursor-not-allowed",
+                            isSelected &&
+                              "bg-primary text-primary-foreground hover:bg-primary/90",
+                            !isPast &&
+                              !isWeekend &&
+                              !isSelected &&
+                              "hover:bg-muted"
+                          )}
+                          onClick={() => {
+                            if (!isPast && !isWeekend) {
+                              setNewAppointment({
+                                ...newAppointment,
+                                date: dayDate.toISOString().split("T")[0],
+                              });
+                            }
+                          }}
+                        >
+                          {day}
+                        </div>
+                      );
+                    }
+
+                    return days;
+                  })()}
                 </div>
               </div>
             </div>
@@ -711,8 +812,11 @@ export default function Appointments({ appointments }: AppointmentsProps) {
                       // Ensure time is in 24-hour format
                       const timeValue = e.target.value;
                       if (timeValue) {
-                        const [hours, minutes] = timeValue.split(':');
-                        const formattedTime = `${hours.padStart(2, '0')}:${minutes}`;
+                        const [hours, minutes] = timeValue.split(":");
+                        const formattedTime = `${hours.padStart(
+                          2,
+                          "0"
+                        )}:${minutes}`;
                         setNewAppointment({
                           ...newAppointment,
                           time: formattedTime,
@@ -849,8 +953,11 @@ export default function Appointments({ appointments }: AppointmentsProps) {
                       // Ensure time is in 24-hour format
                       const timeValue = e.target.value;
                       if (timeValue) {
-                        const [hours, minutes] = timeValue.split(':');
-                        const formattedTime = `${hours.padStart(2, '0')}:${minutes}`;
+                        const [hours, minutes] = timeValue.split(":");
+                        const formattedTime = `${hours.padStart(
+                          2,
+                          "0"
+                        )}:${minutes}`;
                         setNewPayment({
                           ...newPayment,
                           time: formattedTime,
