@@ -10,13 +10,11 @@ interface SideBareProps {
   activeTab: string;
   setActiveTabAction: (tab: string) => void;
 }
-export default function SideBare(
-  {
-    setActiveTabAction: setActiveTab,
-    activeTab,
-    isSidebarOpen,
-  }: SideBareProps,
-) {
+export default function SideBare({
+  setActiveTabAction: setActiveTab,
+  activeTab,
+  isSidebarOpen,
+}: SideBareProps) {
   return (
     <AnimatePresence>
       {isSidebarOpen && (
@@ -43,14 +41,6 @@ export default function SideBare(
             >
               <Users className="mr-2 h-4 w-4" />
               Patients
-            </Button>
-            <Button
-              variant={activeTab === "tasks" ? "default" : "ghost"}
-              className="w-full justify-start"
-              onClick={() => setActiveTab("tasks")}
-            >
-              <Users className="mr-2 h-4 w-4" />
-              Tasks
             </Button>
           </nav>
         </motion.aside>

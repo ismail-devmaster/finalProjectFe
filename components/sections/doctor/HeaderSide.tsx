@@ -37,9 +37,8 @@ export default function HeaderSide({
     >
       <div className="flex h-14 w-full items-center justify-between">
         <div className="flex items-center space-x-4 pl-7">
-          <Stethoscope className="h-6 w-6 text-blue-500 dark:text-blue-400" />
           <span className="ml-2 text-xl flex justify-center items-center text-center font-bold">
-            DentaCare
+            Remdani Dental Center
           </span>
         </div>
         <div className="flex items-center space-x-4 pr-7">
@@ -61,9 +60,11 @@ export default function HeaderSide({
               <Label htmlFor="dark-mode" className="sr-only">
                 Dark mode
               </Label>
-              {isDarkMode
-                ? <Moon className="h-[1.2rem] w-[1.2rem]" />
-                : <Sun className="h-[1.2rem] w-[1.2rem]" />}
+              {isDarkMode ? (
+                <Moon className="h-[1.2rem] w-[1.2rem]" />
+              ) : (
+                <Sun className="h-[1.2rem] w-[1.2rem]" />
+              )}
             </nav>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

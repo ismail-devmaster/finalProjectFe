@@ -43,7 +43,6 @@ interface Appointment {
   patient: Patient;
 }
 
-
 interface Person {
   id: number;
   firstName: string;
@@ -75,24 +74,23 @@ interface MainContentProps {
   appointments: Appointment[];
   patients: Patient[];
   tasks: Task[];
-  doctorId: DoctorId
+  doctorId: DoctorId;
 }
 
-export default function MainContent(
-  {
-    isSidebarOpen,
-    activeTab,
-    setActiveTabAction: setActiveTab,
-    appointments,
-    patients,
-    tasks,
-    doctorId
-  }: MainContentProps,
-) {
+export default function MainContent({
+  isSidebarOpen,
+  activeTab,
+  setActiveTabAction: setActiveTab,
+  appointments,
+  patients,
+  tasks,
+  doctorId,
+}: MainContentProps) {
   return (
     <main
-      className={`flex-1 overflow-y-auto p-6 ${isSidebarOpen ? "md:ml-64" : ""
-        }`}
+      className={`flex-1 overflow-y-auto p-6 ${
+        isSidebarOpen ? "md:ml-64" : ""
+      }`}
     >
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -111,9 +109,6 @@ export default function MainContent(
 
           <TabsContent value="patients">
             <Patients patients={patients} />
-          </TabsContent>
-          <TabsContent value="tasks">
-            <Tasks tasks={tasks} doctorId={doctorId}/>
           </TabsContent>
         </Tabs>
       </motion.div>
