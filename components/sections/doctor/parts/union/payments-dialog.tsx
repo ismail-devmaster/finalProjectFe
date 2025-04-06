@@ -3,13 +3,14 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
-import { Calendar, Clock, FileText, User, DollarSign } from "lucide-react";
+import { Calendar, Clock, CreditCard } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 
 interface Payment {
   id: number;
@@ -32,83 +33,100 @@ interface PaymentsDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   payments: Payment[];
+  actionTitle?: string;
 }
 
 export function PaymentsDialog({
   open,
   onOpenChange,
   payments,
+  actionTitle,
 }: PaymentsDialogProps) {
+  const getStatusBadgeVariant = (status: string) => {
+    switch (status.toUpperCase()) {
+      case "PAID":
+      case "COMPLETED":
+        return "success";
+      case "PENDING":
+        return "secondary";
+      case "CANCELLED":
+      case "FAILED":
+        return "destructive";
+      default:
+        return "outline";
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[800px] max-h-[80vh] flex flex-col">
+      <DialogContent className="sm:max-w-[600px] max-h-[80vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">Payments</DialogTitle>
+          <DialogDescription>
+            {actionTitle
+              ? `Payment history for ${actionTitle} treatment`
+              : "Payment history for this treatment"}
+          </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="flex-grow">
-          <div className="grid gap-4 p-4 md:grid-cols-2">
+
+        <ScrollArea className="flex-grow mt-4">
+          <div className="space-y-4 p-1">
             {payments.length > 0 ? (
               payments.map((payment) => (
                 <Card
                   key={payment.id}
-                  className="overflow-hidden transition-shadow hover:shadow-md"
+                  className="overflow-hidden border-l-4 border-l-emerald-500"
                 >
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center space-x-2">
-                        <User className="w-4 h-4 text-primary" />
-                        <h3 className="text-sm font-semibold truncate">
-                          Dr. {payment.doctor.user.firstName}{" "}
-                          {payment.doctor.user.lastName}
-                        </h3>
+                  <CardContent className="p-6">
+                    <div className="grid gap-4">
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                          <CreditCard className="h-5 w-5 text-emerald-500" />
+                          <span className="font-semibold text-lg">
+                            Dr. {payment.doctor.user.firstName}{" "}
+                            {payment.doctor.user.lastName}
+                          </span>
+                        </div>
+                        <Badge
+                          variant={getStatusBadgeVariant(payment.status.status)}
+                        >
+                          {payment.status.status}
+                        </Badge>
                       </div>
-                      <Badge
-                        className={cn(
-                          "px-2 py-1 text-xs font-medium",
-                          payment.status.status === "PENDING" &&
-                            "bg-yellow-100 text-yellow-800",
-                          payment.status.status === "PAID" &&
-                            "bg-green-100 text-green-800",
-                          payment.status.status === "CANCELLED" &&
-                            "bg-red-100 text-red-800"
-                        )}
-                      >
-                        {payment.status.status}
-                      </Badge>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 text-sm mb-2">
-                      <div className="flex items-center space-x-1">
-                        <Calendar className="w-3 h-3 text-gray-500" />
-                        <span>
-                          {format(new Date(payment.date), "MMM d, yyyy")}
-                        </span>
+
+                      <Separator />
+
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-muted-foreground" />
+                          <span>
+                            {format(new Date(payment.date), "MMMM d, yyyy")}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-4 w-4 text-muted-foreground" />
+                          <span>
+                            {format(new Date(payment.time), "h:mm a")}
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex items-center space-x-1">
-                        <Clock className="w-3 h-3 text-gray-500" />
-                        <span>{format(new Date(payment.time), "h:mm a")}</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-1 mb-2">
-                      <DollarSign className="w-4 h-4 text-gray-500" />
-                      <span className="text-lg font-semibold">
-                        {payment.amount.toFixed(2)}
-                      </span>
-                    </div>
-                    {payment.description && (
-                      <div className="flex items-start space-x-1">
-                        <FileText className="w-3 h-3 text-gray-500 mt-1" />
-                        <p className="text-xs text-gray-600 line-clamp-2">
+
+                      <div className="flex justify-between items-center mt-2">
+                        <div className="text-sm text-muted-foreground">
                           {payment.description}
-                        </p>
+                        </div>
+                        <div className="text-lg font-bold text-emerald-600">
+                          ${payment.amount.toFixed(2)}
+                        </div>
                       </div>
-                    )}
+                    </div>
                   </CardContent>
                 </Card>
               ))
             ) : (
-              <p className="text-center text-gray-500 col-span-2">
-                No payments found.
-              </p>
+              <div className="text-center py-8 text-muted-foreground">
+                No payment records found
+              </div>
             )}
           </div>
         </ScrollArea>

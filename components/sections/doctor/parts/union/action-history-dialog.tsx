@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,8 +16,15 @@ import { AppointmentsDialog } from "./appointments-dialog";
 import { PaymentsDialog } from "./payments-dialog";
 import { appointment } from "@/app/api";
 import { payment } from "@/app/api";
-import { Calendar, ClipboardList, CreditCard } from "lucide-react";
+import {
+  Calendar,
+  ClipboardList,
+  CreditCard,
+  User,
+  Loader2,
+} from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 
 interface Patient {
   id: number;
@@ -51,20 +59,24 @@ export function ActionHistoryDialog({
   const [patientActions, setPatientActions] = useState<Action[]>([]);
   const [appointments, setAppointments] = useState([]);
   const [payments, setPayments] = useState([]);
-  const [isAppointmentsDialogOpen, setIsAppointmentsDialogOpen] = useState(
-    false,
-  );
+  const [isAppointmentsDialogOpen, setIsAppointmentsDialogOpen] =
+    useState(false);
   const [isPaymentsDialogOpen, setIsPaymentsDialogOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [selectedAction, setSelectedAction] = useState<Action | null>(null);
 
   useEffect(() => {
     const fetchPatientActions = async () => {
       if (!patient) return;
+      setLoading(true);
       try {
         // const res = await action.getActionsByPatientId(patient.user.id);
         const res = await action.getAllActions();
         setPatientActions(res.actions);
       } catch (err) {
         console.error("Failed to fetch patient actions:", err);
+      } finally {
+        setLoading(false);
       }
     };
     if (patient) {
@@ -72,23 +84,31 @@ export function ActionHistoryDialog({
     }
   }, [patient?.user.id, patient]);
 
-  const fetchAppointments = async (actionId: number) => {
+  const fetchAppointments = async (actionId: number, action: Action) => {
+    setLoading(true);
     try {
       const res = await appointment.getAppointmentsByActionId(actionId);
       setAppointments(res.appointments);
+      setSelectedAction(action);
       setIsAppointmentsDialogOpen(true);
     } catch (err) {
       console.error("Failed to fetch appointments:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const fetchPayments = async (actionId: number) => {
+  const fetchPayments = async (actionId: number, action: Action) => {
+    setLoading(true);
     try {
       const res = await payment.getPaymentsByActionId(actionId);
       setPayments(res.payments);
+      setSelectedAction(action);
       setIsPaymentsDialogOpen(true);
     } catch (err) {
       console.error("Failed to fetch payments:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -97,71 +117,131 @@ export function ActionHistoryDialog({
       <DialogContent className="sm:max-w-[800px] max-h-[80vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">
-            Actions History - {patient?.user.firstName} {patient?.user.lastName}
+            Treatment History
           </DialogTitle>
+          <DialogDescription>
+            {patient && (
+              <>
+                All treatments for patient{" "}
+                <span className="font-medium">
+                  {patient.user.firstName} {patient.user.lastName}
+                </span>
+              </>
+            )}
+          </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="flex-grow">
-          <div className="grid gap-6 p-6">
-            {patientActions.length > 0
-              ? (
+
+        {patient && (
+          <div className="flex items-center gap-3 mt-2 mb-4">
+            <div className="bg-sky-100 text-sky-700 p-3 rounded-full">
+              <User className="h-6 w-6" />
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold">
+                {patient.user.firstName} {patient.user.lastName}
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Patient ID: {patient.id}
+              </p>
+            </div>
+          </div>
+        )}
+
+        <Separator />
+
+        <ScrollArea className="flex-grow mt-4">
+          {loading ? (
+            <div className="flex justify-center items-center py-12">
+              <div className="flex flex-col items-center gap-2">
+                <Loader2 className="h-8 w-8 text-sky-500 animate-spin" />
+                <p className="text-muted-foreground">
+                  Loading treatment history...
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="grid gap-6 p-2">
+              {patientActions.length > 0 ? (
                 patientActions.map((action) => (
                   <Card
                     key={action.id}
-                    className="overflow-hidden transition-shadow hover:shadow-md"
+                    className="overflow-hidden border-l-4 border-l-sky-500 hover:shadow-md transition-shadow"
                   >
                     <CardContent className="p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-xl font-semibold text-primary">
-                          {action.appointmentType.type}
-                        </h3>
-                        <span className="text-sm text-gray-500">
-                          {format(new Date(action.startDate), "MMMM d, yyyy")}
-                        </span>
-                      </div>
-                      <p className="mb-4 text-gray-600">{action.description}</p>
-                      <div className="flex space-x-4">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="flex items-center space-x-2"
-                          onClick={() => fetchAppointments(action.id)}
-                        >
-                          <Calendar className="w-4 h-4" />
-                          <span>View Appointments</span>
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="flex items-center space-x-2"
-                          onClick={() => fetchPayments(action.id)}
-                        >
-                          <CreditCard className="w-4 h-4" />
-                          <span>View Payments</span>
-                        </Button>
+                      <div className="grid gap-4">
+                        <div className="flex items-center gap-2">
+                          <div className="bg-sky-100 text-sky-700 p-2 rounded-full">
+                            <ClipboardList className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-lg">
+                              {action.appointmentType.type}
+                            </h3>
+                            <p className="text-sm text-muted-foreground">
+                              Started on{" "}
+                              {format(
+                                new Date(action.startDate),
+                                "MMMM d, yyyy"
+                              )}
+                            </p>
+                          </div>
+                        </div>
+
+                        {action.description && (
+                          <div className="bg-muted/50 p-3 rounded-md text-sm">
+                            <span className="font-medium">Description:</span>{" "}
+                            {action.description}
+                          </div>
+                        )}
+
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex items-center gap-2 hover:bg-sky-50 hover:text-sky-700"
+                            onClick={() => fetchAppointments(action.id, action)}
+                          >
+                            <Calendar className="h-4 w-4" />
+                            View Appointments
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex items-center gap-2 hover:bg-emerald-50 hover:text-emerald-700"
+                            onClick={() => fetchPayments(action.id, action)}
+                          >
+                            <CreditCard className="h-4 w-4" />
+                            View Payments
+                          </Button>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
                 ))
-              )
-              : (
-                <div className="text-center py-8">
-                  <ClipboardList className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500">
-                    No actions found for this patient.
+              ) : (
+                <div className="text-center py-12">
+                  <ClipboardList className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground">
+                    No treatment records found for this patient.
                   </p>
                 </div>
               )}
-          </div>
+            </div>
+          )}
         </ScrollArea>
+
         <AppointmentsDialog
           open={isAppointmentsDialogOpen}
           onOpenChange={setIsAppointmentsDialogOpen}
           appointments={appointments}
+          actionTitle={selectedAction?.appointmentType.type || ""}
         />
+
         <PaymentsDialog
           open={isPaymentsDialogOpen}
           onOpenChange={setIsPaymentsDialogOpen}
           payments={payments}
+          actionTitle={selectedAction?.appointmentType.type || ""}
         />
       </DialogContent>
     </Dialog>
