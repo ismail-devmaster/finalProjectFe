@@ -163,7 +163,6 @@ export function EditAppointmentDialog({
               ...appointment,
               date: formData.get("date") as string,
               time: formData.get("time") as string,
-              additionalNotes: formData.get("additionalNotes") as string,
             };
             await onSubmit(updatedAppointment);
             setSuccessMessage("Appointment updated successfully!");
@@ -266,18 +265,6 @@ export function EditAppointmentDialog({
                 required
               />
             </div>
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="edit-notes" className="text-right">
-              Additional Notes
-            </Label>
-            <Textarea
-              id="edit-notes"
-              name="additionalNotes"
-              defaultValue={appointment.additionalNotes}
-              className="col-span-3"
-              placeholder="Optional additional notes"
-            />
           </div>
         </div>
 
