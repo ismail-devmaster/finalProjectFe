@@ -89,7 +89,8 @@ export default function AppointmentsPage() {
         .includes(searchTerm.toLowerCase()) ||
       appointment.action.appointmentType.type
         .toLowerCase()
-        .includes(searchTerm.toLowerCase());
+        .includes(searchTerm.toLowerCase()) ||
+      appointment.date.toLowerCase().includes(searchTerm.toLowerCase());
 
     const appointmentDate = new Date(appointment.date);
     const today = new Date();
