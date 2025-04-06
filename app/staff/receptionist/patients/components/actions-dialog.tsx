@@ -73,12 +73,12 @@ interface PaymentDialog {
   amount: number;
 }
 export default function ActionsDialog(
-  props: ActionsDialogProps,
+  props: ActionsDialogProps
 ): React.ReactElement {
   const { isOpen, onClose, patientName, actions } = props;
 
   const [selectedAction, setSelectedAction] = React.useState<Action | null>(
-    null,
+    null
   );
   const [showPayments, setShowPayments] = React.useState(false);
   const [appointments, setAppointments] = React.useState<Appointment[]>([]);
@@ -91,16 +91,16 @@ export default function ActionsDialog(
       .getAppointmentsByActionId(action.id)
       .then((response): void => {
         if (response.data) {
-          const mappedAppointments: Appointment[] = response.data.map((
-            appointment: AppointmentData,
-          ) => ({
-            id: appointment.id || 0,
-            doctor: { user: { firstName: "Unknown", lastName: "Doctor" } },
-            status: { status: appointment.status || "unknown" },
-            date: appointment.date,
-            time: appointment.time,
-            additionalNotes: "",
-          }));
+          const mappedAppointments: Appointment[] = response.data.map(
+            (appointment: AppointmentData) => ({
+              id: appointment.id || 0,
+              doctor: { user: { firstName: "Unknown", lastName: "Doctor" } },
+              status: { status: appointment.status || "unknown" },
+              date: appointment.date,
+              time: appointment.time,
+              additionalNotes: "",
+            })
+          );
           setAppointments(mappedAppointments);
           setSelectedAction(action);
           setShowPayments(false);
@@ -121,17 +121,17 @@ export default function ActionsDialog(
     payment
       .getPaymentsByActionId(action.id)
       .then((response: Payment[]): void => {
-        const mappedPayments: PaymentDialog[] = response.map((
-          payment: Payment,
-        ) => ({
-          id: payment.id,
-          doctor: { user: { firstName: "Unknown", lastName: "Doctor" } },
-          status: { status: payment.status },
-          date: payment.createdAt,
-          time: "00:00",
-          description: `Payment for action ${action.id}`,
-          amount: payment.amount,
-        }));
+        const mappedPayments: PaymentDialog[] = response.map(
+          (payment: Payment) => ({
+            id: payment.id,
+            doctor: { user: { firstName: "Unknown", lastName: "Doctor" } },
+            status: { status: payment.status },
+            date: payment.createdAt,
+            time: "00:00",
+            description: `Payment for action ${action.id}`,
+            amount: payment.amount,
+          })
+        );
         setPayments(mappedPayments);
         setSelectedAction(action);
         setShowPayments(true);
@@ -152,40 +152,42 @@ export default function ActionsDialog(
             <DialogTitle>Actions History - {patientName}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            {actions.map((action: Action): React.ReactElement => (
-              <Card key={action.id}>
-                <CardContent className="pt-6">
-                  <div className="grid gap-4">
-                    <div className="grid gap-2">
-                      <div className="font-semibold">
-                        Action Type: {action.appointmentType.type}
+            {actions.map(
+              (action: Action): React.ReactElement => (
+                <Card key={action.id}>
+                  <CardContent className="pt-6">
+                    <div className="grid gap-4">
+                      <div className="grid gap-2">
+                        <div className="font-semibold">
+                          Action Type: {action.appointmentType.type}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          Description: {action.description}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          Date:{" "}
+                          {new Date(action.startDate).toLocaleDateString()}
+                        </div>
                       </div>
-                      <div className="text-sm text-muted-foreground">
-                        Description: {action.description}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        Date: {new Date(action.startDate).toLocaleDateString()}
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          onClick={(): void => handleViewAppointments(action)}
+                        >
+                          View Appointments
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={(): void => handleViewPayments(action)}
+                        >
+                          View Payments
+                        </Button>
                       </div>
                     </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        onClick={(): void =>
-                          handleViewAppointments(action)}
-                      >
-                        View Appointments
-                      </Button>
-                      <Button
-                        variant="outline"
-                        onClick={(): void => handleViewPayments(action)}
-                      >
-                        View Payments
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardContent>
+                </Card>
+              )
+            )}
           </div>
           {loading && <div>Loading...</div>}
         </DialogContent>
