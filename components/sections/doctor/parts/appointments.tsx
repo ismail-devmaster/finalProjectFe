@@ -752,7 +752,9 @@ export default function Appointments({ appointments }: AppointmentsProps) {
                       const dayDate = new Date(year, month, day);
                       const isToday =
                         dayDate.toDateString() === new Date().toDateString();
-                      const isPast = dayDate < new Date();
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0);  
+                      const isPast = dayDate < today;
                       const isWeekend =
                         dayDate.getDay() === 5 || dayDate.getDay() === 6;
                       const isSelected =
