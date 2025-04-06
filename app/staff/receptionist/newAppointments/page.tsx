@@ -140,7 +140,6 @@ const Component = () => {
     useState<Appointment | null>(null);
   const [newDate, setNewDate] = useState("");
   const [newTime, setNewTime] = useState("");
-  const [newDoctor, setNewDoctor] = useState<string>("");
 
   const handleReschedule = (appointment: Appointment) => {
     setSelectedAppointment(appointment);
@@ -148,10 +147,10 @@ const Component = () => {
   };
 
   const handleRescheduleConfirm = async () => {
-    if (!newTime || !newDate || !Number(newDoctor)) {
+    if (!newTime || !newDate) {
       toast({
         title: "Error",
-        description: "Please select a new date, time, and doctor.",
+        description: "Please select a new date and time.",
         variant: "destructive",
       });
       return;
@@ -159,7 +158,6 @@ const Component = () => {
       await appointment.updateAppointment(selectedAppointment.id, {
         date: newDate,
         time: newTime,
-        doctorId: Number(newDoctor),
         statusId: 2, // UPCOMING
       });
       setAppointments((prev) =>
@@ -324,26 +322,6 @@ const Component = () => {
                 onChange={(e) => setNewTime(e.target.value)}
                 className="col-span-3"
               />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="new-doctor" className="text-right">
-                New Doctor
-              </Label>
-              <Select
-                value={newDoctor}
-                onValueChange={(value) => setNewDoctor(value)}
-              >
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Select a doctor" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableDoctors.map((doctor) => (
-                    <SelectItem key={doctor.id} value={doctor.id.toString()}>
-                      {doctor.firstName} {doctor.lastName}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
           </div>
           <DialogFooter>
