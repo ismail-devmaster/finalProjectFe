@@ -15,6 +15,7 @@ import { patient } from "@/app/api";
 import { doctor } from "@/app/api";
 import { appointmentType } from "@/app/api";
 import type { Appointment, AppointmentType, Doctor, Patient } from "./types";
+import { Calendar } from "lucide-react";
 
 export default function AppointmentsPage() {
   const [appointments, setAppointments] = React.useState<Appointment[]>([]);
@@ -25,9 +26,11 @@ export default function AppointmentsPage() {
   >([]);
   const [searchTerm, setSearchTerm] = React.useState("");
   const [filterPeriod, setFilterPeriod] = React.useState("all");
+  const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         const [
           appointmentsData,
@@ -46,6 +49,8 @@ export default function AppointmentsPage() {
         setAppointmentTypes(appointmentTypesData.appointmentTypes);
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -127,19 +132,30 @@ export default function AppointmentsPage() {
   });
 
   return (
-    <div className="w-full max-w-6xl mx-auto">
-      <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center dark:text-white">
-        Appointment Management
-      </h1>
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Appointment Management</CardTitle>
-          <CardDescription>
-            Schedule, reschedule, or cancel appointments
-          </CardDescription>
+    <div className="w-full max-w-7xl mx-auto px-4 py-8">
+      <div className="flex flex-col items-center mb-10">
+        <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-violet-600 to-sky-600 bg-clip-text text-transparent">
+          Appointment Management
+        </h1>
+        <p className="text-muted-foreground mt-2">
+          Schedule, reschedule, and manage patient appointments
+        </p>
+      </div>
+
+      <Card className="shadow-md border-t-4 border-t-violet-500">
+        <CardHeader className="pb-2">
+          <div className="flex items-center gap-2">
+            <Calendar className="h-5 w-5 text-violet-500" />
+            <div>
+              <CardTitle>Appointment Dashboard</CardTitle>
+              <CardDescription>
+                View and manage upcoming appointments
+              </CardDescription>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="flex justify-between mb-4">
+          <div className="mb-6">
             <AppointmentFilters
               searchTerm={searchTerm}
               onSearchChange={setSearchTerm}
@@ -147,12 +163,33 @@ export default function AppointmentsPage() {
               onFilterChange={setFilterPeriod}
             />
           </div>
-          <AppointmentTable
-            appointments={filteredAppointments}
-            doctors={doctors}
-            onEdit={handleUpdateAppointment}
-            onRemove={handleRemoveAppointment}
-          />
+
+          {isLoading ? (
+            <div className="flex justify-center py-12">
+              <div className="animate-pulse text-center">
+                <div className="h-8 w-32 bg-muted rounded mx-auto"></div>
+                <div className="h-4 w-48 bg-muted rounded mx-auto mt-2"></div>
+                <p className="text-sm text-muted-foreground mt-4">
+                  Loading appointment data...
+                </p>
+              </div>
+            </div>
+          ) : (
+            <>
+              {filteredAppointments.length === 0 ? (
+                <div className="text-center py-12 text-muted-foreground">
+                  No appointments found matching your search criteria
+                </div>
+              ) : (
+                <AppointmentTable
+                  appointments={filteredAppointments}
+                  doctors={doctors}
+                  onEdit={handleUpdateAppointment}
+                  onRemove={handleRemoveAppointment}
+                />
+              )}
+            </>
+          )}
         </CardContent>
       </Card>
     </div>

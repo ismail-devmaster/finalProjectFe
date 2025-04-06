@@ -8,11 +8,13 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import AppointmentsDialog from "./appointments-dialog";
 import PaymentsDialog from "./payments-dialog";
 import { appointment } from "@/app/api";
 import { payment } from "@/app/api";
+import { Calendar, CreditCard, ClipboardList, Loader2 } from "lucide-react";
 
 interface Action {
   id: number;
@@ -72,6 +74,7 @@ interface PaymentDialog {
   description: string;
   amount: number;
 }
+
 export default function ActionsDialog(
   props: ActionsDialogProps
 ): React.ReactElement {
@@ -147,49 +150,85 @@ export default function ActionsDialog(
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-3xl">
+        <DialogContent className="max-w-4xl">
           <DialogHeader>
-            <DialogTitle>Actions History - {patientName}</DialogTitle>
+            <DialogTitle className="text-2xl font-bold">
+              Treatment History
+            </DialogTitle>
+            <DialogDescription>
+              All treatments for patient{" "}
+              <span className="font-medium">{patientName}</span>
+            </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
-            {actions.map(
-              (action: Action): React.ReactElement => (
-                <Card key={action.id}>
-                  <CardContent className="pt-6">
-                    <div className="grid gap-4">
-                      <div className="grid gap-2">
-                        <div className="font-semibold">
-                          Action Type: {action.appointmentType.type}
+          <div className="space-y-4 mt-4">
+            {actions.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                No treatment records found for this patient
+              </div>
+            ) : (
+              actions.map(
+                (action: Action): React.ReactElement => (
+                  <Card
+                    key={action.id}
+                    className="overflow-hidden border-l-4 border-l-sky-500 hover:shadow-md transition-shadow"
+                  >
+                    <CardContent className="p-6">
+                      <div className="grid gap-4">
+                        <div className="flex items-center gap-2">
+                          <div className="bg-sky-100 text-sky-700 p-2 rounded-full">
+                            <ClipboardList className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-lg">
+                              {action.appointmentType.type}
+                            </h3>
+                            <p className="text-sm text-muted-foreground">
+                              Started on{" "}
+                              {new Date(action.startDate).toLocaleDateString()}
+                            </p>
+                          </div>
                         </div>
-                        <div className="text-sm text-muted-foreground">
-                          Description: {action.description}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          Date:{" "}
-                          {new Date(action.startDate).toLocaleDateString()}
+
+                        {action.description && (
+                          <div className="bg-muted/50 p-3 rounded-md text-sm">
+                            <span className="font-medium">Description:</span>{" "}
+                            {action.description}
+                          </div>
+                        )}
+
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          <Button
+                            variant="outline"
+                            className="flex items-center gap-2 hover:bg-sky-50 hover:text-sky-700"
+                            onClick={(): void => handleViewAppointments(action)}
+                          >
+                            <Calendar className="h-4 w-4" />
+                            View Appointments
+                          </Button>
+                          <Button
+                            variant="outline"
+                            className="flex items-center gap-2 hover:bg-emerald-50 hover:text-emerald-700"
+                            onClick={(): void => handleViewPayments(action)}
+                          >
+                            <CreditCard className="h-4 w-4" />
+                            View Payments
+                          </Button>
                         </div>
                       </div>
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          onClick={(): void => handleViewAppointments(action)}
-                        >
-                          View Appointments
-                        </Button>
-                        <Button
-                          variant="outline"
-                          onClick={(): void => handleViewPayments(action)}
-                        >
-                          View Payments
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                )
               )
             )}
           </div>
-          {loading && <div>Loading...</div>}
+          {loading && (
+            <div className="flex justify-center py-4">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span>Loading data...</span>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 
