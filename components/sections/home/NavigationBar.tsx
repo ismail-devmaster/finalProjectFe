@@ -28,7 +28,12 @@ export function Navigation() {
             className="flex flex-col items-center justify-between group "
             href="/"
           >
-            <h1
+            <img
+              src="/images/FullLogo.png"
+              alt="Logo"
+              className={`h-20 w-auto transition-transform duration-300 `}
+            />
+{/*             <h1
               className={`text-2xl font-bold group-hover:[text-shadow:_0px_0px_3px_rgba(160, 44, 255, 0.5)] ${
                 isScrolled
                   ? "text-[#8e1be7] group-hover:text-[#60109e] "
@@ -49,7 +54,7 @@ export function Navigation() {
               style={{ fontFamily: "Fredoka, sans-serif" }}
             >
               DENTAL CENTER
-            </p>
+            </p> */}
           </a>
 
           <nav className="hidden md:flex items-center space-x-8">
