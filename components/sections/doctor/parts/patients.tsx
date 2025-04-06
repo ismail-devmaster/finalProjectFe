@@ -65,11 +65,14 @@ export default function Patients({ patients }: PatientsProps) {
   const [actionHistoryPatient, setActionHistoryPatient] =
     useState<Patient | null>(null);
 
-  const filteredPatients = patients.filter(
-    (patient) =>
+  const filteredPatients = patients.filter((patient) => {
+    const formattedDob = format(new Date(patient.dateOfBirth), "dd/MM/yyyy");
+    return (
       patient.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      patient.lastName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+      patient.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      formattedDob.includes(searchTerm)
+    );
+  });
 
   const handleNameClick = (patient: Patient) => {
     setSelectedPatient(patient);
@@ -111,7 +114,7 @@ export default function Patients({ patients }: PatientsProps) {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search by patient name"
+                  placeholder="Search by name or DOB "
                   className="pl-10 bg-muted/40"
                 />
               </div>
