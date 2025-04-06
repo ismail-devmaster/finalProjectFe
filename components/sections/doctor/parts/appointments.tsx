@@ -209,7 +209,6 @@ export default function Appointments({ appointments }: AppointmentsProps) {
 
   const handleNewAppointment = async () => {
     try {
-      console.log(selectedAppointment);
       // Create date in local timezone without time component and add 1 day
       const [year, month, day] = newAppointment.date.split("-").map(Number);
       const localDate = new Date(year, month - 1, day);
@@ -223,7 +222,6 @@ export default function Appointments({ appointments }: AppointmentsProps) {
         actionId: selectedAppointment?.actionId || 0,
         patientId: selectedAppointment?.patientId || 0,
       };
-      console.log(appointmentData);
       await appointment.createAppointment(appointmentData);
       setShowNewAppointment(false);
       setNewAppointment({
