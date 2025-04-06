@@ -206,7 +206,6 @@ export default function Appointments({ appointments }: AppointmentsProps) {
         actionId: selectedAppointment?.actionId || 0,
         patientId: selectedAppointment?.patientId || 0,
       };
-      console.log("New appointment data:", appointmentData);
       await appointment.createAppointment(appointmentData);
       setShowNewAppointment(false);
       setNewAppointment({

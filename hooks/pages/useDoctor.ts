@@ -87,7 +87,8 @@ export default function useDashboard() {
 
     const fetchAppointments = async () => {
       try {
-        const res = await appointment.getAllAppointments();
+        const { user } = await auth.getUserId();
+        const res = await appointment.getAppointmentsByDoctorId(user.id);
         setAppointments(res.appointments);
       } catch (error) {
         console.error("Error fetching appointments:", error);
