@@ -199,10 +199,10 @@ export default function Appointments({ appointments }: AppointmentsProps) {
 
   const handleNewAppointment = async () => {
     try {
+      console.log(selectedAppointment);
       const appointmentData = {
         ...newAppointment,
-        // doctorId: selectedAppointment?.doctorId || 0,
-        doctorId: 1,
+        doctorId: selectedAppointment?.doctorId || 0,
         actionId: selectedAppointment?.actionId || 0,
         patientId: selectedAppointment?.patientId || 0,
       };
