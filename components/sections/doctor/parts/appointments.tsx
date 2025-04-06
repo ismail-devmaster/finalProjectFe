@@ -577,8 +577,8 @@ export default function Appointments({ appointments }: AppointmentsProps) {
             <DialogDescription>
               {selectedAppointment && (
                 <>
-                  All payments for {selectedAppointment.patient.firstName}{" "}
-                  {selectedAppointment.patient.lastName}
+                  All payments for {selectedAppointment.patient.user.firstName}{" "}
+                  {selectedAppointment.patient.user.lastName}
                 </>
               )}
             </DialogDescription>
