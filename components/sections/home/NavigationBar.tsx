@@ -25,15 +25,38 @@ export function Navigation() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <a
+            className="flex flex-col items-center justify-between group "
             href="/"
-            className={`text-3xl font-bold  ${
-              isScrolled
-                ? "text-dental-600 hover:text-dental-700"
-                : "text-dental-500 hover:text-dental-400"
-            }`}
           >
-            Remdani Dental
+            <img
+              src="/images/FullLogo.png"
+              alt="Logo"
+              className={`h-20 w-auto transition-transform duration-300 `}
+            />
+{/*             <h1
+              className={`text-2xl font-bold group-hover:[text-shadow:_0px_0px_3px_rgba(160, 44, 255, 0.5)] ${
+                isScrolled
+                  ? "text-[#8e1be7] group-hover:text-[#60109e] "
+                  : "text-[#a02cff] group-hover:text-[#8e1be7]"
+              }`}
+              style={{
+                fontFamily: '"Cinzel Decorative", serif',
+              }}
+            >
+              RAMDANI
+            </h1>
+            <p
+              className={`text-xl font-bold group-hover:[text-shadow:_0px_0px_3px_rgba(255,198,41,0.5)] ${
+                isScrolled
+                  ? "text-[#eab730] group-hover:text-[#cfa01a]"
+                  : "text-[#ffc629] group-hover:text-[#eab730]"
+              }`}
+              style={{ fontFamily: "Fredoka, sans-serif" }}
+            >
+              DENTAL CENTER
+            </p> */}
           </a>
+
           <nav className="hidden md:flex items-center space-x-8">
             {navLinks.map((link) => (
               <a
