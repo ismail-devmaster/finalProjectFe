@@ -69,14 +69,14 @@ interface Appointment {
 }
 
 interface Patient {
-    firstName: string;
-    lastName: string;
-    dateOfBirth: string;
-    email: string;
-    phone: string;
-    sex: {
-      gender: string;
-    };
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  email: string;
+  phone: string;
+  sex: {
+    gender: string;
+  };
   medicalHistory?: string;
 }
 
@@ -126,11 +126,20 @@ export default function Appointments({ appointments }: AppointmentsProps) {
     patientId: selectedAppointment?.patientId || 0,
   });
 
-  const [newPayment, setNewPayment] = React.useState({
+  interface NewPaymentState {
+    amount: string;
+    date: string;
+    time: string;
+    description: string;
+    statusId: number;
+  }
+
+  const [newPayment, setNewPayment] = React.useState<NewPaymentState>({
     amount: "",
     date: "",
     time: "",
     description: "",
+    statusId: 1, // Default to PAID
   });
 
   const isInDateRange = React.useCallback(
@@ -230,12 +239,18 @@ export default function Appointments({ appointments }: AppointmentsProps) {
         date: newPayment.date,
         time: newPayment.time,
         description: newPayment.description,
-        statusId: 1,
+        statusId: newPayment.statusId,
       };
       console.log("New payment data:", payData);
       await payment.createPayment(payData);
       setShowNewPayment(false);
-      setNewPayment({ amount: "", date: "", time: "", description: "" });
+      setNewPayment({
+        amount: "",
+        date: "",
+        time: "",
+        description: "",
+        statusId: 1,
+      });
       // Optionally, refresh the payments list here
     } catch (error) {
       console.error("Error creating payment:", error);
@@ -445,8 +460,7 @@ export default function Appointments({ appointments }: AppointmentsProps) {
             <DialogDescription>
               {selectedAppointment && (
                 <>
-                  All appointments for{" "}
-                  {selectedAppointment.patient.firstName}{" "}
+                  All appointments for {selectedAppointment.patient.firstName}{" "}
                   {selectedAppointment.patient.lastName}
                 </>
               )}
@@ -749,6 +763,27 @@ export default function Appointments({ appointments }: AppointmentsProps) {
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="status" className="text-right">
+                Status
+              </Label>
+              <div className="col-span-3">
+                <Select
+                  value={newPayment.statusId.toString()}
+                  onValueChange={(value) =>
+                    setNewPayment({ ...newPayment, statusId: Number(value) })
+                  }
+                >
+                  <SelectTrigger id="status" className="w-[180px]">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="3">PAID</SelectItem>
+                    <SelectItem value="1">PENDING</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="amount" className="text-right">
                 Amount
