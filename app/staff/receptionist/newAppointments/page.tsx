@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { TimePicker } from "@/components/ui/time-picker";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
   Card,
   CardContent,
@@ -140,6 +143,116 @@ const Component = () => {
     useState<Appointment | null>(null);
   const [newDate, setNewDate] = useState("");
   const [newTime, setNewTime] = useState("");
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const getDaysInMonth = (month: number, year: number) => {
+    return new Date(year, month + 1, 0).getDate();
+  };
+
+  const getFirstDayOfMonth = (month: number, year: number) => {
+    return new Date(year, month, 1).getDay();
+  };
+
+  const renderCalendar = () => {
+    const firstDayOfMonth = getFirstDayOfMonth(currentMonth, currentYear);
+    const daysInMonth = getDaysInMonth(currentMonth, currentYear);
+    const calendarDays = [];
+
+    for (let i = 0; i < firstDayOfMonth; i++) {
+      calendarDays.push(<div key={`empty-${i}`} className="calendar-day" />);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(currentYear, currentMonth, day);
+      const isToday = date.toDateString() === new Date().toDateString();
+      const isPast = date < new Date();
+      const isWeekend = date.getDay() === 5 || date.getDay() === 6;
+      const isSelectable = !isPast && !isWeekend;
+      const isSelected = selectedDate?.toDateString() === date.toDateString();
+
+      calendarDays.push(
+        <div
+          key={date.toISOString()}
+          className={cn(
+            "flex items-center justify-center rounded-md",
+            "text-center cursor-pointer p-1 text-sm transition-colors",
+            isToday && "bg-muted font-bold",
+            isPast && "text-muted-foreground cursor-not-allowed",
+            isWeekend && "text-muted-foreground cursor-not-allowed",
+            isSelected &&
+              "bg-primary text-primary-foreground hover:bg-primary/90",
+            isSelectable && !isSelected && "hover:bg-muted"
+          )}
+          onClick={() => {
+            if (isSelectable) {
+              setSelectedDate(date);
+              setNewDate(
+                `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+                  2,
+                  "0"
+                )}-${String(date.getDate()).padStart(2, "0")}`
+              );
+            }
+          }}
+        >
+          {day}
+        </div>
+      );
+    }
+    return calendarDays;
+  };
+
+  const handlePrevMonth = () => {
+    setCurrentMonth((prev) => {
+      if (prev === 0) {
+        setCurrentYear((y) => y - 1);
+        return 11;
+      }
+      return prev - 1;
+    });
+  };
+
+  const handleNextMonth = () => {
+    setCurrentMonth((prev) => {
+      if (prev === 11) {
+        setCurrentYear((y) => y + 1);
+        return 0;
+      }
+      return prev + 1;
+    });
+  };
+
+  const convertTimeTo24Hour = (timeStr: string) => {
+    const [time, modifier] = timeStr.split(" ");
+    let [hours, minutes] = time.split(":");
+
+    if (hours === "12") {
+      hours = "00";
+    }
+
+    if (modifier === "PM") {
+      hours = (Number.parseInt(hours, 10) + 12).toString();
+    }
+
+    return `${hours}:${minutes}`;
+  };
 
   const handleReschedule = (appointment: Appointment) => {
     setSelectedAppointment(appointment);
@@ -160,6 +273,7 @@ const Component = () => {
         time: newTime,
         statusId: 2, // UPCOMING
       });
+      console.log("Appointment rescheduled:", newDate, newTime);
       setAppointments((prev) =>
         prev.filter((app) => app.id !== selectedAppointment.id)
       );
@@ -298,30 +412,80 @@ const Component = () => {
           <DialogHeader>
             <DialogTitle>Reschedule Appointment</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="new-date" className="text-right">
+          <div className="grid gap-3 py-2">
+            <div className="grid grid-cols-4 items-start gap-4">
+              <Label htmlFor="new-date" className="text-right pt-2">
                 New Date
               </Label>
-              <Input
-                id="new-date"
-                type="date"
-                value={newDate}
-                onChange={(e) => setNewDate(e.target.value)}
-                className="col-span-3"
-              />
+              <div className="col-span-3 border rounded-lg p-2 shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="font-medium text-sm">
+                    {months[currentMonth]} {currentYear}
+                  </h3>
+                  <div className="flex gap-1">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handlePrevMonth}
+                      type="button"
+                      className="h-7 w-7 p-0"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleNextMonth}
+                      type="button"
+                      className="h-7 w-7 p-0"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                <div className="grid grid-cols-7 gap-1 text-center mb-1">
+                  {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
+                    (day) => (
+                      <div
+                        key={day}
+                        className="text-xs font-medium text-muted-foreground"
+                      >
+                        {day.slice(0, 1)}
+                      </div>
+                    )
+                  )}
+                </div>
+                <div className="grid grid-cols-7 gap-1">{renderCalendar()}</div>
+                <input
+                  type="hidden"
+                  name="date"
+                  value={
+                    selectedDate
+                      ? `${selectedDate.getFullYear()}-${String(
+                          selectedDate.getMonth() + 1
+                        ).padStart(2, "0")}-${String(
+                          selectedDate.getDate()
+                        ).padStart(2, "0")}`
+                      : ""
+                  }
+                  onChange={(e) => setNewDate(e.target.value)}
+                  required
+                />
+              </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="new-time" className="text-right">
                 New Time
               </Label>
-              <Input
-                id="new-time"
-                type="time"
-                value={newTime}
-                onChange={(e) => setNewTime(e.target.value)}
-                className="col-span-3"
-              />
+              <div className="col-span-3">
+                <TimePicker
+                  value={newTime}
+                  onChange={(value) => {
+                    const time24 = convertTimeTo24Hour(value);
+                    setNewTime(time24);
+                  }}
+                />
+              </div>
             </div>
           </div>
           <DialogFooter>
