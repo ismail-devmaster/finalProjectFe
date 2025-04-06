@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { TimePicker } from "@/components/ui/time-picker";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -395,6 +396,7 @@ export default function Appointments({ appointments }: AppointmentsProps) {
                             {new Date(appointment.time).toLocaleTimeString([], {
                               hour: "2-digit",
                               minute: "2-digit",
+                              hour12: false,
                             })}
                           </div>
                         </TableCell>
@@ -518,6 +520,7 @@ export default function Appointments({ appointments }: AppointmentsProps) {
                               {new Date(app.time).toLocaleTimeString([], {
                                 hour: "2-digit",
                                 minute: "2-digit",
+                                hour12: false,
                               })}
                             </div>
                           </TableCell>
@@ -620,6 +623,7 @@ export default function Appointments({ appointments }: AppointmentsProps) {
                               {new Date(pay.time).toLocaleTimeString([], {
                                 hour: "2-digit",
                                 minute: "2-digit",
+                                hour12: false,
                               })}
                             </div>
                           </TableCell>
@@ -703,12 +707,18 @@ export default function Appointments({ appointments }: AppointmentsProps) {
                     type="time"
                     className="flex-1"
                     value={newAppointment.time}
-                    onChange={(e) =>
-                      setNewAppointment({
-                        ...newAppointment,
-                        time: e.target.value,
-                      })
-                    }
+                    onChange={(e) => {
+                      // Ensure time is in 24-hour format
+                      const timeValue = e.target.value;
+                      if (timeValue) {
+                        const [hours, minutes] = timeValue.split(':');
+                        const formattedTime = `${hours.padStart(2, '0')}:${minutes}`;
+                        setNewAppointment({
+                          ...newAppointment,
+                          time: formattedTime,
+                        });
+                      }
+                    }}
                   />
                 </div>
               </div>
@@ -835,9 +845,18 @@ export default function Appointments({ appointments }: AppointmentsProps) {
                     type="time"
                     className="flex-1"
                     value={newPayment.time}
-                    onChange={(e) =>
-                      setNewPayment({ ...newPayment, time: e.target.value })
-                    }
+                    onChange={(e) => {
+                      // Ensure time is in 24-hour format
+                      const timeValue = e.target.value;
+                      if (timeValue) {
+                        const [hours, minutes] = timeValue.split(':');
+                        const formattedTime = `${hours.padStart(2, '0')}:${minutes}`;
+                        setNewPayment({
+                          ...newPayment,
+                          time: formattedTime,
+                        });
+                      }
+                    }}
                   />
                 </div>
               </div>
