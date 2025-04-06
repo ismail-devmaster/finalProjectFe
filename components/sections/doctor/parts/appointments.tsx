@@ -810,23 +810,27 @@ export default function Appointments({ appointments }: AppointmentsProps) {
               <div className="col-span-3">
                 <div className="flex items-center">
                   <Clock className="mr-2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="time"
-                    type="time"
-                    className="flex-1"
+                  <TimePicker
                     value={newAppointment.time}
-                    onChange={(e) => {
-                      // Ensure time is in 24-hour format
-                      const timeValue = e.target.value;
-                      if (timeValue) {
-                        const [hours, minutes] = timeValue.split(":");
-                        const formattedTime = `${hours.padStart(
-                          2,
-                          "0"
-                        )}:${minutes}`;
+                    onChange={(time) => {
+                      if (time) {
+                        // Convert 12-hour format to 24-hour format
+                        const [timePart, period] = time.split(' ');
+                        let [hours, minutes] = timePart.split(':');
+                        if (period === 'PM' && hours !== '12') {
+                          hours = String(Number(hours) + 12);
+                        } else if (period === 'AM' && hours === '12') {
+                          hours = '00';
+                        }
+                        const formattedTime = `${hours.padStart(2, '0')}:${minutes}`;
                         setNewAppointment({
                           ...newAppointment,
                           time: formattedTime,
+                        });
+                      } else {
+                        setNewAppointment({
+                          ...newAppointment,
+                          time: '',
                         });
                       }
                     }}
@@ -951,23 +955,27 @@ export default function Appointments({ appointments }: AppointmentsProps) {
               <div className="col-span-3">
                 <div className="flex items-center">
                   <Clock className="mr-2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="paymentTime"
-                    type="time"
-                    className="flex-1"
+                  <TimePicker
                     value={newPayment.time}
-                    onChange={(e) => {
-                      // Ensure time is in 24-hour format
-                      const timeValue = e.target.value;
-                      if (timeValue) {
-                        const [hours, minutes] = timeValue.split(":");
-                        const formattedTime = `${hours.padStart(
-                          2,
-                          "0"
-                        )}:${minutes}`;
+                    onChange={(time) => {
+                      if (time) {
+                        // Convert 12-hour format to 24-hour format
+                        const [timePart, period] = time.split(' ');
+                        let [hours, minutes] = timePart.split(':');
+                        if (period === 'PM' && hours !== '12') {
+                          hours = String(Number(hours) + 12);
+                        } else if (period === 'AM' && hours === '12') {
+                          hours = '00';
+                        }
+                        const formattedTime = `${hours.padStart(2, '0')}:${minutes}`;
                         setNewPayment({
                           ...newPayment,
                           time: formattedTime,
+                        });
+                      } else {
+                        setNewPayment({
+                          ...newPayment,
+                          time: '',
                         });
                       }
                     }}
