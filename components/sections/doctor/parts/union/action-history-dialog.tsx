@@ -137,9 +137,6 @@ export function ActionHistoryDialog({
               <h3 className="text-xl font-semibold">
                 {patient.firstName} {patient.lastName}
               </h3>
-              <p className="text-sm text-muted-foreground">
-                Patient ID: {patient.id}
-              </p>
             </div>
           </div>
         )}

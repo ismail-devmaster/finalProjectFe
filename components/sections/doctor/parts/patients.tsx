@@ -208,9 +208,6 @@ export default function Patients({ patients }: PatientsProps) {
                   <h3 className="text-xl font-semibold">
                     {selectedPatient.firstName} {selectedPatient.lastName}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Patient ID: {selectedPatient.id}
-                  </p>
                 </div>
               </div>
 
