@@ -35,7 +35,7 @@ export default function AppointmentsPage() {
           doctorsData,
           appointmentTypesData,
         ] = await Promise.all([
-          appointment.getAllAppointments(),
+          appointment.getAppointmentsWithUpcomingStatus(),
           patient.getAllPatients(),
           doctor.getAllDoctors(),
           appointmentType.getAllAppointmentTypes(),
@@ -60,10 +60,10 @@ export default function AppointmentsPage() {
           date: updatedAppointment.date,
           time: updatedAppointment.time,
           additionalNotes: updatedAppointment.additionalNotes,
-        },
+        }
       );
       setAppointments(
-        appointments.map((app) => (app.id === response.id ? response : app)),
+        appointments.map((app) => (app.id === response.id ? response : app))
       );
     } catch (error) {
       console.error("Error updating appointment:", error);
@@ -80,9 +80,10 @@ export default function AppointmentsPage() {
   };
 
   const filteredAppointments = appointments.filter((appointment) => {
-    const matchesSearch = appointment.patient.user.firstName
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase()) ||
+    const matchesSearch =
+      appointment.patient.user.firstName
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
       appointment.patient.user.lastName
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||

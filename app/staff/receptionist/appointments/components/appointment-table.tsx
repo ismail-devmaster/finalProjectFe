@@ -73,7 +73,6 @@ export function AppointmentTable({
                   </DialogTrigger>
                   <EditAppointmentDialog
                     appointment={appointment}
-                    doctors={doctors}
                     onSubmit={onEdit}
                     onClose={() =>
                       document.dispatchEvent(

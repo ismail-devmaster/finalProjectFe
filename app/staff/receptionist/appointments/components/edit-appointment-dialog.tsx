@@ -25,14 +25,12 @@ import { cn } from "@/lib/utils";
 
 interface EditAppointmentDialogProps {
   appointment: Appointment;
-  doctors: Doctor[];
   onSubmit: (appointment: Appointment) => void;
   onClose: () => void;
 }
 
 export function EditAppointmentDialog({
   appointment,
-  doctors,
   onSubmit,
   onClose,
 }: EditAppointmentDialogProps) {
@@ -163,7 +161,6 @@ export function EditAppointmentDialog({
             const formData = new FormData(e.target as HTMLFormElement);
             const updatedAppointment = {
               ...appointment,
-              doctorId: Number.parseInt(formData.get("doctorId") as string),
               date: formData.get("date") as string,
               time: formData.get("time") as string,
               additionalNotes: formData.get("additionalNotes") as string,
@@ -190,30 +187,6 @@ export function EditAppointmentDialog({
         }}
       >
         <div className="grid gap-3 py-2">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="edit-doctorId" className="text-right">
-              Doctor
-            </Label>
-            <Select
-              name="doctorId"
-              defaultValue={appointment.doctorId.toString()}
-              required
-            >
-              <SelectTrigger className="col-span-3">
-                <SelectValue placeholder="Select a doctor" />
-              </SelectTrigger>
-              <SelectContent>
-                {doctors.map((doctor) => (
-                  <SelectItem
-                    key={doctor.userId}
-                    value={doctor.userId.toString()}
-                  >
-                    {`${doctor.user.firstName} ${doctor.user.lastName}`}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
           <div className="grid grid-cols-4 items-start gap-4">
             <Label htmlFor="edit-date" className="text-right pt-2">
               Date
