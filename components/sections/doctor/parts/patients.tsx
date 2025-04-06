@@ -42,17 +42,15 @@ import { Separator } from "@/components/ui/separator";
 
 interface Patient {
   id: number;
-  user: {
-    id: number;
-    firstName: string;
-    lastName: string;
-    dateOfBirth: string;
-    email: string;
-    phone: string;
-    sex: {
-      gender: string;
-    };
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  email: string;
+  phone: string;
+  sex: {
+    gender: string;
   };
+
   medicalHistory?: string;
 }
 
@@ -69,8 +67,8 @@ export default function Patients({ patients }: PatientsProps) {
 
   const filteredPatients = patients.filter(
     (patient) =>
-      patient.user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      patient.user.lastName.toLowerCase().includes(searchTerm.toLowerCase())
+      patient.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      patient.lastName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleNameClick = (patient: Patient) => {
@@ -143,20 +141,17 @@ export default function Patients({ patients }: PatientsProps) {
                             onClick={() => handleNameClick(patient)}
                           >
                             <User className="h-3.5 w-3.5" />
-                            {patient.user.firstName} {patient.user.lastName}
+                            {patient.firstName} {patient.lastName}
                           </span>
                         </TableCell>
                         <TableCell className="flex items-center gap-1">
                           <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-                          {format(
-                            new Date(patient.user.dateOfBirth),
-                            "dd/MM/yyyy"
-                          )}
+                          {format(new Date(patient.dateOfBirth), "dd/MM/yyyy")}
                         </TableCell>
                         <TableCell className="text-muted-foreground">
-                          {patient.user.email}
+                          {patient.email}
                         </TableCell>
-                        <TableCell>{patient.user.phone}</TableCell>
+                        <TableCell>{patient.phone}</TableCell>
                         <TableCell>
                           <Button
                             variant="outline"
@@ -208,8 +203,7 @@ export default function Patients({ patients }: PatientsProps) {
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold">
-                    {selectedPatient.user.firstName}{" "}
-                    {selectedPatient.user.lastName}
+                    {selectedPatient.firstName} {selectedPatient.lastName}
                   </h3>
                   <p className="text-sm text-muted-foreground">
                     Patient ID: {selectedPatient.id}
@@ -226,7 +220,7 @@ export default function Patients({ patients }: PatientsProps) {
                     <p className="font-medium">Date of Birth</p>
                     <p className="text-muted-foreground">
                       {format(
-                        new Date(selectedPatient.user.dateOfBirth),
+                        new Date(selectedPatient.dateOfBirth),
                         "dd MMMM yyyy"
                       )}
                     </p>
@@ -238,7 +232,7 @@ export default function Patients({ patients }: PatientsProps) {
                   <div>
                     <p className="font-medium">Phone</p>
                     <p className="text-muted-foreground">
-                      {selectedPatient.user.phone}
+                      {selectedPatient.phone}
                     </p>
                   </div>
                 </div>
@@ -248,7 +242,7 @@ export default function Patients({ patients }: PatientsProps) {
                   <div>
                     <p className="font-medium">Email</p>
                     <p className="text-muted-foreground">
-                      {selectedPatient.user.email}
+                      {selectedPatient.email}
                     </p>
                   </div>
                 </div>
@@ -258,7 +252,7 @@ export default function Patients({ patients }: PatientsProps) {
                   <div>
                     <p className="font-medium">Gender</p>
                     <p className="text-muted-foreground">
-                      {selectedPatient.user.sex.gender || "Not specified"}
+                      {selectedPatient.sex.gender || "Not specified"}
                     </p>
                   </div>
                 </div>

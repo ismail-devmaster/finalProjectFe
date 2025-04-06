@@ -28,11 +28,8 @@ import { Separator } from "@/components/ui/separator";
 
 interface Patient {
   id: number;
-  user: {
-    id: number;
-    firstName: string;
-    lastName: string;
-  };
+  firstName: string;
+  lastName: string;
 }
 
 interface Action {
@@ -82,7 +79,7 @@ export function ActionHistoryDialog({
     if (patient) {
       fetchPatientActions();
     }
-  }, [patient?.user.id, patient]);
+  }, [patient?.id, patient]);
 
   const fetchAppointments = async (actionId: number, action: Action) => {
     setLoading(true);
@@ -124,7 +121,7 @@ export function ActionHistoryDialog({
               <>
                 All treatments for patient{" "}
                 <span className="font-medium">
-                  {patient.user.firstName} {patient.user.lastName}
+                  {patient.firstName} {patient.lastName}
                 </span>
               </>
             )}
@@ -138,7 +135,7 @@ export function ActionHistoryDialog({
             </div>
             <div>
               <h3 className="text-xl font-semibold">
-                {patient.user.firstName} {patient.user.lastName}
+                {patient.firstName} {patient.lastName}
               </h3>
               <p className="text-sm text-muted-foreground">
                 Patient ID: {patient.id}

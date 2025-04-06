@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { appointment, patient, allTasks, auth } from "@/app/api";
 
 interface Patient {
-  id: number;
-  user: {
     id: number;
     firstName: string;
     lastName: string;
@@ -13,7 +11,6 @@ interface Patient {
     sex: {
       gender: string;
     };
-  };
   medicalHistory?: string;
 }
 
@@ -78,7 +75,8 @@ export default function useDashboard() {
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const res = await patient.getAllPatients();
+        const { user } = await auth.getUserId();
+        const res = await patient.getPatientDataByDoctorId(user.id);
         setPatients(res.patients);
       } catch (error) {
         console.error("Error fetching patients:", error);

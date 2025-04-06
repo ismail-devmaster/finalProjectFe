@@ -69,8 +69,6 @@ interface Appointment {
 }
 
 interface Patient {
-  id: number;
-  user: {
     firstName: string;
     lastName: string;
     dateOfBirth: string;
@@ -79,7 +77,6 @@ interface Patient {
     sex: {
       gender: string;
     };
-  };
   medicalHistory?: string;
 }
 
@@ -367,8 +364,8 @@ export default function Appointments({ appointments }: AppointmentsProps) {
                         <TableCell className="font-medium">
                           <div className="flex items-center gap-1">
                             <User className="h-3.5 w-3.5 text-violet-500" />
-                            {appointment.patient.user.firstName}{" "}
-                            {appointment.patient.user.lastName}
+                            {appointment.patient.firstName}{" "}
+                            {appointment.patient.lastName}
                           </div>
                         </TableCell>
                         <TableCell>
@@ -449,8 +446,8 @@ export default function Appointments({ appointments }: AppointmentsProps) {
               {selectedAppointment && (
                 <>
                   All appointments for{" "}
-                  {selectedAppointment.patient.user.firstName}{" "}
-                  {selectedAppointment.patient.user.lastName}
+                  {selectedAppointment.patient.firstName}{" "}
+                  {selectedAppointment.patient.lastName}
                 </>
               )}
             </DialogDescription>
@@ -463,8 +460,8 @@ export default function Appointments({ appointments }: AppointmentsProps) {
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold">
-                    {selectedAppointment.patient.user.firstName}{" "}
-                    {selectedAppointment.patient.user.lastName}
+                    {selectedAppointment.patient.firstName}{" "}
+                    {selectedAppointment.patient.lastName}
                   </h3>
                   <p className="text-sm text-muted-foreground">
                     Treatment: {selectedAppointment.action.appointmentType.type}
@@ -550,8 +547,8 @@ export default function Appointments({ appointments }: AppointmentsProps) {
             <DialogDescription>
               {selectedAppointment && (
                 <>
-                  All payments for {selectedAppointment.patient.user.firstName}{" "}
-                  {selectedAppointment.patient.user.lastName}
+                  All payments for {selectedAppointment.patient.firstName}{" "}
+                  {selectedAppointment.patient.lastName}
                 </>
               )}
             </DialogDescription>
@@ -564,8 +561,8 @@ export default function Appointments({ appointments }: AppointmentsProps) {
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold">
-                    {selectedAppointment.patient.user.firstName}{" "}
-                    {selectedAppointment.patient.user.lastName}
+                    {selectedAppointment.patient.firstName}{" "}
+                    {selectedAppointment.patient.lastName}
                   </h3>
                   <p className="text-sm text-muted-foreground">
                     Treatment: {selectedAppointment.action.appointmentType.type}

@@ -37,7 +37,7 @@ export const action = {
 
 export const user = {
   getStaff: () => request("get", "/users/staff"),
-}
+};
 
 export const admin = {
   verify: () => request("get", "/admin/verify"),
@@ -140,6 +140,8 @@ export const patient = {
   getAllPatients: () => request("get", "/patients"),
 
   getPatientDataById: (id: number) => request("get", `/patients/${id}`),
+  getPatientDataByDoctorId: (doctorId: number) =>
+    request("get", `/appointments/doctor/${doctorId}/patients`),
 
   getPatientData: () => request("get", "/patients/data"),
 

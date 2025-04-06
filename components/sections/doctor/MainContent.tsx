@@ -9,16 +9,13 @@ import Tasks from "./parts/tasks";
 
 interface Patient {
   id: number;
-  user: {
-    id: number;
-    firstName: string;
-    lastName: string;
-    dateOfBirth: string;
-    email: string;
-    phone: string;
-    sex: {
-      gender: string;
-    };
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
+  email: string;
+  phone: string;
+  sex: {
+    gender: string;
   };
   medicalHistory?: string;
 }
