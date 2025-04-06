@@ -210,12 +210,20 @@ export default function Appointments({ appointments }: AppointmentsProps) {
   const handleNewAppointment = async () => {
     try {
       console.log(selectedAppointment);
+      // Create date in local timezone without time component and add 1 day
+      const [year, month, day] = newAppointment.date.split("-").map(Number);
+      const localDate = new Date(year, month - 1, day);
+      localDate.setDate(localDate.getDate() + 2); // Add one day
+      const formattedDate = localDate.toISOString().split("T")[0];
+
       const appointmentData = {
         ...newAppointment,
+        date: formattedDate,
         doctorId: selectedAppointment?.doctorId || 0,
         actionId: selectedAppointment?.actionId || 0,
         patientId: selectedAppointment?.patientId || 0,
       };
+      console.log(appointmentData);
       await appointment.createAppointment(appointmentData);
       setShowNewAppointment(false);
       setNewAppointment({
@@ -245,7 +253,6 @@ export default function Appointments({ appointments }: AppointmentsProps) {
         description: newPayment.description,
         statusId: newPayment.statusId,
       };
-      console.log("New payment data:", payData);
       await payment.createPayment(payData);
       setShowNewPayment(false);
       setNewPayment({
@@ -753,7 +760,7 @@ export default function Appointments({ appointments }: AppointmentsProps) {
                       const isToday =
                         dayDate.toDateString() === new Date().toDateString();
                       const today = new Date();
-                      today.setHours(0, 0, 0, 0);  
+                      today.setHours(0, 0, 0, 0);
                       const isPast = dayDate < today;
                       const isWeekend =
                         dayDate.getDay() === 5 || dayDate.getDay() === 6;
