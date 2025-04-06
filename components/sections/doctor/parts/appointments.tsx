@@ -123,7 +123,10 @@ export default function Appointments({ appointments }: AppointmentsProps) {
   const [newAppointment, setNewAppointment] = React.useState({
     date: "",
     time: "",
-    notes: "",
+    additionalNotes: "",
+    statusId: 2,
+    actionId: selectedAppointment?.actionId || 0,
+    patientId: selectedAppointment?.patientId || 0,
   });
 
   const [newPayment, setNewPayment] = React.useState({
@@ -196,11 +199,24 @@ export default function Appointments({ appointments }: AppointmentsProps) {
 
   const handleNewAppointment = async () => {
     try {
-      console.log("New appointment data:", newAppointment);
-      await appointment.createAppointment(newAppointment);
-      console.log("New appointment created:", newAppointment);
+      const appointmentData = {
+        ...newAppointment,
+        // doctorId: selectedAppointment?.doctorId || 0,
+        doctorId: 1,
+        actionId: selectedAppointment?.actionId || 0,
+        patientId: selectedAppointment?.patientId || 0,
+      };
+      console.log("New appointment data:", appointmentData);
+      await appointment.createAppointment(appointmentData);
       setShowNewAppointment(false);
-      setNewAppointment({ date: "", time: "", notes: "" });
+      setNewAppointment({
+        date: "",
+        time: "",
+        additionalNotes: "",
+        statusId: 2,
+        actionId: selectedAppointment?.actionId || 0,
+        patientId: selectedAppointment?.patientId || 0,
+      });
       // Optionally, refresh the appointments list here
     } catch (error) {
       console.error("Error creating appointment:", error);
@@ -688,20 +704,20 @@ export default function Appointments({ appointments }: AppointmentsProps) {
               </div>
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="notes" className="text-right">
-                Notes
+              <Label htmlFor="additionalNotes" className="text-right">
+                Additional Notes
               </Label>
               <div className="col-span-3">
                 <div className="flex items-start">
                   <FileText className="mr-2 h-4 w-4 text-muted-foreground mt-2" />
                   <Textarea
-                    id="notes"
+                    id="additionalNotes"
                     className="flex-1 min-h-[100px]"
-                    value={newAppointment.notes}
+                    value={newAppointment.additionalNotes}
                     onChange={(e) =>
                       setNewAppointment({
                         ...newAppointment,
-                        notes: e.target.value,
+                        additionalNotes: e.target.value,
                       })
                     }
                     placeholder="Additional notes for the appointment"
