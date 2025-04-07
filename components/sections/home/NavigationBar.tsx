@@ -11,9 +11,11 @@ export function Navigation() {
   }, []);
 
   const navLinks = [
+    { href: "#about", text: "About" }, 
     { href: "#services", text: "Services" },
-    { href: "#about", text: "About" },
+    { href: "#testimonials", text: "Testimonials" },
     { href: "#contact", text: "Contact" },
+    
   ];
 
   return (
