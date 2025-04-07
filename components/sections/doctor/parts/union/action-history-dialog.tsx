@@ -112,7 +112,7 @@ export function ActionHistoryDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[800px] max-h-[80vh] flex flex-col">
+      <DialogContent className="sm:max-w-[800px] h-[80vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">
             Treatment History
@@ -144,7 +144,7 @@ export function ActionHistoryDialog({
 
         <Separator />
 
-        <ScrollArea className="flex-grow mt-4">
+        <ScrollArea className="h-[calc(80vh-200px)] mt-4">
           {loading ? (
             <div className="flex justify-center items-center py-12">
               <div className="flex flex-col items-center gap-2">
