@@ -36,9 +36,9 @@ export function UserFilter({ searchTerm, setSearchTerm, roleFilter, setRoleFilte
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Roles</SelectItem>
-            <SelectItem value="patient">Patient</SelectItem>
-            <SelectItem value="doctor">Doctor</SelectItem>
-            <SelectItem value="receptionist">Receptionist</SelectItem>
+            <SelectItem value="PATIENT">Patient</SelectItem>
+            <SelectItem value="DOCTOR">Doctor</SelectItem>
+            <SelectItem value="RECEPTIONIST">Receptionist</SelectItem>
           </SelectContent>
         </Select>
       </div>

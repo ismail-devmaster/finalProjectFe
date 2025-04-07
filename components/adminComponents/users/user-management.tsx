@@ -21,41 +21,30 @@ import { DeleteConfirmationDialog } from "./delete-confirmation-dialog";
 import { UserDialog } from "./user-dialog";
 import type { User } from "@/types/user";
 
-// Mock data - in a real app, this would come from an API
-const users: User[] = [
-  {
-    id: `USR-${21}`,
-    name: "Porter Schaden",
-    email: "Jarret.Schiller@gmail.com",
-    avatar: "/placeholder.svg",
-    role: "patient",
-    status: "active",
-    appointments: 2,
-    lastAppointment: "2025-12-02T00:00:00.000Z",
-  },
-  {
-    id: `USR-${9}`,
-    name: "Keith Stamm",
-    email: "Jessy_Will@hotmail.com",
-    avatar: "/placeholder.svg",
-    role: "patient",
-    status: "active",
-    appointments: 3,
-    lastAppointment: "2025-06-19T00:00:00.000Z",
-  },
-  {
-    id: `USR-${15}`,
-    name: "Betsy O'Hara",
-    email: "Vella_Boyle@yahoo.com",
-    avatar: "/placeholder.svg",
-    role: "patient",
-    status: "active",
-    appointments: 1,
-    lastAppointment: "2025-12-14T00:00:00.000Z",
-  },
-];
+import { useEffect } from "react";
+import { admin } from "@/app/api";
 
 export function UserManagement() {
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const data = await admin.getAllUsers()
+        setUsers(data.users);
+        setIsLoading(false);
+      } catch (err) {
+        setError("Failed to fetch users");
+        setIsLoading(false);
+        console.error("Error fetching users:", err);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
@@ -71,7 +60,7 @@ export function UserManagement() {
 
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesRole = roleFilter === "all" || user.role === roleFilter;
