@@ -22,14 +22,16 @@ import { UserDialog } from "./user-dialog";
 import type { User } from "@/types/user";
 
 import { useEffect } from "react";
-import { admin } from "@/app/api";
+import { action, admin } from "@/app/api";
 
 export function UserManagement() {
   const [users, setUsers] = useState<User[]>([]);
+  const [actions, setActions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    
     const fetchUsers = async () => {
       try {
         const data = await admin.getAllUsers()
@@ -41,7 +43,18 @@ export function UserManagement() {
         console.error("Error fetching users:", err);
       }
     };
-
+    const fetchActions = async () => {
+      try {
+        const data = await action.getAllActions()
+        setActions(data.actions);
+        setIsLoading(false);
+      } catch (err) {
+        setError("Failed to fetch users");
+        setIsLoading(false);
+        console.error("Error fetching users:", err);
+      }
+    };
+    fetchActions();
     fetchUsers();
   }, []);
 
@@ -150,7 +163,7 @@ export function UserManagement() {
                   />
                   <BulkActions selectedCount={selectedUsers.length} />
                 </div>
-                <UserTable
+                  <UserTable
                   users={filteredUsers}
                   selectedUsers={selectedUsers}
                   toggleUserSelection={toggleUserSelection}
@@ -158,6 +171,7 @@ export function UserManagement() {
                   onViewProfile={handleViewProfile}
                   onEditUser={handleEditUser}
                   onDeleteUser={handleDeleteUser}
+                  actions={actions}
                 />
               </div>
             </CardContent>
