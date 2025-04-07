@@ -2,20 +2,18 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { auth } from "@/app/api";
 import {
   Calendar,
-  CheckSquare,
-  CreditCard,
-  Home,
   Menu,
-  Moon,
-  Package,
-  SmileIcon as Tooth,
-  Sun,
   Users,
+  Sun,
+  Moon,
+  LogOut,
+  ClipboardList
 } from "lucide-react";
 import { useTheme } from "next-themes";
 
@@ -39,7 +37,7 @@ const navItems: NavItem[] = [
   {
     title: "Dashboard",
     href: "/admin",
-    icon: Home,
+    icon: Calendar,
   },
   {
     title: "Users",
@@ -54,27 +52,45 @@ const navItems: NavItem[] = [
   {
     title: "Payments",
     href: "/admin/payments",
-    icon: CreditCard,
+    icon: ClipboardList,
   },
   {
     title: "Inventory",
     href: "/admin/inventory",
-    icon: Package,
+    icon: ClipboardList,
   },
   {
     title: "Tasks",
     href: "/admin/tasks",
-    icon: CheckSquare,
+    icon: ClipboardList,
   },
 ];
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { setTheme, theme } = useTheme();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
 
+  const handleLogout = async () => {
+    try {
+      await auth.logout();
+      router.push("/");
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [theme]);
+
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className={`flex min-h-screen flex-col ${theme === "dark" ? "dark" : ""}`}>
       <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
@@ -85,8 +101,13 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           </SheetTrigger>
           <SheetContent side="left" className="w-72">
             <div className="flex items-center gap-2 pb-4">
-              <Tooth className="h-6 w-6 text-primary" />
-              <span className="text-lg font-semibold">Remdani Dental Care</span>
+              <Avatar className="h-8 w-8">
+                <AvatarImage src="/placeholder.svg" alt="Receptionist" />
+                <AvatarFallback>RC</AvatarFallback>
+              </Avatar>
+              <span className="text-lg font-semibold">
+                RAMDANI DENTAL CENTER
+              </span>
             </div>
             <nav className="grid gap-2 text-lg font-medium">
               {navItems.map((item, index) => {
@@ -112,7 +133,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         </Sheet>
         <div className="flex items-center gap-2">
           <span className="text-lg font-semibold md:text-xl">
-            Remdani Dental Care
+            RAMDANI DENTAL CENTER
           </span>
         </div>
         <div className="flex-1" />
@@ -134,15 +155,12 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <DropdownMenuItem onClick={() => setTheme("dark")}>
               Dark
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme("system")}>
-              System
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <Avatar>
-          <AvatarImage src="/placeholder.svg" alt="Avatar" />
-          <AvatarFallback>AD</AvatarFallback>
-        </Avatar>
+        <Button variant="outline" size="icon" onClick={handleLogout}>
+          <LogOut className="h-5 w-5" />
+          <span className="sr-only">Logout</span>
+        </Button>
       </header>
       <div className="flex flex-1">
         <aside className="hidden w-64 border-r bg-background md:block">
