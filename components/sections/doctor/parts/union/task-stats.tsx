@@ -21,7 +21,9 @@ export function TaskStats({ tasks, completedTasks }: TaskStatsProps) {
           <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{tasks.length}</div>
+          <div className="text-2xl font-bold">
+            {tasks.length + completedTasks.length}
+          </div>
           <p className="text-xs text-muted-foreground">
             All tasks in the system
           </p>
