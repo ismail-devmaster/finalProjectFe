@@ -58,7 +58,7 @@ export function AppointmentsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh] flex flex-col">
+      <DialogContent className="sm:max-w-[600px] h-[80vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">Appointments</DialogTitle>
           <DialogDescription>
@@ -68,7 +68,7 @@ export function AppointmentsDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-grow mt-4">
+        <ScrollArea className="h-[calc(80vh-180px)] mt-4">
           <div className="space-y-4 p-1">
             {appointments.length > 0 ? (
               appointments.map((appointment) => (
