@@ -3,7 +3,7 @@ import { z } from "zod"
 
 export const completeProfileSchema = z.object({
   dateOfBirth: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format (YYYY-MM-DD)"),
-  phone: z.string().regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number"),
+  phone: z.string().regex(/^0[5-7]\d{8}$/, "Invalid phone number"),
   sexId: z.enum(["male", "female"], { invalid_type_error: "Invalid sex" }),
 })
 

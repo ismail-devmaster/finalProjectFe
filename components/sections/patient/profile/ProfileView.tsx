@@ -64,9 +64,6 @@ const UserProfile = ({ userInfo }: { userInfo: PersonalInfoType }) => (
       <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
         {userInfo.firstName} {userInfo.lastName}
       </h2>
-      <p className="text-gray-500 dark:text-gray-400 text-lg">
-        Patient ID: {userInfo.patientId}
-      </p>
     </div>
   </div>
 );

@@ -143,7 +143,7 @@ export function ServicesSection() {
         <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div className="relative h-[400px] rounded-lg overflow-hidden">
             <img
-              src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?q=80&w=1974&auto=format&fit=crop"
+              src="/service.jpg"
               alt="Modern dental equipment"
               className="absolute inset-0 w-full h-full object-cover"
             />
