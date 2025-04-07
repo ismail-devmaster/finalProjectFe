@@ -21,7 +21,7 @@ import { TaskFormDialog } from "./union/task-form-dialog";
 
 // Import the API function from your api.ts file
 import { allTasks, auth, user } from "@/app/api";
-import { IUser } from "@/types/user";
+import { User } from "@/types/user";
 
 export function TaskManagement() {
   // Replace mock data with state initialized to an empty array
@@ -29,7 +29,7 @@ export function TaskManagement() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [myTasks, setMyTasks] = useState<Task[]>([]);
   const [completedTasks, setCompletedTasks] = useState<Task[]>([]);
-  const [staff, setStaff] = useState<IUser[]>([]);
+  const [staff, setStaff] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [timeFilter, setTimeFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");
@@ -88,17 +88,20 @@ export function TaskManagement() {
 
   const fetchStaff = useCallback(async () => {
     try {
-      const  staff  = await user.getReceptionistsAndSelectedDoctor(myId?.id!);
+      if (!myId) return;
+      const staff = await user.getReceptionistsAndSelectedDoctor(myId.id);
       setStaff(staff);
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
-  }, []);
+  }, [myId]);
 
   // 2. Modify useEffect to use the extracted functions
   useEffect(() => {
     fetchMyId();
-    fetchStaff();
+    if (myId) {
+      fetchStaff();
+    }
     fetchMyTasks();
     fetchMyCompletedTasks();
     fetchAllTasks();
@@ -108,6 +111,7 @@ export function TaskManagement() {
     fetchMyId,
     fetchMyTasks,
     fetchStaff,
+    myId,
   ]);
   const filteredTasks = tasks.filter((task) => {
     const matchesSearch =
