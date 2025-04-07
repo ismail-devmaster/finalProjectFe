@@ -54,6 +54,8 @@ const ReceptionistDashboardComponent = ({
       href: "/staff/receptionist/newAppointments",
       icon: Calendar,
     },
+    { title: "Tasks", href: "/staff/receptionist/tasks", icon: Users },
+    
   ];
 
   useEffect(() => {

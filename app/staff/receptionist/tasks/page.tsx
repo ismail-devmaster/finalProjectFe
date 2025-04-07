@@ -13,17 +13,17 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import type { Task, TaskFormData } from "@/types/task";
-import { TaskStats } from "./union/task-stats";
+import { TaskStats } from "@/components/receptionistComponents/tasks/task-stats";
 import { MyTasksTable } from "@/components/adminComponents/tasks/my-tasks-table";
 import { CompletedTasksTable } from "@/components/adminComponents/tasks/completed-tasks-table";
 import { TaskDetailsDialog } from "@/components/adminComponents/tasks/task-details-dialog";
-import { TaskFormDialog } from "./union/task-form-dialog";
+import { TaskFormDialog } from "@/components/receptionistComponents/tasks/task-form-dialog";
 
 // Import the API function from your api.ts file
 import { allTasks, auth, user } from "@/app/api";
 import { IUser } from "@/types/user";
 
-export function TaskManagement() {
+export default function TaskManagement() {
   // Replace mock data with state initialized to an empty array
   const [myId, setMyId] = useState<{ id: number } | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -88,7 +88,7 @@ export function TaskManagement() {
 
   const fetchStaff = useCallback(async () => {
     try {
-      const  staff  = await user.getReceptionistsAndSelectedDoctor(myId?.id!);
+      const  staff  = await user.getAllReceptionistsAndDoctors()
       setStaff(staff);
     } catch (error) {
       console.error("Error fetching data: ", error);
