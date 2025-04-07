@@ -12,7 +12,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
 import { PaymentStats } from "./payment-stats";
 import { PaymentTable } from "./payment-table";
-import { CashFlowTab } from "./cash-flow-tab";
 import { AuditTrailTab } from "./audit-trail-tab";
 import { ReceiptDialog } from "./receipt-dialog";
 import { DetailsDialog } from "./details-dialog";
@@ -401,7 +400,6 @@ export function PaymentManagement() {
       <Tabs defaultValue="all-payments" className="space-y-4">
         <TabsList>
           <TabsTrigger value="all-payments">All Payments</TabsTrigger>
-          <TabsTrigger value="cash-flow">Cash Flow</TabsTrigger>
           <TabsTrigger value="audit-trail">Audit Trail</TabsTrigger>
         </TabsList>
 
@@ -424,10 +422,6 @@ export function PaymentManagement() {
               />
             </CardContent>
           </Card>
-        </TabsContent>
-
-        <TabsContent value="cash-flow" className="space-y-4">
-          <CashFlowTab payments={payments} />
         </TabsContent>
 
         <TabsContent value="audit-trail" className="space-y-4">
