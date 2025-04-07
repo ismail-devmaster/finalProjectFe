@@ -17,7 +17,7 @@ import { TaskStats } from "./union/task-stats";
 import { MyTasksTable } from "@/components/adminComponents/tasks/my-tasks-table";
 import { CompletedTasksTable } from "@/components/adminComponents/tasks/completed-tasks-table";
 import { TaskDetailsDialog } from "@/components/adminComponents/tasks/task-details-dialog";
-import { TaskFormDialog } from "@/components/adminComponents/tasks/task-form-dialog";
+import { TaskFormDialog } from "./union/task-form-dialog";
 
 // Import the API function from your api.ts file
 import { allTasks, auth, user } from "@/app/api";
