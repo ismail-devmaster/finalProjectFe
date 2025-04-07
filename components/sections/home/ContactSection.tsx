@@ -32,8 +32,8 @@ export function ContactSection() {
             <CardContent className="flex flex-col items-center p-6 text-center">
               <Clock className="h-12 w-12 text-blue-600 mb-4" />
               <h3 className="text-xl font-semibold mb-2">Hours</h3>
-              <p className="text-gray-500 dark:text-gray-400">Sun-Thu: 9am-4pm</p>
-              <p className="text-gray-500 dark:text-gray-400">Sat: 9am-2pm</p>
+              <p className="text-gray-500 dark:text-gray-400">Sun-Thu: 9am-8pm</p>
+              
             </CardContent>
           </Card>
         </div>
