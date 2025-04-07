@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { InventoryStats } from "@/components/adminComponents/inventory/inventory-stats";
 import { InventoryTabs } from "@/components/adminComponents/inventory/inventory-tabs";
-import { ItemFormDialog } from "@/components/adminComponents/inventory/item-form-dialog";
+import { ItemFormDialog } from "./item-form-dialog";
 import { ItemDetailsDialog } from "@/components/adminComponents/inventory/item-details-dialog";
 import { inventory } from "@/app/api";
 import { category } from "@/app/api";
@@ -27,12 +27,7 @@ export function InventoryManagement() {
 
   // Form state for adding/editing items
   const [formData, setFormData] = useState({
-    name: "",
-    category: "",
-    quantity: 0,
-    unit: "",
-    status: "",
-    expiryDate: "",
+    quantity: 0
   });
 
   const handleViewDetails = (item: any) => {
@@ -43,12 +38,7 @@ export function InventoryManagement() {
   const handleAddItem = () => {
     setIsEditing(false);
     setFormData({
-      name: "",
-      category: "",
-      quantity: 0,
-      unit: "",
-      status: "",
-      expiryDate: "",
+      quantity: 0
     });
     setIsItemDialogOpen(true);
   };
@@ -83,79 +73,53 @@ export function InventoryManagement() {
   const handleEditItem = (item: any) => {
     setIsEditing(true);
     setSelectedItem(item);
-
-    // Format the expiry date for the input field
-    let formattedExpiryDate = "";
-    if (item.expiryDate) {
-      const date = new Date(item.expiryDate);
-      formattedExpiryDate = date.toISOString().split("T")[0];
-    }
-
     setFormData({
-      name: item.name,
-      category: item.category,
-      quantity: item.quantity,
-      unit: item.unit,
-      status: item.status,
-      expiryDate: formattedExpiryDate,
+      quantity: item.quantity
     });
-
     setIsItemDialogOpen(true);
   };
 
   const handleFormChange = (field: string, value: string) => {
-    setFormData({
-      ...formData,
-      [field]: value,
-    });
+    if (field === 'quantity') {
+      setFormData({
+        quantity: Number(value)
+      });
+    }
   };
 
   const handleSaveItem = async () => {
     // Validate form
-    if (
-      !formData.name ||
-      !formData.category ||
-      !formData.quantity ||
-      Number(formData.quantity) < 0 ||
-      !formData.unit 
-    ) {
+    if (!formData.quantity || Number(formData.quantity) < 0) {
       toast({
         title: "Error",
-        description: "Please fill in all required fields",
+        description: "Please enter a valid quantity",
         variant: "destructive",
       });
       return;
     }
 
-    // Prepare data for API
-    const dataToSend = {
-      name: formData.name,
-      category: formData.category,
-      quantity: Number(formData.quantity),
-      unit: formData.unit,
-      expiryDate: formData.expiryDate 
-        ? new Date(formData.expiryDate).toISOString() 
-        : null
-    };
-
     try {
       if (isEditing && selectedItem) {
         // Update existing item
-        await inventory.updateInventory(selectedItem.id, dataToSend);
+        await inventory.updateInventory(selectedItem.id, {
+          quantity: Number(formData.quantity)
+        });
         const { inventories } = await inventory.getAllInventories();
         setInventoryItems(inventories);
         toast({
           title: "Item Updated",
-          description: `${formData.name} has been updated successfully`,
+          description: "Quantity has been updated successfully",
         });
       } else {
         // Add new item
-        await inventory.createInventory(dataToSend);
+        await inventory.createInventory({
+          quantity: Number(formData.quantity)
+        });
         const { inventories } = await inventory.getAllInventories();
         setInventoryItems(inventories);
         toast({
           title: "Item Added",
-          description: `${formData.name} has been added to inventory`,
+          description: "New item has been added to inventory",
         });
       }
       setIsItemDialogOpen(false);
@@ -206,10 +170,6 @@ export function InventoryManagement() {
         <h1 className="text-3xl font-bold tracking-tight">
           Inventory Management
         </h1>
-        <Button onClick={handleAddItem}>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Item
-        </Button>
       </div>
 
       <InventoryStats
@@ -245,8 +205,6 @@ export function InventoryManagement() {
         onOpenChange={setIsItemDialogOpen}
         isEditing={isEditing}
         formData={formData}
-        categories={categories}
-        units={units}
         onFormChange={handleFormChange}
         onSave={handleSaveItem}
       />
