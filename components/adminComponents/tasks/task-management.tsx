@@ -342,7 +342,7 @@ export function TaskManagement() {
         </Button>
       </div>
 
-      <TaskStats tasks={tasks} />
+      <TaskStats tasks={tasks} completedTasks={completedTasks}/>
 
       <Tabs defaultValue="all-tasks" className="space-y-4">
         <TabsList>

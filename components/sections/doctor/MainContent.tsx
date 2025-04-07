@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import Appointments from "@/components/sections/doctor/parts/appointments";
 import Patients from "@/components/sections/doctor/parts/patients";
-import Tasks from "./parts/tasks";
+import { TaskManagement } from "./parts/tasks";
 
 interface Patient {
   id: number;
@@ -106,6 +106,9 @@ export default function MainContent({
 
           <TabsContent value="patients">
             <Patients patients={patients} />
+          </TabsContent>
+          <TabsContent value="tasks">
+            <TaskManagement/>
           </TabsContent>
         </Tabs>
       </motion.div>

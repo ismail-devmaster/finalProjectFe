@@ -611,7 +611,7 @@ export default function Appointments({ appointments }: AppointmentsProps) {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="h-8"
+                            className="h-8 bg-emerald-500 text-white hover:bg-emerald-600 ml-auto"
                           >
                             Completed
                           </Button>
