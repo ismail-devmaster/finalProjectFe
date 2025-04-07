@@ -64,6 +64,7 @@ interface Appointment {
       id: number;
       type: string;
     };
+    totalPayment?: number;
   };
   status: {
     id: number;
@@ -75,6 +76,10 @@ interface Appointment {
 interface Patient {
   firstName: string;
   lastName: string;
+  user?: {
+    firstName: string;
+    lastName: string;
+  };
   dateOfBirth: string;
   email: string;
   phone: string;
@@ -574,11 +579,19 @@ export default function Appointments({ appointments }: AppointmentsProps) {
             <DialogTitle className="text-2xl font-bold">
               Payment History
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="flex flex-col gap-1">
               {selectedAppointment && (
                 <>
-                  All payments for {selectedAppointment.patient.user.firstName}{" "}
-                  {selectedAppointment.patient.user.lastName}
+                  <span>
+                    All payments for{" "}
+                    {selectedAppointment.patient.user?.firstName || selectedAppointment.patient.firstName}{" "}
+                    {selectedAppointment.patient.user?.lastName || selectedAppointment.patient.lastName}
+                  </span>
+                  {selectedAppointment.action.totalPayment !== undefined && (
+                    <span className="font-medium">
+                      Total Payment: ${selectedAppointment.action.totalPayment.toFixed(2)}
+                    </span>
+                  )}
                 </>
               )}
             </DialogDescription>
