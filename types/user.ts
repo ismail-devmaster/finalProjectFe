@@ -1,18 +1,6 @@
-export interface User {
-  id: string
-  name: string
-  email: string
-  avatar: string
-  role: "patient" | "doctor" | "receptionist" | "admin"
-  status: "active" | "inactive"
-  appointments: number
-  lastAppointment: string | null
-}
-
-
 export type UserRole = "ADMIN" | "DOCTOR" | "RECEPTIONIST" | "PATIENT" | "USER";
 
-export interface IUser {
+export interface User {
   id: number;
   email: string;
   password: string;
@@ -29,5 +17,8 @@ export interface IUser {
   role: UserRole;
   createdAt: Date;
   updatedAt: Date;
+  avatar?: string;
+  status?: "active" | "inactive";
+  appointments?: number;
+  lastAppointment?: Date | null;
 }
-

@@ -13,16 +13,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import type { User } from "@/types/user"
+import type { User, UserRole } from "@/types/user"
 
 interface UserTableProps {
   users: User[]
-  selectedUsers: string[]
-  toggleUserSelection: (userId: string) => void
+  selectedUsers: number[]
+  toggleUserSelection: (userId: number) => void
   toggleAllUsers: () => void
   onViewProfile: (user: User) => void
   onEditUser: (user: User) => void
-  onDeleteUser: (userId: string) => void
+  onDeleteUser: (userId: number) => void
 }
 
 export function UserTable({
@@ -47,8 +47,9 @@ export function UserTable({
             </TableHead>
             <TableHead>User</TableHead>
             <TableHead>Role</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Phone</TableHead>
             <TableHead>Appointments</TableHead>
-            <TableHead>Last Appointment</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -71,11 +72,11 @@ export function UserTable({
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.avatar} alt={user.firstName} />
+                      <AvatarImage src={user.avatar || ""} alt={user.firstName} />
                       <AvatarFallback>{user.firstName.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <div>
-                      <div className="font-medium">{user.name}</div>
+                    <div className="font-medium">{user.firstName} {user.lastName}</div>
                       <div className="text-xs text-muted-foreground">{user.email}</div>
                     </div>
                   </div>
@@ -84,17 +85,25 @@ export function UserTable({
                   <Badge
                     variant="outline"
                     className={
-                      user.role === "doctor"
+                      user.role === "DOCTOR"
                         ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
-                        : user.role === "receptionist"
+                        : user.role === "RECEPTIONIST"
                           ? "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300"
-                          : ""
+                          : user.role === "PATIENT" || user.role === "USER"
+                            ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+                            : ""
                     }
                   >
                     {user.role}
                   </Badge>
                 </TableCell>
-                <TableCell>{user.appointments}</TableCell>
+                <TableCell>
+                  <Badge variant={user.isVerified ? "default" : "outline"}>
+                    {user.isVerified ? "Verified" : "Unverified"}
+                  </Badge>
+                </TableCell>
+                <TableCell>{user.phone || "N/A"}</TableCell>
+                <TableCell>{user.appointments || 0}</TableCell>
                 <TableCell>
                   {user.lastAppointment
                     ? new Date(user.lastAppointment).toLocaleDateString("en-US", {
@@ -130,4 +139,3 @@ export function UserTable({
     </div>
   )
 }
-

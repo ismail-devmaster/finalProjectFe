@@ -45,7 +45,7 @@ export function UserManagement() {
     fetchUsers();
   }, []);
 
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -56,19 +56,22 @@ export function UserManagement() {
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
-  const [userToDelete, setUserToDelete] = useState<string | null>(null);
+  const [userToDelete, setUserToDelete] = useState<number | null>(null);
 
   const filteredUsers = users.filter((user) => {
     const matchesSearch =
       user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesRole = roleFilter === "all" || user.role === roleFilter;
+  const matchesRole = roleFilter === "all" || 
+    (roleFilter === "patient" && user.role === "PATIENT") ||
+    (roleFilter === "doctor" && user.role === "DOCTOR") ||
+    (roleFilter === "receptionist" && user.role === "RECEPTIONIST");
 
     return matchesSearch && matchesRole;
   });
 
-  const toggleUserSelection = (userId: string) => {
+  const toggleUserSelection = (userId: number) => {
     if (selectedUsers.includes(userId)) {
       setSelectedUsers(selectedUsers.filter((id) => id !== userId));
     } else {
@@ -94,7 +97,7 @@ export function UserManagement() {
     setIsDialogOpen(true);
   };
 
-  const handleDeleteUser = (userId: string) => {
+  const handleDeleteUser = (userId: number) => {
     setUserToDelete(userId);
     setIsConfirmDeleteOpen(true);
   };
@@ -169,7 +172,7 @@ export function UserManagement() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <RoleSpecificTable
+                  <RoleSpecificTable
                 users={users}
                 role="patient"
                 onViewProfile={handleViewProfile}
