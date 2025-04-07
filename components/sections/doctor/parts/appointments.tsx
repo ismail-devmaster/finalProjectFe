@@ -37,7 +37,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { appointment } from "@/app/api";
+import { action, appointment } from "@/app/api";
 import { payment } from "@/app/api";
 import {
   Calendar,
@@ -203,6 +203,9 @@ export default function Appointments({ appointments }: AppointmentsProps) {
     );
     setShowAppointments(true);
   };
+  const isCompleted = async (actionId: number) => {
+    const res = await action.updateAction(actionId, {isCompleted:true})}
+
   const handlePaymentsClick = async (actionId: number) => {
     const res = await payment.getPaymentsByActionId(actionId);
     setPatientPayments(res.payments);
@@ -588,9 +591,19 @@ export default function Appointments({ appointments }: AppointmentsProps) {
                     {selectedAppointment.patient.user?.lastName || selectedAppointment.patient.lastName}
                   </span>
                   {selectedAppointment.action.totalPayment !== undefined && (
-                    <span className="font-medium">
-                      Total Payment: ${selectedAppointment.action.totalPayment.toFixed(2)}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">
+                        Total Payment: ${selectedAppointment.action.totalPayment.toFixed(2)}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8"
+                        onClick={() =>handleIsCompleted(selectedAppointment.actionId)}
+                      >
+                        Completed
+                      </Button>
+                    </div>
                   )}
                 </>
               )}
