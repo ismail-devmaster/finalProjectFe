@@ -5,7 +5,6 @@ import { AboutSection } from "@/components/sections/home/AboutSection";
 import { ServicesSection } from "@/components/sections/home/ServicesSection";
 import { ContactSection } from "@/components/sections/home/ContactSection";
 import { Footer } from "@/components/sections/home/FooterBar";
-import { BookingSection } from "@/components/sections/home/BookingSection";
 import { FaqSection } from "@/components/sections/home/FAQ";
 import { GoToTop } from "@/components/sections/home/GoTop";
 import { BeforeAfterSection } from "@/components/sections/home/BeforeAfter";
@@ -21,7 +20,6 @@ export default function Home(): React.ReactElement {
         <BeforeAfterSection/>
         <Testimonials />
         <ContactSection />
-        <BookingSection />
         <FaqSection/>
       </main>
       <Footer />

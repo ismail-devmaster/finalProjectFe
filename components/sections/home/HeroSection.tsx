@@ -1,13 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Calendar } from "lucide-react";
+import Link from "next/link";
 
 export function HeroSection() {
-  const scrollToBooking = () => {
-    const bookingSection = document.getElementById("booking")
-    if (bookingSection) {
-      bookingSection.scrollIntoView({ behavior: "smooth" })
-    }
-  }
+ 
 
   return (
     <section
@@ -34,11 +30,12 @@ export function HeroSection() {
             </p>
           </div>
           <div className="space-x-4">
-            
-            <Button  className="bg-dental-600 hover:bg-dental-500 animate-float" onClick={scrollToBooking}>
+            <Link  href="/patient">
+            <Button  className="bg-dental-600 hover:bg-dental-500 animate-float" >
               <Calendar className="mr-2 h-4 w-4" />
               Book Appointment
             </Button>
+            </Link>
           </div>
         </div>
       </div>
