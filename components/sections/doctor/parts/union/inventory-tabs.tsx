@@ -13,7 +13,6 @@ interface InventoryTabsProps {
   categories: any[];
   onViewDetails: (item: any) => void;
   onEditItem: (item: any) => void;
-  onDeleteItem: (item: any) => void;
 }
 
 export function InventoryTabs({
@@ -21,7 +20,6 @@ export function InventoryTabs({
   categories,
   onViewDetails,
   onEditItem,
-  onDeleteItem,
 }: InventoryTabsProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -61,7 +59,6 @@ export function InventoryTabs({
           onStatusFilterChange={setStatusFilter}
           onViewDetails={onViewDetails}
           onEditItem={onEditItem}
-          onDeleteItem={onDeleteItem}
         />
       </TabsContent>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Filter, MoreHorizontal, Trash2 } from "lucide-react";
+import { Search, Filter, MoreHorizontal } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -56,7 +56,6 @@ interface InventoryTableProps {
   onStatusFilterChange: (value: string) => void;
   onViewDetails: (item: any) => void;
   onEditItem: (item: any) => void;
-  onDeleteItem: (item: any) => void;
 }
 
 export function InventoryTable({
@@ -70,7 +69,6 @@ export function InventoryTable({
   onStatusFilterChange,
   onViewDetails,
   onEditItem,
-  onDeleteItem,
 }: InventoryTableProps) {
   return (
     <Card>
@@ -201,36 +199,6 @@ export function InventoryTable({
                             <DropdownMenuItem onClick={() => onEditItem(item)}>
                               Edit Item
                             </DropdownMenuItem>
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <DropdownMenuItem
-                                  onSelect={(e) => e.preventDefault()}
-                                  className="text-destructive focus:text-destructive"
-                                >
-                                  <Trash2 className="mr-2 h-4 w-4" />
-                                  Delete Item
-                                </DropdownMenuItem>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>
-                                    Confirm Deletion
-                                  </AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    Before deleting this item, please confirm your action. Are you sure you want to permanently delete this? This action cannot be undone.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction
-                                    onClick={() => onDeleteItem(item)}
-                                    className="bg-destructive hover:bg-destructive/90"
-                                  >
-                                    Yes, Delete
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>

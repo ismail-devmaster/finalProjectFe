@@ -5,7 +5,7 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { InventoryStats } from "@/components/adminComponents/inventory/inventory-stats";
-import { InventoryTabs } from "@/components/adminComponents/inventory/inventory-tabs";
+import { InventoryTabs } from "./inventory-tabs";
 import { ItemFormDialog } from "./item-form-dialog";
 import { ItemDetailsDialog } from "@/components/adminComponents/inventory/item-details-dialog";
 import { inventory } from "@/app/api";
