@@ -17,6 +17,7 @@ import type { User, UserRole } from "@/types/user"
 
 interface UserTableProps {
   users: User[]
+  actions: any[]
   selectedUsers: number[]
   toggleUserSelection: (userId: number) => void
   toggleAllUsers: () => void
@@ -27,6 +28,7 @@ interface UserTableProps {
 
 export function UserTable({
   users,
+  actions,
   selectedUsers,
   toggleUserSelection,
   toggleAllUsers,
@@ -103,15 +105,17 @@ export function UserTable({
                   </Badge>
                 </TableCell>
                 <TableCell>{user.phone || "N/A"}</TableCell>
-                <TableCell>{user.appointments || 0}</TableCell>
-                <TableCell>
-                  {user.lastAppointment
-                    ? new Date(user.lastAppointment).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      })
-                    : "N/A"}
-                </TableCell>
+<TableCell>
+  {actions.filter((a: any) => a.patient?.user?.id === user.id)[0]?.appointments?.length || 0}
+</TableCell>
+<TableCell>
+  {actions.filter((a: any) => a.patient?.user?.id === user.id)[0]?.startDate
+    ? new Date(actions.filter((a: any) => a.patient?.user?.id === user.id)[0].startDate).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      })
+    : "N/A"}
+</TableCell>
                 <TableCell className="text-right">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
