@@ -215,7 +215,8 @@ export default function Appointments({ appointments }: AppointmentsProps) {
     setShowAppointments(true);
   };
   const isCompleted = async (actionId: number) => {
-    const res = await action.updateAction(actionId, {isCompleted:true})}
+    const res = await action.updateAction(actionId, { isCompleted: true });
+  };
 
   const handlePaymentsClick = async (actionId: number) => {
     const res = await payment.getPaymentsByActionId(actionId);
@@ -412,8 +413,8 @@ export default function Appointments({ appointments }: AppointmentsProps) {
                         <TableCell className="font-medium">
                           <div className="flex items-center gap-1">
                             <User className="h-3.5 w-3.5 text-violet-500" />
-                            {appointment.patient.firstName}{" "}
-                            {appointment.patient.lastName}
+                            {appointment.patient.user.firstName}{" "}
+                            {appointment.patient.user.lastName}
                           </div>
                         </TableCell>
                         <TableCell>
@@ -494,8 +495,9 @@ export default function Appointments({ appointments }: AppointmentsProps) {
             <DialogDescription>
               {selectedAppointment && (
                 <>
-                  All appointments for {selectedAppointment.patient.firstName}{" "}
-                  {selectedAppointment.patient.lastName}
+                  All appointments for{" "}
+                  {selectedAppointment.patient.user.firstName}{" "}
+                  {selectedAppointment.patient.user.lastName}
                 </>
               )}
             </DialogDescription>
@@ -508,8 +510,8 @@ export default function Appointments({ appointments }: AppointmentsProps) {
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold">
-                    {selectedAppointment.patient.firstName}{" "}
-                    {selectedAppointment.patient.lastName}
+                    {selectedAppointment.patient.user.firstName}{" "}
+                    {selectedAppointment.patient.user.lastName}
                   </h3>
                   <p className="text-sm text-muted-foreground">
                     Treatment: {selectedAppointment.action.appointmentType.type}
@@ -598,13 +600,16 @@ export default function Appointments({ appointments }: AppointmentsProps) {
                 <>
                   <span>
                     All payments for{" "}
-                    {selectedAppointment.patient.user?.firstName || selectedAppointment.patient.firstName}{" "}
-                    {selectedAppointment.patient.user?.lastName || selectedAppointment.patient.lastName}
+                    {selectedAppointment.patient.user?.firstName ||
+                      selectedAppointment.patient.firstName}{" "}
+                    {selectedAppointment.patient.user?.lastName ||
+                      selectedAppointment.patient.lastName}
                   </span>
                   {selectedAppointment.action.totalPayment !== undefined && (
                     <div className="flex items-center gap-2">
                       <span className="font-medium">
-                        Total Payment: ${selectedAppointment.action.totalPayment.toFixed(2)}
+                        Total Payment: $
+                        {selectedAppointment.action.totalPayment.toFixed(2)}
                       </span>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
@@ -618,15 +623,20 @@ export default function Appointments({ appointments }: AppointmentsProps) {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Confirm Completion</AlertDialogTitle>
+                            <AlertDialogTitle>
+                              Confirm Completion
+                            </AlertDialogTitle>
                             <AlertDialogDescription>
-                              Are you sure you want to mark this payment as completed?
+                              Are you sure you want to mark this payment as
+                              completed?
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction 
-                              onClick={() => isCompleted(selectedAppointment.actionId)}
+                            <AlertDialogAction
+                              onClick={() =>
+                                isCompleted(selectedAppointment.actionId)
+                              }
                             >
                               Confirm
                             </AlertDialogAction>
