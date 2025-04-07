@@ -88,7 +88,7 @@ export function TaskManagement() {
 
   const fetchStaff = useCallback(async () => {
     try {
-      const staff = await user.getStaff();
+      const  staff  = await user.getReceptionistsAndSelectedDoctor(4);
       setStaff(staff);
     } catch (error) {
       console.error("Error fetching data: ", error);

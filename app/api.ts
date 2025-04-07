@@ -37,6 +37,8 @@ export const action = {
 
 export const user = {
   getStaff: () => request("get", "/users/staff"),
+  getReceptionistsAndSelectedDoctor: (doctorId:number) => request("get", `/users/receptionists-and-doctor/${doctorId}`),
+  getAllReceptionistsAndDoctors: () => request("get", "/users/receptionists-and-doctors"),
 };
 
 export const admin = {
