@@ -3,7 +3,7 @@
 import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { CalendarIcon, Users } from "lucide-react";
+import { CalendarIcon, ClipboardList, Users } from "lucide-react";
 // Import the real appointment API from your appointment.ts file
 interface SideBareProps {
   isSidebarOpen: boolean;
@@ -47,7 +47,7 @@ export default function SideBare({
               className="w-full justify-start"
               onClick={() => setActiveTab("tasks")}
             >
-              <Users className="mr-2 h-4 w-4" />
+              <ClipboardList className="mr-2 h-4 w-4" />
               Tasks
             </Button>
           </nav>
