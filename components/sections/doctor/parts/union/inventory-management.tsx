@@ -185,7 +185,6 @@ export function InventoryManagement() {
         categories={categories}
         onViewDetails={handleViewDetails}
         onEditItem={handleEditItem}
-        onDeleteItem={handleDeleteItem}
       />
 
       {selectedItem && (
