@@ -6,6 +6,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import Appointments from "@/components/sections/doctor/parts/appointments";
 import Patients from "@/components/sections/doctor/parts/patients";
 import { TaskManagement } from "./parts/tasks";
+import { InventoryManagement } from "./parts/union/inventory-management";
 
 interface Patient {
   id: number;
@@ -109,6 +110,9 @@ export default function MainContent({
           </TabsContent>
           <TabsContent value="tasks">
             <TaskManagement/>
+          </TabsContent>
+          <TabsContent value="inventory">
+            <InventoryManagement/>
           </TabsContent>
         </Tabs>
       </motion.div>
