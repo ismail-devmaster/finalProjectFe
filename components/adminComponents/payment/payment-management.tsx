@@ -80,9 +80,9 @@ export function PaymentManagement() {
       </head>
       <body>
         <div class="header">
-          <h2>DentalCare Clinic</h2>
-          <p>123 Dental Street, Suite 100</p>
-          <p>Phone: (555) 123-4567</p>
+          <h2>Remdani Dental Center</h2>
+          <p>Blida, Ouled Ya3ich</p>
+          <p>Phone: +213 5 41 93 09 17</p>
         </div>
 
         <div class="patient-info">
@@ -194,7 +194,7 @@ export function PaymentManagement() {
         </div>
 
         <div class="footer">
-          <p>Thank you for choosing DentalCare Clinic!</p>
+          <p>Thank you for choosing Remdani Dental Center!</p>
         </div>
       </body>
       </html>
@@ -221,12 +221,12 @@ export function PaymentManagement() {
     // Add header information
     doc.setFontSize(18);
     doc.setTextColor(40, 40, 40);
-    doc.text("DentalCare Clinic", x, y, { align: "center" });
+    doc.text("Remdani Dental Center", x, y, { align: "center" });
     y += 8;
     doc.setFontSize(12);
-    doc.text("123 Dental Street, Suite 100", x, y, { align: "center" });
+    doc.text("Blida, Ouled Ya3ich", x, y, { align: "center" });
     y += 6;
-    doc.text("Phone: (555) 123-4567", x, y, { align: "center" });
+    doc.text("Phone: +213 5 41 93 09 17", x, y, { align: "center" });
 
     // Draw a line separator
     y += 10;
@@ -362,7 +362,7 @@ export function PaymentManagement() {
     y += 20;
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
-    doc.text("Thank you for choosing DentalCare Clinic!", x, y, {
+    doc.text("Thank you for choosing Remdani Dental Center!", x, y, {
       align: "center",
     });
 
