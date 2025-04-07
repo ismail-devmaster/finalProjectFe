@@ -43,9 +43,9 @@ export function Footer() {
               </ul>
             </ul>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-4 ">
             <h4 className="text-lg font-semibold font-playfair">Connect</h4>
-            <div className="flex space-x-4">
+            <div className="flex space-x-4 ">
               <a
                 href="https://www.facebook.com/p/Ramdani-dental-center-100028732556438/"
                 target="_blank"
@@ -64,22 +64,7 @@ export function Footer() {
               </a>
             </div>
           </div>
-          <div className="space-y-4">
-            <h4 className="text-lg font-semibold font-playfair">Newsletter</h4>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Subscribe to our newsletter for updates and dental care tips.
-            </p>
-            <div className="flex space-x-2">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 rounded-md border dark:border-gray-700 dark:bg-gray-800 px-3 py-2 text-sm"
-              />
-              <Button className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600">
-                Subscribe
-              </Button>
-            </div>
-          </div>
+         
         </div>
         <div className="mt-6 border-t dark:border-gray-800 pt-6 text-center text-sm text-gray-500 dark:text-gray-400">
           © {new Date().getFullYear()} Ramdani Dental Center. All rights reserved.
