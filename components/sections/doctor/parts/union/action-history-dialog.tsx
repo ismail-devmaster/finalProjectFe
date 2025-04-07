@@ -35,6 +35,7 @@ interface Patient {
 interface Action {
   id: number;
   patientId: number;
+  totalPayment: number;
   appointmentType: {
     type: string;
   };
@@ -235,6 +236,7 @@ export function ActionHistoryDialog({
           open={isPaymentsDialogOpen}
           onOpenChange={setIsPaymentsDialogOpen}
           payments={payments}
+          totalPayment={selectedAction?.totalPayment}
           actionTitle={selectedAction?.appointmentType.type || ""}
         />
       </DialogContent>

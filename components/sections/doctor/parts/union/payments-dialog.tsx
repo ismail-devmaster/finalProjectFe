@@ -33,6 +33,7 @@ interface PaymentsDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   payments: Payment[];
+  totalPayment?: number;
   actionTitle?: string;
 }
 
@@ -40,6 +41,7 @@ export function PaymentsDialog({
   open,
   onOpenChange,
   payments,
+  totalPayment,
   actionTitle,
 }: PaymentsDialogProps) {
   const getStatusBadgeVariant = (status: string) => {
@@ -62,10 +64,17 @@ export function PaymentsDialog({
       <DialogContent className="sm:max-w-[600px] max-h-[80vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">Payments</DialogTitle>
-          <DialogDescription>
-            {actionTitle
-              ? `Payment history for ${actionTitle} treatment`
-              : "Payment history for this treatment"}
+          <DialogDescription className="flex flex-col gap-1">
+            <span>
+              {actionTitle
+                ? `Payment history for ${actionTitle} treatment`
+                : "Payment history for this treatment"}
+            </span>
+            {totalPayment !== undefined && (
+              <span className="font-bold">
+                Total Payment: ${totalPayment.toFixed(2)}
+              </span>
+            )}
           </DialogDescription>
         </DialogHeader>
 
