@@ -84,7 +84,7 @@ export const auth = {
     firstName: string,
     lastName: string,
     dateOfBirth: string,
-    sexId: string,
+    sexId: number,
     medicalHistory: string,
     phone: string
   ) =>

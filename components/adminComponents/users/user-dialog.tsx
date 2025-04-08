@@ -24,6 +24,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import type { User } from "@/types/user";
+import { auth } from "@/app/api";
 
 interface UserDialogProps {
   open: boolean;
@@ -42,7 +43,11 @@ export function UserDialog({
     lastName: editingUser ? editingUser.lastName : "",
     email: editingUser ? editingUser.email : "",
     role: editingUser ? editingUser.role : "",
-    dateOfBirth: editingUser ? (typeof editingUser.dateOfBirth === 'string' ? editingUser.dateOfBirth : "") : "",
+    dateOfBirth: editingUser
+      ? typeof editingUser.dateOfBirth === "string"
+        ? editingUser.dateOfBirth
+        : ""
+      : "",
     phone: editingUser ? editingUser.phone || "" : "",
     sexId: editingUser ? String(editingUser.sexId) || "" : "",
     medicalHistory: editingUser?.patient?.medicalHistory || "",
@@ -58,7 +63,7 @@ export function UserDialog({
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Validate form
@@ -84,7 +89,27 @@ export function UserDialog({
         ? "User has been updated successfully."
         : "User has been created successfully.",
     });
-    console.log();
+    const newPatient = {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      dateOfBirth: formData.dateOfBirth,
+      phone: formData.phone,
+      sexId: Number(formData.sexId),
+      medicalHistory: formData.medicalHistory,
+      password: formData.password,
+      isVerified: true,
+    };
+    await auth.signup(
+      formData.email,
+      formData.password,
+      formData.firstName,
+      formData.lastName,
+      formData.dateOfBirth,
+      Number(formData.sexId),
+      formData.phone,
+      formData.medicalHistory
+    );
 
     // Reset form and close dialog
     setFormData({
