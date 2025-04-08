@@ -607,10 +607,55 @@ export default function Appointments({ appointments }: AppointmentsProps) {
                   </span>
                   {selectedAppointment.action.totalPayment !== undefined && (
                     <div className="flex items-center gap-2">
-                      <span className="font-medium">
-                        Total Payment: $
-                        {selectedAppointment.action.totalPayment.toFixed(2)}
-                      </span>
+                      <div className="flex items-center">
+                        <span className="font-medium mr-2">
+                          Total Payment: $
+                        </span>
+                        <Input
+                          type="number"
+                          className="w-24 h-8 mr-2"
+                          value={selectedAppointment.action.totalPayment.toFixed(
+                            2
+                          )}
+                          onChange={(e) => {
+                            // Create a copy of the selected appointment
+                            const updatedAppointment = {
+                              ...selectedAppointment,
+                            };
+                            // Update the total payment value
+                            updatedAppointment.action = {
+                              ...updatedAppointment.action,
+                              totalPayment: Number.parseFloat(e.target.value),
+                            };
+                            // Update the state
+                            setselectedAppointment(updatedAppointment);
+                          }}
+                        />
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-8 bg-violet-500 text-white hover:bg-violet-600"
+                          onClick={async () => {
+                            try {
+                              await action.updateAction(
+                                selectedAppointment.actionId,
+                                {
+                                  totalPayment:
+                                    selectedAppointment.action.totalPayment,
+                                }
+                              );
+                            } catch (error) {
+                              console.error(
+                                "Error updating total payment:",
+                                error
+                              );
+                              alert("Failed to update total payment");
+                            }
+                          }}
+                        >
+                          Save
+                        </Button>
+                      </div>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button
