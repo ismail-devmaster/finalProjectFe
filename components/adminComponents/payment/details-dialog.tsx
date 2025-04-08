@@ -159,7 +159,7 @@ export function DetailsDialog({
                             year: "numeric",
                           })}
                         </TableCell>
-                        <TableCell>${pay.amount.toFixed(2)}</TableCell>
+                        <TableCell>DA{pay.amount.toFixed(2)}</TableCell>
                         <TableCell>{pay.description}</TableCell>
                         <TableCell>
                           <Badge

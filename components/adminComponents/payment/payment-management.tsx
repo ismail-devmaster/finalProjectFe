@@ -174,7 +174,7 @@ export function PaymentManagement() {
                       day: "numeric",
                       year: "numeric",
                     })}</td>
-                    <td>$${p.amount.toFixed(2)}</td>
+                    <td>DA${p.amount.toFixed(2)}</td>
                     <td>${p.description}</td>
                     <td>
                       <span class="badge ${
@@ -340,7 +340,7 @@ export function PaymentManagement() {
           x,
           y + 7
         );
-        doc.text(`$${p.amount.toFixed(2)}`, x + 45, y + 7);
+        doc.text(`DA${p.amount.toFixed(2)}`, x + 45, y + 7);
         doc.text(p.description, x + 90, y + 7, { maxWidth: 45 });
 
         // Status badge

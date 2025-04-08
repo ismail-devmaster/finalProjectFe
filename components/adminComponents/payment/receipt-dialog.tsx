@@ -53,12 +53,12 @@ export function ReceiptDialog({
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="text-center border-b pb-4">
-            <h3 className="text-xl font-bold">DentalCare Clinic</h3>
+            <h3 className="text-xl font-bold">Remdani Dental Center</h3>
             <p className="text-sm text-muted-foreground">
-              123 Dental Street, Suite 100
+              Blida, Algeria
             </p>
             <p className="text-sm text-muted-foreground">
-              Phone: (555) 123-4567
+              Phone: +213 5 41 93 09 17
             </p>
           </div>
 
@@ -170,7 +170,7 @@ export function ReceiptDialog({
                             year: "numeric",
                           })}
                         </TableCell>
-                        <TableCell>${pay.amount.toFixed(2)}</TableCell>
+                        <TableCell>DA{pay.amount.toFixed(2)}</TableCell>
                         <TableCell>{pay.description}</TableCell>
                         <TableCell>
                           <Badge

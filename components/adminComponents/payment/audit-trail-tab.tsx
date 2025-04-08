@@ -109,7 +109,7 @@ export function AuditTrailTab({ payments }: AuditTrailTabProps) {
                       <span>{entry.action}</span>
                     </div>
                   </TableCell>
-                  <TableCell>${entry.amount.toFixed(2)}</TableCell>
+                  <TableCell>DA{entry.amount.toFixed(2)}</TableCell>
                   <TableCell>{entry.user}</TableCell>
                   <TableCell>
                     {new Date(entry.timestamp).toLocaleDateString("en-US", {

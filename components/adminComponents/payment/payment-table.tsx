@@ -149,7 +149,7 @@ export function PaymentTable({
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell>${payment.amount.toFixed(2)}</TableCell>
+                  <TableCell>DA{payment.amount.toFixed(2)}</TableCell>
                   <TableCell>
                     {new Date(payment.date).toLocaleDateString("en-US", {
                       month: "short",

@@ -4,14 +4,14 @@ import type { Payment } from "@/types/payment"
 
 function formatCurrency(amount: number): string {
   if (amount >= 1000000000) {
-    return `$${(amount / 1000000000).toFixed(2)}B`
+    return `DA${(amount / 1000000000).toFixed(2)}B`
   }
   if (amount >= 1000000) {
-    return `$${(amount / 1000000).toFixed(2)}M`
+    return `DA${(amount / 1000000).toFixed(2)}M`
   }
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'DZD',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   }).format(amount)
