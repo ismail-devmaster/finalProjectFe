@@ -12,18 +12,7 @@ export function BulkActions({ selectedCount }: BulkActionsProps) {
 
   return (
     <div className="flex items-center gap-2">
-      <Button variant="outline" size="sm">
-        <Check className="mr-2 h-4 w-4" />
-        Change Role
-      </Button>
-      <Button variant="outline" size="sm">
-        <Check className="mr-2 h-4 w-4" />
-        Change Status
-      </Button>
-      <Button variant="destructive" size="sm">
-        <Trash className="mr-2 h-4 w-4" />
-        Delete
-      </Button>
+
     </div>
   )
 }

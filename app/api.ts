@@ -45,7 +45,7 @@ export const user = {
 
 export const admin = {
   verify: () => request("get", "/admin/verify"),
-  updateRole: (userId: string, newRole: string) =>
+  updateRole: (userId: number, newRole: string) =>
     request("put", "/admin/update-role", { userId, newRole }),
   deleteUser: (userId: number) => request("delete", `/admin/user/${userId}`),
   getAllPatients: () => request("get", "/admin/patients"),
