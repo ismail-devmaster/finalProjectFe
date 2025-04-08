@@ -5,7 +5,6 @@ import ProfileEdit from "@/components/adminComponents/profile/ProfileEdit";
 import ProfileView from "@/components/adminComponents/profile/ProfileView";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Edit2, User } from "lucide-react";
-import usePatientProfile from "@/hooks/pages/usePatientProfile";
 import useAdminDataProfile from "@/hooks/pages/useAdminProfile";
 
 type TabType = {

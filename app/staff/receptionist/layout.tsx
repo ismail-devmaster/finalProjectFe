@@ -1,7 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Calendar, Menu, Users, Sun, Moon, LogOut, ClipboardList } from "lucide-react";
+import {
+  Calendar,
+  Menu,
+  Users,
+  Sun,
+  Moon,
+  LogOut,
+  ClipboardList,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
@@ -55,7 +63,11 @@ const ReceptionistDashboardComponent = ({
       icon: Calendar,
     },
     { title: "Tasks", href: "/staff/receptionist/tasks", icon: ClipboardList },
-    
+    {
+      title: "Profile",
+      href: "/staff/receptionist",
+      icon: Calendar,
+    },
   ];
 
   useEffect(() => {
