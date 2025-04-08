@@ -49,8 +49,21 @@ export function UserProfileDialog({ user, open, onOpenChange, onEditUser }: User
               <p className="text-sm">{user.role}</p>
             </div>
             <div>
-              <h4 className="text-sm font-medium">age</h4>
-              <p className="text-sm">{}</p>
+              <h4 className="text-sm font-medium">Age</h4>
+              <p className="text-sm">
+                {user.dateOfBirth ? 
+                  (() => {
+                    const birthDate = new Date(user.dateOfBirth);
+                    const today = new Date();
+                    let age = today.getFullYear() - birthDate.getFullYear();
+                    const monthDiff = today.getMonth() - birthDate.getMonth();
+                    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                      age--;
+                    }
+                    return age;
+                  })() 
+                : "N/A"}
+              </p>
             </div>
             <div>
               <h4 className="text-sm font-medium">Sex</h4>
