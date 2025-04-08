@@ -7,6 +7,7 @@ import Appointments from "@/components/sections/doctor/parts/appointments";
 import Patients from "@/components/sections/doctor/parts/patients";
 import { TaskManagement } from "./parts/tasks";
 import { InventoryManagement } from "./parts/union/inventory-management";
+import { Profile } from "./parts/union/profile";
 
 interface Patient {
   id: number;
@@ -109,10 +110,13 @@ export default function MainContent({
             <Patients patients={patients} />
           </TabsContent>
           <TabsContent value="tasks">
-            <TaskManagement/>
+            <TaskManagement />
           </TabsContent>
           <TabsContent value="inventory">
-            <InventoryManagement/>
+            <InventoryManagement />
+          </TabsContent>
+          <TabsContent value="profile">
+            <Profile />
           </TabsContent>
         </Tabs>
       </motion.div>

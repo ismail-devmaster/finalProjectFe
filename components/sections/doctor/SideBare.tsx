@@ -58,6 +58,14 @@ export default function SideBare({
               <Package className="mr-2 h-4 w-4" />
               Inventory
             </Button>
+            <Button
+              variant={activeTab === "profile" ? "default" : "ghost"}
+              className="w-full justify-start"
+              onClick={() => setActiveTab("profile")}
+            >
+              <Users className="mr-2 h-4 w-4" />
+              Profile
+            </Button>
           </nav>
         </motion.aside>
       )}
