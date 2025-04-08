@@ -1,150 +1,69 @@
 "use client";
 
-import { Activity, Calendar, DollarSign, Users } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import type React from "react";
+import ProfileEdit from "@/components/adminComponents/profile/ProfileEdit";
+import ProfileView from "@/components/adminComponents/profile/ProfileView";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Edit2, User } from "lucide-react";
+import usePatientProfile from "@/hooks/pages/usePatientProfile";
+import useAdminDataProfile from "@/hooks/pages/useAdminProfile";
+
+type TabType = {
+  value: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+};
+
+const tabs: TabType[] = [
+  { value: "view", label: "View Profile", icon: User },
+  { value: "edit", label: "Edit Profile", icon: Edit2 },
+];
 
 export function DashboardOverview() {
+  const { userInfo, setUserInfo, isLoading } = useAdminDataProfile();
+  console.log(userInfo);
+
+  if (isLoading) {
+    return <div className="text-center p-4">Loading...</div>;
+  }
+
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-      </div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">$45,231.89</div>
-            <p className="text-xs text-muted-foreground">
-              +20.1% from last month
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total Patients
-            </CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+2,350</div>
-            <p className="text-xs text-muted-foreground">
-              +10.1% from last month
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Appointments</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+573</div>
-            <p className="text-xs text-muted-foreground">
-              +19% from last month
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Doctor Performance
-            </CardTitle>
-            <Activity className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">98%</div>
-            <p className="text-xs text-muted-foreground">+4% from last month</p>
-          </CardContent>
-        </Card>
-      </div>
-      <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          <TabsTrigger value="reports">Reports</TabsTrigger>
+    <div className="w-full max-w-6xl mx-auto p-4 transition-colors duration-200 dark:bg-gray-900">
+      <h1 className="text-4xl font-extrabold text-gray-900 mb-8 text-center dark:text-white">
+        My Profile
+      </h1>
+      <Tabs defaultValue="view" className="w-full">
+        <TabsList className="grid w-full grid-cols-3 mb-12 bg-white dark:bg-gray-800 rounded-full p-1 shadow-lg">
+          {tabs.map(({ value, label, icon: Icon }) => (
+            <TabsTrigger
+              key={value}
+              value={value}
+              className="rounded-full py-3 transition-all duration-300 ease-in-out"
+            >
+              <Icon className="w-5 h-5 mr-2" /> {label}
+            </TabsTrigger>
+          ))}
         </TabsList>
-        <TabsContent value="overview" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-            <Card className="lg:col-span-4">
-              <CardHeader>
-                <CardTitle>Revenue Overview</CardTitle>
-                <CardDescription>
-                  Monthly revenue for the current year
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pl-2"></CardContent>
-            </Card>
-            <Card className="lg:col-span-3">
-              <CardHeader>
-                <CardTitle>Appointment Trends</CardTitle>
-                <CardDescription>
-                  Appointment distribution by type
-                </CardDescription>
-              </CardHeader>
-              <CardContent></CardContent>
-            </Card>
-          </div>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-            <Card className="lg:col-span-4">
-              <CardHeader>
-                <CardTitle>Recent Appointments</CardTitle>
-                <CardDescription>
-                  Latest appointments across all doctors
-                </CardDescription>
-              </CardHeader>
-              <CardContent></CardContent>
-            </Card>
-            <Card className="lg:col-span-3">
-              <CardHeader>
-                <CardTitle>Recent Payments</CardTitle>
-                <CardDescription>Latest payment transactions</CardDescription>
-              </CardHeader>
-              <CardContent></CardContent>
-            </Card>
-          </div>
+
+        <TabsContent value="view">
+          {userInfo ? (
+            <ProfileView userInfo={userInfo} />
+          ) : (
+            <div className="text-center">No patient data available.</div>
+          )}
         </TabsContent>
-        <TabsContent value="analytics" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Advanced Analytics</CardTitle>
-              <CardDescription>
-                Detailed analytics will be displayed here
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[400px] flex items-center justify-center border rounded-md">
-                <p className="text-muted-foreground">
-                  Advanced analytics content
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        <TabsContent value="reports" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Generated Reports</CardTitle>
-              <CardDescription>
-                View and download generated reports
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-[400px] flex items-center justify-center border rounded-md">
-                <p className="text-muted-foreground">Reports content</p>
-              </div>
-            </CardContent>
-          </Card>
+
+        <TabsContent value="edit">
+          {userInfo && (
+            <ProfileEdit
+              userInfo={userInfo}
+              handleInputChange={(e) => {
+                const { id, value } = e.target;
+                setUserInfo((prev) => (prev ? { ...prev, [id]: value } : prev));
+              }}
+              handleSaveChanges={() => console.log("Saving changes:", userInfo)}
+            />
+          )}
         </TabsContent>
       </Tabs>
     </div>

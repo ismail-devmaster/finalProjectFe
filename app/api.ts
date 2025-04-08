@@ -37,6 +37,7 @@ export const action = {
 
 export const user = {
   getStaff: () => request("get", "/users/staff"),
+  getProfile: () => request("get", "/users/data"),
   getReceptionistsAndSelectedDoctor: (doctorId: number) =>
     request("get", `/users/receptionists-and-doctor/${doctorId}`),
   getAllReceptionistsAndDoctors: () =>
