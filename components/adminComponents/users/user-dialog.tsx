@@ -24,7 +24,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import type { User } from "@/types/user";
-import { auth } from "@/app/api";
+import { admin, auth } from "@/app/api";
 
 interface UserDialogProps {
   open: boolean;
@@ -75,7 +75,7 @@ export function UserDialog({
         : "User has been created successfully.",
     });
     if (editingUser) {
-      console.log(formData);
+      await admin.updateRole(editingUser.id, formData.role);
       setFormData({
         firstName: "",
         lastName: "",
@@ -108,7 +108,7 @@ export function UserDialog({
       firstName: "",
       lastName: "",
       email: "",
-        role: "PATIENT",
+      role: "PATIENT",
       dateOfBirth: "",
       phone: "",
       sexId: "",
@@ -144,6 +144,7 @@ export function UserDialog({
                 value={formData.firstName}
                 onChange={(e) => handleChange("firstName", e.target.value)}
                 className="col-span-3"
+                disabled={!!editingUser}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -155,6 +156,7 @@ export function UserDialog({
                 value={formData.lastName}
                 onChange={(e) => handleChange("lastName", e.target.value)}
                 className="col-span-3"
+                disabled={!!editingUser}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -167,6 +169,7 @@ export function UserDialog({
                 value={formData.email}
                 onChange={(e) => handleChange("email", e.target.value)}
                 className="col-span-3"
+                disabled={!!editingUser}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -179,6 +182,7 @@ export function UserDialog({
                 value={formData.dateOfBirth}
                 onChange={(e) => handleChange("dateOfBirth", e.target.value)}
                 className="col-span-3"
+                disabled={!!editingUser}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -191,6 +195,7 @@ export function UserDialog({
                 value={formData.phone}
                 onChange={(e) => handleChange("phone", e.target.value)}
                 className="col-span-3"
+                disabled={!!editingUser}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -200,6 +205,7 @@ export function UserDialog({
               <Select
                 value={formData.sexId}
                 onValueChange={(value) => handleChange("sexId", value)}
+                disabled={!!editingUser}
               >
                 <SelectTrigger id="sexId" className="col-span-3">
                   <SelectValue placeholder="Select sex" />
@@ -210,21 +216,43 @@ export function UserDialog({
                 </SelectContent>
               </Select>
             </div>
-            <input type="hidden" name="role" value="PATIENT" />
+            {editingUser ? (
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="role" className="text-right">
+                  Role
+                </Label>
+                <Select
+                  value={formData.role}
+                  onValueChange={(value) => handleChange("role", value)}
+                >
+                  <SelectTrigger id="role" className="col-span-3">
+                    <SelectValue placeholder="Select role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="PATIENT">Patient</SelectItem>
+                    <SelectItem value="DOCTOR">Doctor</SelectItem>
+                    <SelectItem value="RECEPTIONIST">Receptionist</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            ) : (
+              <input type="hidden" name="role" value="PATIENT" />
+            )}
             {formData.role === "PATIENT" && (
               <div className="grid grid-cols-4 items-start gap-4">
                 <Label htmlFor="medicalHistory" className="text-right pt-2">
                   Medical History
                 </Label>
-                <Textarea
-                  id="medicalHistory"
-                  value={formData.medicalHistory}
-                  onChange={(e) =>
-                    handleChange("medicalHistory", e.target.value)
-                  }
-                  className="col-span-3"
-                  rows={3}
-                />
+              <Textarea
+                id="medicalHistory"
+                value={formData.medicalHistory}
+                onChange={(e) =>
+                  handleChange("medicalHistory", e.target.value)
+                }
+                className="col-span-3"
+                rows={3}
+                disabled={!!editingUser}
+              />
               </div>
             )}
             <div className="grid grid-cols-4 items-center gap-4">
@@ -237,6 +265,7 @@ export function UserDialog({
                 value={formData.password}
                 onChange={(e) => handleChange("password", e.target.value)}
                 className="col-span-3"
+                disabled={!!editingUser}
               />
             </div>
           </div>
