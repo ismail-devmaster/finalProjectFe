@@ -42,7 +42,7 @@ export function UserDialog({
     firstName: editingUser ? editingUser.firstName : "",
     lastName: editingUser ? editingUser.lastName : "",
     email: editingUser ? editingUser.email : "",
-    role: editingUser ? editingUser.role : "",
+    role: "PATIENT",
     dateOfBirth: editingUser
       ? typeof editingUser.dateOfBirth === "string"
         ? editingUser.dateOfBirth
@@ -80,7 +80,7 @@ export function UserDialog({
         firstName: "",
         lastName: "",
         email: "",
-        role: "",
+        role: "PATIENT",
         dateOfBirth: "",
         phone: "",
         sexId: "",
@@ -108,7 +108,7 @@ export function UserDialog({
       firstName: "",
       lastName: "",
       email: "",
-      role: "",
+        role: "PATIENT",
       dateOfBirth: "",
       phone: "",
       sexId: "",
@@ -210,25 +210,7 @@ export function UserDialog({
                 </SelectContent>
               </Select>
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="role" className="text-right">
-                Role
-              </Label>
-              <Select
-                value={formData.role}
-                onValueChange={(value) => handleChange("role", value)}
-              >
-                <SelectTrigger id="role" className="col-span-3">
-                  <SelectValue placeholder="Select role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="PATIENT">Patient</SelectItem>
-                  <SelectItem value="DOCTOR">Doctor</SelectItem>
-                  <SelectItem value="RECEPTIONIST">Receptionist</SelectItem>
-                  <SelectItem value="ADMIN">Admin</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <input type="hidden" name="role" value="PATIENT" />
             {formData.role === "PATIENT" && (
               <div className="grid grid-cols-4 items-start gap-4">
                 <Label htmlFor="medicalHistory" className="text-right pt-2">
