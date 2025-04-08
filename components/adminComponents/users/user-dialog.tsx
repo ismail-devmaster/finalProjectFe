@@ -66,22 +66,7 @@ export function UserDialog({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate form
-    if (
-      !formData.firstName ||
-      !formData.lastName ||
-      !formData.email ||
-      !formData.role
-    ) {
-      toast({
-        title: "Error",
-        description: "Please fill in all required fields.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Submit form logic would go here
+    // Submit form logic
 
     toast({
       title: "Success",
@@ -89,17 +74,24 @@ export function UserDialog({
         ? "User has been updated successfully."
         : "User has been created successfully.",
     });
-    const newPatient = {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email,
-      dateOfBirth: formData.dateOfBirth,
-      phone: formData.phone,
-      sexId: Number(formData.sexId),
-      medicalHistory: formData.medicalHistory,
-      password: formData.password,
-      isVerified: true,
-    };
+    if (editingUser) {
+      console.log(formData);
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        role: "",
+        dateOfBirth: "",
+        phone: "",
+        sexId: "",
+        medicalHistory: "",
+        password: "",
+        isVerified: false,
+        avatar: "",
+      });
+      onOpenChange(false);
+      return;
+    }
     await auth.signup(
       formData.email,
       formData.password,
