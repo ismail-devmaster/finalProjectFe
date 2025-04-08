@@ -62,6 +62,7 @@ const ReceptionistDashboardComponent = ({
       href: "/staff/receptionist/newAppointments",
       icon: Calendar,
     },
+    { title: "Calendar", href: "/staff/receptionist/calendar", icon: Calendar },
     { title: "Tasks", href: "/staff/receptionist/tasks", icon: ClipboardList },
     {
       title: "Profile",
