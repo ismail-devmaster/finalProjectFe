@@ -57,7 +57,6 @@ export function UserManagement() {
     fetchUsers();
   }, []);
 
-  const [selectedUsers, setSelectedUsers] = useState<number[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -84,22 +83,6 @@ export function UserManagement() {
     return matchesSearch && matchesRole;
   });
 
-  const toggleUserSelection = (userId: number) => {
-    if (selectedUsers.includes(userId)) {
-      setSelectedUsers(selectedUsers.filter((id) => id !== userId));
-    } else {
-      setSelectedUsers([...selectedUsers, userId]);
-    }
-  };
-
-  const toggleAllUsers = () => {
-    if (selectedUsers.length === filteredUsers.length) {
-      setSelectedUsers([]);
-    } else {
-      setSelectedUsers(filteredUsers.map((user) => user.id));
-    }
-  };
-
   const handleViewProfile = (user: User) => {
     console.log(user);
     setViewingUser(user);
@@ -117,11 +100,11 @@ export function UserManagement() {
   };
 
   const confirmDeleteUser = async () => {
-    // In a real app, you would call an API to delete the user
-    // For now, we'll just close the dialog
+    if (!userToDelete) return;
+
     setIsConfirmDeleteOpen(false);
-    setUserToDelete(null);
     await admin.deleteUser(userToDelete);
+    setUserToDelete(null);
 
     // Show a toast notification
     toast({
@@ -167,9 +150,6 @@ export function UserManagement() {
                 </div>
                 <UserTable
                   users={filteredUsers}
-                  selectedUsers={selectedUsers}
-                  toggleUserSelection={toggleUserSelection}
-                  toggleAllUsers={toggleAllUsers}
                   onViewProfile={handleViewProfile}
                   onEditUser={handleEditUser}
                   onDeleteUser={handleDeleteUser}

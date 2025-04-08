@@ -3,7 +3,6 @@ import { MoreHorizontal } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,9 +24,6 @@ import type { User, UserRole } from "@/types/user";
 interface UserTableProps {
   users: User[];
   actions: any[];
-  selectedUsers: number[];
-  toggleUserSelection: (userId: number) => void;
-  toggleAllUsers: () => void;
   onViewProfile: (user: User) => void;
   onEditUser: (user: User) => void;
   onDeleteUser: (userId: number) => void;
@@ -36,9 +32,6 @@ interface UserTableProps {
 export function UserTable({
   users,
   actions,
-  selectedUsers,
-  toggleUserSelection,
-  toggleAllUsers,
   onViewProfile,
   onEditUser,
   onDeleteUser,
@@ -48,14 +41,6 @@ export function UserTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[50px]">
-              <Checkbox
-                checked={
-                  users.length > 0 && selectedUsers.length === users.length
-                }
-                onCheckedChange={toggleAllUsers}
-              />
-            </TableHead>
             <TableHead>User</TableHead>
             <TableHead>Role</TableHead>
             <TableHead>Status</TableHead>
@@ -66,19 +51,13 @@ export function UserTable({
         <TableBody>
           {users.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={7} className="h-24 text-center">
+              <TableCell colSpan={5} className="h-24 text-center">
                 No users found.
               </TableCell>
             </TableRow>
           ) : (
             users.map((user) => (
               <TableRow key={user.id}>
-                <TableCell>
-                  <Checkbox
-                    checked={selectedUsers.includes(user.id)}
-                    onCheckedChange={() => toggleUserSelection(user.id)}
-                  />
-                </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
                     <Avatar className="h-8 w-8">
