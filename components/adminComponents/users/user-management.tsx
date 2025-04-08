@@ -77,9 +77,9 @@ export function UserManagement() {
 
     const matchesRole =
       roleFilter === "all" ||
-      (roleFilter === "patient" && user.role === "PATIENT") ||
-      (roleFilter === "doctor" && user.role === "DOCTOR") ||
-      (roleFilter === "receptionist" && user.role === "RECEPTIONIST");
+      (roleFilter === "PATIENT" && user.role === "PATIENT") ||
+      (roleFilter === "DOCTOR" && user.role === "DOCTOR") ||
+      (roleFilter === "RECEPTIONIST" && user.role === "RECEPTIONIST");
 
     return matchesSearch && matchesRole;
   });
@@ -116,7 +116,7 @@ export function UserManagement() {
     setIsConfirmDeleteOpen(true);
   };
 
-  const confirmDeleteUser = async() => {
+  const confirmDeleteUser = async () => {
     // In a real app, you would call an API to delete the user
     // For now, we'll just close the dialog
     setIsConfirmDeleteOpen(false);
@@ -163,7 +163,7 @@ export function UserManagement() {
                     roleFilter={roleFilter}
                     setRoleFilter={setRoleFilter}
                   />
-                  <BulkActions selectedCount={selectedUsers.length} />
+                  {/* <BulkActions selectedCount={selectedUsers.length} /> */}
                 </div>
                 <UserTable
                   users={filteredUsers}
