@@ -57,9 +57,8 @@ const UserDetails = ({ userInfo }: { userInfo: User }) => {
     {
       icon: <UserIcon className="h-6 w-6 text-blue-500" />,
       text: `${
-        userInfo.dateOfBirth
-          ? new Date().getFullYear() -
-            new Date(userInfo.dateOfBirth).getFullYear()
+        userInfo.dob
+          ? new Date().getFullYear() - new Date(userInfo.dob).getFullYear()
           : "Unknown"
       } years old`,
     },
@@ -73,8 +72,8 @@ const UserDetails = ({ userInfo }: { userInfo: User }) => {
     },
     {
       icon: <Calendar className="h-6 w-6 text-red-500" />,
-      text: userInfo.dateOfBirth
-        ? `Born on ${new Date(userInfo.dateOfBirth).toLocaleDateString()}`
+      text: userInfo.dob
+        ? `Born on ${new Date(userInfo.dob).toLocaleDateString()}`
         : "Birthdate not set",
     },
   ];

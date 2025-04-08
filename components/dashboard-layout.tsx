@@ -13,7 +13,7 @@ import {
   Sun,
   Moon,
   LogOut,
-  ClipboardList
+  ClipboardList,
 } from "lucide-react";
 import { useTheme } from "next-themes";
 
@@ -35,7 +35,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   {
-    title: "Dashboard",
+    title: "Profile",
     href: "/admin",
     icon: Calendar,
   },
@@ -90,7 +90,9 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   }, [theme]);
 
   return (
-    <div className={`flex min-h-screen flex-col ${theme === "dark" ? "dark" : ""}`}>
+    <div
+      className={`flex min-h-screen flex-col ${theme === "dark" ? "dark" : ""}`}
+    >
       <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>

@@ -23,14 +23,16 @@ type PersonalInfoType = {
 type Props = {
   userInfo: PersonalInfoType;
   handleInputChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
   handleSaveChanges: () => void;
 };
 
-const ProfileEdit = (
-  { userInfo, handleInputChange, handleSaveChanges }: Props,
-) => {
+const ProfileEdit = ({
+  userInfo,
+  handleInputChange,
+  handleSaveChanges,
+}: Props) => {
   const fields = [
     { id: "firstName", label: "First Name" },
     { id: "lastName", label: "Last Name" },
@@ -67,23 +69,6 @@ const ProfileEdit = (
               </div>
             ))}
           </div>
-
-          {[, "medicalHistory"].map((id) => (
-            <div key={id} className="space-y-2">
-              <Label
-                htmlFor={id}
-                className="text-lg font-medium dark:text-white"
-              >
-                {"Medical History"}
-              </Label>
-              <Textarea
-                id={id}
-                value={userInfo[id as keyof PersonalInfoType]}
-                onChange={handleInputChange}
-                className="text-lg p-3 dark:bg-gray-700 dark:text-white"
-              />
-            </div>
-          ))}
         </form>
       </CardContent>
       <CardFooter>

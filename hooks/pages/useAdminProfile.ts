@@ -20,7 +20,7 @@ export default function useAdminDataProfile() {
       try {
         const response = await user.getProfile();
         if (response) {
-          const  user  = response;
+          const user = response;
           setUserInfo({
             firstName: user.firstName,
             lastName: user.lastName,
