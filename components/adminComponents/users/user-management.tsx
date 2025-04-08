@@ -31,10 +31,9 @@ export function UserManagement() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    
     const fetchUsers = async () => {
       try {
-        const data = await admin.getAllUsers()
+        const data = await admin.getAllUsers();
         setUsers(data.users);
         setIsLoading(false);
       } catch (err) {
@@ -45,7 +44,7 @@ export function UserManagement() {
     };
     const fetchActions = async () => {
       try {
-        const data = await action.getAllActions()
+        const data = await action.getAllActions();
         setActions(data.actions);
         setIsLoading(false);
       } catch (err) {
@@ -76,10 +75,11 @@ export function UserManagement() {
       user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase());
 
-  const matchesRole = roleFilter === "all" || 
-    (roleFilter === "patient" && user.role === "PATIENT") ||
-    (roleFilter === "doctor" && user.role === "DOCTOR") ||
-    (roleFilter === "receptionist" && user.role === "RECEPTIONIST");
+    const matchesRole =
+      roleFilter === "all" ||
+      (roleFilter === "patient" && user.role === "PATIENT") ||
+      (roleFilter === "doctor" && user.role === "DOCTOR") ||
+      (roleFilter === "receptionist" && user.role === "RECEPTIONIST");
 
     return matchesSearch && matchesRole;
   });
@@ -101,6 +101,7 @@ export function UserManagement() {
   };
 
   const handleViewProfile = (user: User) => {
+    console.log(user);
     setViewingUser(user);
     setIsViewDialogOpen(true);
   };
@@ -163,7 +164,7 @@ export function UserManagement() {
                   />
                   <BulkActions selectedCount={selectedUsers.length} />
                 </div>
-                  <UserTable
+                <UserTable
                   users={filteredUsers}
                   selectedUsers={selectedUsers}
                   toggleUserSelection={toggleUserSelection}
@@ -186,7 +187,7 @@ export function UserManagement() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-                  <RoleSpecificTable
+              <RoleSpecificTable
                 users={users}
                 role="patient"
                 onViewProfile={handleViewProfile}

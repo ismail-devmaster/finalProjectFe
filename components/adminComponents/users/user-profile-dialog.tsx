@@ -49,19 +49,15 @@ export function UserProfileDialog({ user, open, onOpenChange, onEditUser }: User
               <p className="text-sm">{user.role}</p>
             </div>
             <div>
-              <h4 className="text-sm font-medium">Appointments</h4>
-              <p className="text-sm">{user.appointments}</p>
+              <h4 className="text-sm font-medium">age</h4>
+              <p className="text-sm">{}</p>
             </div>
             <div>
-              <h4 className="text-sm font-medium">Last Appointment</h4>
+              <h4 className="text-sm font-medium">Sex</h4>
               <p className="text-sm">
-                {user.lastAppointment
-                  ? new Date(user.lastAppointment).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })
-                  : "N/A"}
+                {user.sexId === 1
+                  ? "Male"
+                  : "Female"}
               </p>
             </div>
             <div>
