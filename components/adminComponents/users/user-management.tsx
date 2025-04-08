@@ -116,11 +116,12 @@ export function UserManagement() {
     setIsConfirmDeleteOpen(true);
   };
 
-  const confirmDeleteUser = () => {
+  const confirmDeleteUser = async() => {
     // In a real app, you would call an API to delete the user
     // For now, we'll just close the dialog
     setIsConfirmDeleteOpen(false);
     setUserToDelete(null);
+    await admin.deleteUser(userToDelete);
 
     // Show a toast notification
     toast({
