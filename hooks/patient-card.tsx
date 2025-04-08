@@ -25,7 +25,7 @@ export function PatientCard({ action, onViewAppointments }: PatientCardProps) {
       <CardContent>
         <p className="text-sm text-muted-foreground mb-2">{action.description}</p>
         <p className="text-sm text-muted-foreground mb-2">Patient ID: {action.patientId}</p>
-        <p className="font-semibold">Total Payments: ${action.totalPayment.toFixed(2)}</p>
+        <p className="font-semibold">Total Payments: DA{action.totalPayment.toFixed(2)}</p>
         <p className="text-sm text-muted-foreground">Started: {new Date(action.startDate).toLocaleDateString()}</p>
         {action.endDate && (
           <p className="text-sm text-muted-foreground">Ended: {new Date(action.endDate).toLocaleDateString()}</p>

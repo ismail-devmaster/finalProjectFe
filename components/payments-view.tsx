@@ -116,7 +116,7 @@ export function PaymentsView({ actionId }: PaymentsViewProps) {
       </div>
       <div className="mb-4">
         <p className="text-lg font-semibold">
-          Total Amount: ${totalAmount.toFixed(2)}
+          Total Amount: DA{totalAmount.toFixed(2)}
         </p>
       </div>
       <Input
@@ -171,7 +171,7 @@ export function PaymentsView({ actionId }: PaymentsViewProps) {
           {filteredPayments.map((payment) => (
             <TableRow key={payment.id}>
               <TableCell>{payment.doctorId}</TableCell>
-              <TableCell>${payment.amount.toFixed(2)}</TableCell>
+              <TableCell>DA{payment.amount.toFixed(2)}</TableCell>
               <TableCell>
                 {new Date(payment.date).toLocaleDateString()}
               </TableCell>

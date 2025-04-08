@@ -102,7 +102,7 @@ export default function PaymentsDialog(
                           {payment.description}
                         </div>
                         <div className="text-lg font-bold text-emerald-600">
-                          ${payment.amount}
+                          DA{payment.amount}
                         </div>
                       </div>
                     </div>

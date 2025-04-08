@@ -752,7 +752,7 @@ export default function Appointments({ appointments }: AppointmentsProps) {
                             </div>
                           </TableCell>
                           <TableCell className="font-medium text-emerald-600">
-                            ${pay.amount}
+                            DA{pay.amount}
                           </TableCell>
                           <TableCell>{pay.description || "-"}</TableCell>
                           <TableCell>

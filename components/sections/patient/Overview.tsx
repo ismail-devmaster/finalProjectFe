@@ -82,7 +82,7 @@ const Overview: React.FC<OverviewProps> = (
             <p
               className={`text-lg font-bold ${mockData.payments.balanceColor}`}
             >
-              ${mockData.payments.balance}
+              DA{mockData.payments.balance}
             </p>
           </>
         ),

@@ -273,13 +273,13 @@ export default function Dashboard() {
                   Total Paid:
                 </span>
                 <span className="font-medium">
-                  ${paymentInfo.totalPaid.toFixed(2)}
+                  DA{paymentInfo.totalPaid.toFixed(2)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-muted-foreground">Pending:</span>
                 <span className="font-medium">
-                  ${paymentInfo.pendingBalance.toFixed(2)}
+                  DA{paymentInfo.pendingBalance.toFixed(2)}
                 </span>
               </div>
               <Button variant="link" className="p-0 h-auto" asChild>
@@ -489,7 +489,7 @@ export default function Dashboard() {
                             {payment.appointmentType.replace("_", " ")}
                           </h4>
                           <span className="font-medium text-green-600">
-                            ${payment.amount.toFixed(2)}
+                            DA{payment.amount.toFixed(2)}
                           </span>
                         </div>
                         <div className="text-sm text-muted-foreground mt-1">

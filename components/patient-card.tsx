@@ -36,7 +36,7 @@ export function PatientCard({ action }: PatientCardProps) {
           {action.description}
         </p>
         <p className="font-semibold">
-          Total Payments: ${action.totalPayment.toFixed(2)}
+          Total Payments: DA{action.totalPayment.toFixed(2)}
         </p>
         <p className="text-sm text-muted-foreground">
           Started: {new Date(action.startDate).toLocaleDateString()}

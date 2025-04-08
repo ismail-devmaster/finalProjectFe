@@ -72,7 +72,7 @@ export function PaymentsDialog({
             </span>
             {totalPayment !== undefined && (
               <span className="font-bold">
-                Total Payment: ${totalPayment.toFixed(2)}
+                Total Payment: DA{totalPayment.toFixed(2)}
               </span>
             )}
           </DialogDescription>
@@ -125,7 +125,7 @@ export function PaymentsDialog({
                           {payment.description}
                         </div>
                         <div className="text-lg font-bold text-emerald-600">
-                          ${payment.amount.toFixed(2)}
+                          DA{payment.amount.toFixed(2)}
                         </div>
                       </div>
                     </div>

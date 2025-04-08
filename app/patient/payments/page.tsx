@@ -144,7 +144,7 @@ const PaymentsSummaryCards = ({ actions }: { actions: Action[] }) => {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-emerald-600">
-            ${totalPaid.toFixed(2)}
+            DA{totalPaid.toFixed(2)}
           </div>
           <p className="text-xs text-muted-foreground mt-1">
             Across {filteredActions.length} appointments
@@ -161,7 +161,7 @@ const PaymentsSummaryCards = ({ actions }: { actions: Action[] }) => {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-amber-600">
-            ${pendingAmount.toFixed(2)}
+            DA{pendingAmount.toFixed(2)}
           </div>
           <p className="text-xs text-muted-foreground mt-1">
             Awaiting processing
@@ -345,7 +345,7 @@ const ActionsTable = ({
                     </TableCell>
                     <TableCell>
                       <div className="font-medium text-emerald-600">
-                        ${action.totalPayment?.toFixed(2) || "0.00"}
+                        DA{action.totalPayment?.toFixed(2) || "0.00"}
                       </div>
                     </TableCell>
                     <TableCell className="text-right">
@@ -451,7 +451,7 @@ const PaymentDialog = ({
                   Total Amount
                 </div>
                 <div className="font-medium text-lg text-emerald-600">
-                  ${actionDetails.totalPayment?.toFixed(2) || "0.00"}
+                  DA{actionDetails.totalPayment?.toFixed(2) || "0.00"}
                 </div>
               </div>
             </CardContent>
@@ -493,7 +493,7 @@ const PaymentDialog = ({
                         </TableCell>
                         <TableCell>
                           <div className="font-medium text-emerald-600">
-                            ${payment.amount?.toFixed(2)}
+                            DA{payment.amount?.toFixed(2)}
                           </div>
                         </TableCell>
                         <TableCell className="hidden md:table-cell max-w-[200px] truncate">

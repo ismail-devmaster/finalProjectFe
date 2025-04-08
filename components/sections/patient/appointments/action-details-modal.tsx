@@ -110,7 +110,7 @@ export function ActionDetailsModal({
                 <div className="font-medium flex items-center gap-2">
                   <CreditCard className="h-4 w-4 text-emerald-500" />
                   <span className="text-emerald-600 font-semibold">
-                    ${action.totalPayment.toFixed(2)}
+                    DA{action.totalPayment.toFixed(2)}
                   </span>
                 </div>
               </div>
